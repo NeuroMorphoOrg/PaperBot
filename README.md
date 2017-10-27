@@ -156,9 +156,9 @@ You should see the following in the browser: `Metadata up & running!`
 Repeat the steps **2.2 to 2.5** for the services: LiteraturePubMedServiceBoot, LiteraturePortalServiceBoot, LiteratureServiceBoot
 
 URLs to test they are up & running:
-Go to your browser and type: http://localhost:8186/literature/pubmed/test
-Go to your browser and type: http://localhost:8189/literature/portal/test
-Go to your browser and type: http://localhost:8188/literature/test
+Go to your browser and type: http://localhost:8186/literature/pubmed/test <br>
+Go to your browser and type: http://localhost:8189/literature/portal/test <br>
+Go to your browser and type: http://localhost:8188/literature/test <br>
 
 
 ## 3. The Fronted
