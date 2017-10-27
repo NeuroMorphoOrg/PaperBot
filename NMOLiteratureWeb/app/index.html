@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app="ArticlesResume">
+
+    <head>
+        <title>Literature Search</title>
+        <script type="text/javascript" src="/NMOLiteratureWeb/bower_components/angular/angular.min.js"></script>
+        <script src="articlesResumeController.js"></script>
+        <script src="/NMOLiteratureWeb/communications/articlesCommunicationService.js"></script>
+        <script src="/NMOLiteratureWeb/services/articlesService.js"></script>
+
+        <link rel="stylesheet" href="/NMOLiteratureWeb/bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="navigate.css">
+    </head>
+    <body ng-controller='articles.controller'>
+        
+        
+        <div class="search">
+            <!-- <a href="portalSearch/search.html"  style="text-decoration: none"> -->
+           <div class="portal_search">
+                <p>Portal Search<br><span class="badge">{{articlesNumbers.lastLaunchedDate| date:'yyyy-MM-dd'}}</span></p>
+            </div>
+            <!-- </a> -->
+           
+        </div>
+        <div class="litSearch">
+            <div class="articles">
+                <a href="articleList/preEvaluateArticlesMenu.html#articles/To%20evaluate/1"  style="text-decoration: none">
+                    <div class="pre_evaluate_articles">
+                        <p>Pre-Evaluate Articles Reconstructions<br><span class="badge">{{count.toEvaluate}}</span></p>
+                    </div>
+                </a>
+                
+            </div>
+
+            <div class="articles">
+                <a href="articleList/evaluateArticlesMenu.html#articles/To%20evaluate/0"  style="text-decoration: none">
+                    <div class="evaluate_articles">
+                        <p>Evaluate Articles Reconstructions
+                            <span class="badge">{{count.toEvaluate}}</span>
+                            <br>
+                            Pre-Evaluated Articles Reconstructions
+                            <span class="badge">{{count.evaluated}}</span></p>
+                    </div>
+                </a>
+               
+
+            </div>
+            <div class="evaluated">
+                <a href="articleList/negativeArticlesMenu.html#articles/Inaccessible/0"  style="text-decoration: none">
+                    <div class="inaccessible_articles">
+                        <p>Inaccessible Articles<br><span class="badge">{{count.inaccessible}}</span></p> 
+                    </div>
+                </a>
+                <a href="articleList/negativeArticlesMenu.html#articles/Negative/0"  style="text-decoration: none">
+                    <div class="negative_articles">
+                        <p>Negative Articles<br><span class="badge">{{count.negative}}</span></p> 
+                    </div>
+                </a>
+
+                <a href="articleList/positiveArticlesMenu.html#positiveArticles/Describing" style="text-decoration: none">
+                    <div class="positive_articles">
+                        <p>Positive Articles<br><span class="badge">{{count.positive}}</span></p> 
+                    </div>
+                </a>
+
+            </div>
+
+
+        </div>
+        
+    </body>
+
+</html>

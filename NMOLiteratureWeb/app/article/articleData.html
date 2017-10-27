@@ -1,0 +1,106 @@
+<form editable-form name="tableform" onaftersave="updateArticle()" oncancel="cancel()">
+    <div class="panel-group">
+        <div class="panel  panel-info">
+            <div class="panel-heading"><span editable-text="article.title">{{article.title}}</span></div>
+            <div class="errors">
+                {{error}}
+            </div>
+
+            <div class="panel-body">
+                <table class="table">
+                    <div>
+                        <div class="btn-edit">
+                            <button type="button" class="btn btn-info" ng-show="!tableform.$visible" ng-click="tableform.$show()">
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"><strong>EDIT</strong></span>
+                            </button>
+                        </div>
+                        <div class="btn-form" ng-show="tableform.$visible">
+                            <button type="submit" class="btn btn-primary" ng-disabled="uiSelectForm.$waiting">SAVE</button>                    
+                            <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn btn-default">CANCEL</button>
+                        </div>
+
+                    </div>
+                    <!--<tr>
+                        <td><span class="glyphicon glyphicon-folder-open" aria-hidden="true"><strong> PDF:</strong></span></td>
+                        <td><a href='{{pdfURL}}' onclick="window.open(this.href, 'mywin', 'left=200,top=20,width=1000,height=1000,toolbar=1,resizable=0');
+                                                    return false;">
+                                <strong>{{pdfURL}}</strong></a> </td>
+                    </tr>-->
+
+                    <tr>
+                        <td><strong>Data Usage:</strong></td>
+                        <td>
+                            <span href="#" editable-checklist="radio.usage" e-ng-options="r.value as r.text for r in usages">
+                                {{showUsage()}}
+                            </span></td>
+                        <td>
+
+                    </tr>
+                    <tr>
+                        <td><strong>PMID:</strong></td>
+                        <td><a ng-href="https://www.ncbi.nlm.nih.gov/pubmed/{{article.pmid}}" target="_blank">
+                                <span editable-text="article.pmid">{{article.pmid}}</span>
+                            </a></td>
+                        <td>
+                        <td>
+                            <input type="text" class="form-control" ng-model="article.pmid">
+                            <button type="button" ng-click="getPubMed()" class="btn btn-default" ng-disabled="false">
+                                <img src="/NMOLiteratureWeb/images/pubmed.jpg" width="70" /> 
+                            </button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>DOI:</strong> </td>
+                        <td><a ng-href="http://dx.doi.org/{{article.doi}}" target="_blank">
+                                <span editable-text="article.doi">{{article.doi}}</span></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Link:</strong> </td>
+                        <td><a ng-href="{{article.link}}" target="_blank">
+                                <span editable-text="article.link">{{article.link}}</span></a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Journal:</strong></td>
+                        <td><span editable-text="article.journal">{{article.journal}}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Published Date:</strong></td>
+                        <td><span editable-bsdate="article.publishedDate" e-is-open="opened.$data" e-ng-click="open($event,'$data')" e-datepicker-popup="yyyy/MM/dd">{{article.publishedDate| date:'yyyy-MM-dd'}}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Authors/Emails:</strong></td>
+                        <td>
+                            <span ng-repeat="author in article.authorList">
+                                <span><button type="button" ng-click="removeAuthor($index)">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </button></span>
+                                <span editable-text="author.name">{{author.name}}</span>&nbsp; - &nbsp;
+                                <span editable-text="author.email">{{author.email}}</span>
+                                <span ng-show=" !$last"></br></span>
+
+                            </span>
+                        </td>
+                        <td>
+                            <button type="button" ng-click="addAuthor()">Add author
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Source:</strong></td>
+                        <td>{{article.searchPortal.source}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Portal: [keyWords]:</strong></td>
+                        <td><span class="portalList" ng-repeat="portal in article.searchPortal.portalList">{{portal.name}} : {{portal.keyWordList}}
+                                <span ng-show=" !$last">,</span>
+
+                            </span>
+                        </td>
+                    </tr>
+                  
+                </table>
+            </div>
+        </div>
+
+    </div>
+</form>

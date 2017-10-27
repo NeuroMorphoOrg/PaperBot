@@ -1,0 +1,48 @@
+
+
+<div class="articles">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
+        <input type="text" ng-model="asyncSelected" placeholder="Search for..." uib-typeahead="article as article.pmid for article in findArticlesByText($viewValue)" typeahead-loading="loadingArticles" typeahead-no-results="noResults" typeahead-wait-ms="500" class="form-control">
+    </div>
+    <i ng-show="loadingArticles" class="glyphicon glyphicon-refresh"></i>
+
+    <hr>
+    <div class ="pagination">
+        <uib-pagination ng-model="currentPage" ng-click="setPage()" total-items="articlePage.totalElements" max-size="10" items-per-page="articlePage.size" previous-text="&lsaquo;" next-text="&rsaquo;" boundary-links="true" first-text="&laquo;" last-text="&raquo;">
+        </uib-pagination> 
+    </div>
+    <div class ="content-numbers">
+        <p>Showing <strong>{{firstElement}} - {{lastElement}} of {{articlePage.totalElements}}</strong> results</p>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="PublishedDate">Published Date</th>
+                <th class="PMID">PMID</th>
+                <th>Title</th>
+                <th>Note</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="article in articlePage.content| filter:search">
+                <td>{{article.publishedDate| date:'yyyy-MM-dd'}}</td>
+                <td ng-if="article.pmid">{{article.pmid}}</td>
+                <td ng-if="!article.pmid">-</td>
+                <td>
+                    <span class="title"><a href='#/view/{{article.id}}/{{review}}'>{{article.title}}</a></span>  <br/>
+                    <span class="keyWordList" ng-repeat="keyWord in getKeyWordSet(article.searchPortal.portalList)">{{keyWord}}
+                        <span ng-show=" !$last">,</span>
+                    </span>
+
+                </td>
+                <td>{{metadata.comment}}</td>
+                <!--
+                  <td><button type="button" ng-click="submitNegative(article.id, $index)" class="radio-inline-negative" >
+                        <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"> Negative</span>
+                    </button></td>-->
+            </tr>
+        </tbody>
+    </table>
+</div>

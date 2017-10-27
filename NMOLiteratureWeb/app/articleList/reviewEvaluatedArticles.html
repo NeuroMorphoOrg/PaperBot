@@ -1,0 +1,70 @@
+<div class="errors">
+    {{error}}
+</div>
+<hr>
+
+<div class="evaluateArticles">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
+        <input type="text" ng-model="asyncSelected" placeholder="Search for..." uib-typeahead="article as article.pmid for article in findArticlesByText($viewValue)" typeahead-loading="loadingArticles" typeahead-no-results="noResults" typeahead-wait-ms="500" class="form-control">
+    </div>
+    <i ng-show="loadingArticles" class="glyphicon glyphicon-refresh"></i>
+
+    <hr>
+    <h3 class="panel-title">Pending articles for evaluation: Click title to proceed </h3>
+    <hr>
+    <div class ="pagination">
+        <uib-pagination ng-model="currentPage" ng-click="setPage()" total-items="articlePage.totalElements" max-size="10" items-per-page="articlePage.size" previous-text="&lsaquo;" next-text="&rsaquo;" boundary-links="true" first-text="&laquo;" last-text="&raquo;">
+        </uib-pagination> 
+    </div>
+    <div class ="content-numbers">
+        <p>Showing <strong>{{firstElement}} - {{lastElement}} of {{articlePage.totalElements}}</strong> results</p>
+    </div>
+    <table class="table" >
+        <thead>
+            <tr>
+                <th class="PublishedDate">Published Date</th>
+                <th class="PMID">PMID</th>
+                <th>Title</th>
+                <th class="Metadata">Metadata</th>
+                <th>Comment</th>
+                <th>Evaluation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="article in articlePage.content| filter:search"
+                 ng-class="{'text-negative': article.metadata.articleStatus ==='Negative', 'text-positive': article.metadata.articleStatus ==='Positive', 'text-inaccessible': article.metadata.articleStatus ==='Inaccessible', 'text-reevaluate': article.metadata.articleStatus ==='To evaluate' }">
+                <td>{{article.publishedDate| date:'yyyy-MM-dd'}}</td>
+                <td ng-if="article.pmid">{{article.pmid}}</td>
+                <td ng-if="!article.pmid">-</td>
+                <td>
+                    <span class="title"><a href='#/view/{{article.id}}/1' target="_blank">{{article.title}}</a></span>  <br/>
+                    <span class="keyWordList" ng-repeat="keyWord in getKeyWordSet(article.searchPortal.portalList)">{{keyWord}}
+                        <span ng-show=" !$last">,</span>
+                    </span>
+                </td>
+                <td>{{article.metadata.nReconstructions}}<br>
+                    {{article.metadata.species[0]}}<br>
+                    {{article.metadata.brainRegion[0]}}<br>
+                    {{article.metadata.cellType[0]}}<br>
+                    {{article.metadata.tracingSystem[0]}}
+                </td>
+                <td>{{article.metadata.comment}} </td>
+
+                <td class="radio-inline-positive" ng-if="article.metadata.articleStatus ==='Positive'">
+                    <span class="glyphicon glyphicon-plus-sign"></span>Positive</td>
+                <td class="radio-inline-negative" ng-if="article.metadata.articleStatus ==='Negative'">
+                    <span class="glyphicon glyphicon-minus-sign"></span>Negative</td>
+                <td class="radio-inline-inaccessible" ng-if="article.metadata.articleStatus ==='Inaccessible'">
+                    <span class="glyphicon glyphicon-question-sign"></span>Inaccessible</td>
+                <td class="radio-inline-reevaluate" ng-if="article.metadata.articleStatus ==='To evaluate'">
+                    <span class="glyphicon glyphicon-remove-sign"></span>Re-Evaluate</td>
+                
+                <td><button type="button" ng-click="acceptEvaluatedArticle(article.id, article.metadata, $index)" class="btn btn-xlarge btn-default" >
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                    </button></td> 
+            </tr>
+        </tbody>
+    </table>
+
+</div>

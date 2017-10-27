@@ -1,0 +1,68 @@
+<form ng-controller='MetadataController' editable-form name="tableform" onaftersave="updateMetadata(articleStatus)" oncancel="cancel()">
+
+    <div class="panel-group">
+        <div class="panel panel-success">
+            <div class="panel-heading"><strong>Metadata</strong></div> 
+            <div>
+                <div class="btn-edit">
+                    <button type="button" class="btn btn-info" ng-show="!tableform.$visible" ng-click="tableform.$show()">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"><strong>EDIT</strong></span>
+                    </button>
+                </div>
+                <div class="btn-form" ng-show="tableform.$visible">
+                    <button type="submit" class="btn btn-primary" ng-disabled="uiSelectForm.$waiting">SAVE</button>                    
+                    <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn btn-default">CANCEL</button>
+                </div>
+
+            </div>
+            <table class="table">
+                  <tr>
+                        <td><strong>Comment:</strong></td>
+                        <td><span editable-textarea="metadata.comment">{{metadata.comment}}</span></td>
+                    </tr>
+                <tr>
+                    <td><strong>Article Status: </strong></td>
+                    <td>
+                        <span editable-radiolist="radio.status" e-ng-options="s.value as s.text for s in statuses">
+                            {{showStatus()}}</span>
+                    </td>
+
+                    <td></td>
+                    
+                </tr>
+                <tr>
+                    <td><strong>#N Reconstructions:</strong></td>
+                    <td ng-if="article.articleStatus === 'Positive' && review === '0'"><span>{{totalReconstructions}}</span></td>
+                    <td ng-if="article.articleStatus !== 'Positive' || review === '1'"><span editable-text="metadata.nReconstructions">{{metadata.nReconstructions}}</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Species:</strong></td>
+                    <!--<td><span editable-select="article.metadata.species"  e-ng-options="g for g in species">{{article.metadata.species}}</span></td>-->
+                    <td><span editable-text="metadata.species[0]">{{metadata.species[0]}}</span></td>
+
+                </tr>
+                <tr>
+                    <td><strong>Cell Type:</strong></td>
+                    <td><span editable-text="metadata.cellType[0]">{{metadata.cellType[0]}}</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Brain Region:</strong></td>
+                    <td><span editable-text="metadata.brainRegion[0]">{{metadata.brainRegion[0]}}</span></td>
+                </tr>
+                <tr>
+                    <td><strong>Tracing system:</strong></td>
+                    <!-- To be used if an API with values is provided
+                    <td><span editable-select="metadata.tracingSystem[0]" e-ng-options="option for option in tracingOptionList">
+                            {{metadata.tracingSystem[0]}}</span></td>-->
+                     <td><span editable-text="metadata.tracingSystem[0]">{{metadata.tracingSystem[0]}}</span></td>
+
+                </tr>
+
+                <div class="checkbox">
+                    <label><span editable-checkbox="metadata.finished" e-title="Is metadata finished?">{{metadata.finished && "Metadata finished"|| "Metadata not finished"  }}</span>
+                </div>
+            </table>
+
+        </div>
+    </div>
+</form>
