@@ -1,6 +1,6 @@
 # LiterMate
-LiterMate tool
 
+#1. The DataBase
 
 ### 1.1.  Install MongoDB. 
 Follow the instructions: https://docs.mongodb.com/manual/administration/install-community/
@@ -103,3 +103,67 @@ If everything works well you should see the following response. Of course the `i
   `"collection": "To evaluate",`<br>
   `"usage": "Describing"`<br>
 `}`<br>
+
+#2. The Boot MicroServices
+Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
+
+**Pre-requisites**: mvn and git installed
+
+### 2.1. Download the code
+
+From the terminal type:<br>
+`git clone https://github.com/NeuroMorphoOrg/LiterMate.git`
+
+### 2.2. The properties file
+
+The properties file contains the configuration for the services, each of them connect to a database independently so you can have several different databases or one. In this case all of the are connected to `nmotest`.
+You can also update the server ports, just be aware that there are other services that may depend on these connections and you should update them accordingly (the Web Frontend & the LiteratureSearchService).
+
+`server.port= 8180`<br>
+`logging.level.org.springframework.web=ERROR`<br>
+`logging.level.o.n.o.drivers.http=ERROR`<br>
+`logging.level.org.neuromorpho=DEBUG`<br>
+`logging.file=./LiteratureMetadataServiceBoot.log`<br>
+`spring.data.mongodb.host=localhost`<br>
+`spring.data.mongodb.database=nmotest`<br>
+`spring.data.mongodb.port=27017`<br>
+
+### 2.3. Compile
+
+From the terminal type:<br>
+`cd LiteratureMetadataServiceBoot`<br>
+`mvn clean install`<br>
+
+You should see the following at the end:
+
+`[INFO] ------------------------------------------------------------------------`<br>
+`[INFO] BUILD SUCCESS`<br>
+`[INFO] ------------------------------------------------------------------------`<br>
+
+### 2.4. Launch
+`cd target`<br>
+`nohup java -jar LiteratureMetadataServiceBoot-1.0.jar &`<br>
+
+_**NOTE Although the service can be used on your local machine they are designed to run in a server. If you run them locally and restart your computer this step needs to be execute again. Same happens in a server. Servers are not that often rebooted, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
+
+### 2.5. Test the service is up & running
+Go to your browser and type: http://localhost:8180/literature/metadata/test
+
+You should see the following in the browser: `Metadata up & running!`
+
+### 2.6. Launch all of the other services
+
+Repeat the steps **2.2 to 2.5** for the services: LiteraturePubMedServiceBoot, LiteraturePortalServiceBoot, LiteratureServiceBoot
+
+URLs to test they are up & running:
+Go to your browser and type: http://localhost:8186/literature/pubmed/test
+Go to your browser and type: http://localhost:8189/literature/portal/test
+Go to your browser and type: http://localhost:8188/literature/test
+
+
+#3. The Fronted
+
+**Pre-requisites:** Apache web server.
+
+
+
