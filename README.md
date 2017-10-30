@@ -169,8 +169,8 @@ Go to your browser and type: http://localhost:8188/literature/test <br>
 
 Replace `/Library/WebServer/Documents/` with your apache folder in the following commands:
 
-`sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb`
-`sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb`
+`sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
+`sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 
 In your browser type: http://localhost/NMOLiteratureWeb/index.html
 
