@@ -17,11 +17,11 @@ This is needed if you want to use the automated search (Elsevier/ScienceDirect, 
 
 To create the data from the terminal:
 <br>
-`$ mongo`
+`mongo`
 <br>
-`$ use portal`
+`use portal`
 <br>
-`$ db.portal.insertMany([`<br>
+`db.portal.insertMany([`<br>
 `... {`<br>
 `...   "name": "PubMed",`<br>
 `...   "apiUrl": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils",`<br>
@@ -97,12 +97,12 @@ If everything works well you should see the following response. Of course the `i
 * `collection` is the current collection where we want the article to be saved. By default `To evaluate`, but you can configure the project to use different collections for other purposes.
 * `usage` is a label for the articles found using the keyword. You can add different labels to differentiate search types. 
 
-`$ db.keyword.insert(`<br>
+`db.keyword.insert(`<br>
 `{`<br>
-  `"name": "\"digitally reconstructed neuron\" AND \"filament tracer\"",`<br>
+  `"name": "\"reconstructed neuron\" AND neurolucida",`<br>
   `"collection": "To evaluate",`<br>
   `"usage": "Describing"`<br>
-`}`<br>
+`});`<br>
 
 ## 2. The Boot MicroServices
 Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
@@ -169,22 +169,74 @@ Go to your browser and type: http://localhost:8188/literature/test <br>
 
 Replace `/Library/WebServer/Documents/` with your apache folder in the following commands:
 
-`sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb`
-`sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb`
+`sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
+`sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 
 In your browser type: http://localhost/NMOLiteratureWeb/index.html
 
 *If you decide to change the name or the url project you will have to update the html links
 ### 3.2. Update metedata html to your desired metadata properties
 
-Edit NMOLiteratureWeb/article/metadata.html
+Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, do you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
+
+Lets update a name for a given tag. For example:
+
+ `<tr>`<br>
+    `<td><strong>Cell Type:</strong></td>`<br>
+    `<td><span editable-text="metadata.cellType">{{metadata.cellType}}</span></td>`<br>
+ `</tr>`<br>
+ 
+ Update Cell Type for your desired name and cellType too. Your new metadata tag will be saved in the DB with that name. You can add as many as you want.
+ 
+ The `metadataFinished` is a nice feature that allow you to remember if you had finished reviewing a paper. If it is set to false when you navigate to the Positive folder you will see a red flag that will remind that there is pending work.
 
 ### 3.3. Go to the Wiki to learn how to add an article manually
 
 
-
-
-
-
-
 ## 4. The Crontab Services
+
+Now that everything is set, it is fun to see how the Database populates from the Web page.
+
+### 4.1. Configuration file
+
+Because it is a microservice architecture, the services can run in different servers with different ips and dataBases. The search access 3 services: LiteratureServiceBoot, LiteraturePubMedServiceBoot, and LiteraturePortalServiceBoot. Remember to update the uris localhost to the desired server ip if you are not runing them locally.
+
+`endpoints.shutdown.enabled=true` <br>
+`server.port= 8087`<br>
+`logging.level.org.springframework.web=ERROR`<br>
+`logging.level.org.neuromorpho=DEBUG`<br>
+`logging.file=./LiteratureSearch.log`<br>
+`uriLiteratureService=http://localhost:8188/literature`<br>
+`uriPortalService=http://localhost:8189/literature`<br>
+`uriPubMedService=http://localhost:8186/literature/pubmed`<br>
+
+### 4.2. Clean and build the search service
+
+`cd LiteratureSearchService`<br>
+`mvn clean install`<br>
+
+You should see the following at the end:
+
+`[INFO] ------------------------------------------------------------------------`<br>
+`[INFO] BUILD SUCCESS`<br>
+`[INFO] ------------------------------------------------------------------------`<br>
+
+### 4.3. Launch
+`cd target`<br>
+
+You can launch it disociated from the terminal in background
+
+`nohup java -jar LiteratureSearchService-1.0.jar &`<br>
+
+Or launch it associated to the terminal in foreground to see how it works and its logs
+
+`java -jar LiteratureSearchService-1.0.jar`<br>
+
+
+### 4.4. Go to the browser & refresh
+
+You will see how the web populates. It is ready to use.
+
+
+
+
