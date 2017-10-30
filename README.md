@@ -232,6 +232,7 @@ Or launch it associated to the terminal in foreground to see how it works and it
 
 `java -jar LiteratureSearchService-1.0.jar`<br>
 
+Or add to the crontab
 
 ### 4.4. Go to the browser & refresh
 
