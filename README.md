@@ -181,10 +181,10 @@ Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported sin
 
 Lets update a name for a given tag. For example:
 
- `<tr>
-    <td><strong>Cell Type:</strong></td>
-    <td><span editable-text="metadata.cellType">{{metadata.cellType}}</span></td>
- </tr>`
+ `<tr>`<br>
+    `<td><strong>Cell Type:</strong></td>`<br>
+    `<td><span editable-text="metadata.cellType">{{metadata.cellType}}</span></td>`<br>
+ `</tr>`<br>
  
  Update Cell Type for your desired name and cellType too. Your new metadata tag will be saved in the DB with that name. You can add as many as you want.
  
@@ -212,7 +212,23 @@ Because it is a microservice architecture, the services can run in different ser
 
 ### 4.2. Clean and build the search service
 
-cd LiteratureMetadataServiceBoot
-mvn clean install
+`cd LiteratureSearchService`<br>
+`mvn clean install`<br>
+
+You should see the following at the end:
+
+`[INFO] ------------------------------------------------------------------------`<br>
+`[INFO] BUILD SUCCESS`<br>
+`[INFO] ------------------------------------------------------------------------`<br>
+
+### 4.3. Launch
+`cd target`<br>
+`nohup java -jar LiteratureSearchService-1.0.jar &`<br>
+
+### 4.4. Go to the browser & refresh
+
+You will see how the web populates.
+
+
 
 
