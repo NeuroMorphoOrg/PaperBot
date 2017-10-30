@@ -2,13 +2,13 @@
 
 ## 1. The DataBase
 
-### 1.1.  Install MongoDB. 
+### 1.1.  Install & launch MongoDB
 Follow the instructions: https://docs.mongodb.com/manual/administration/install-community/
  
-### 1.2. No schema needed.
+### 1.2. No schema needed
 Thanks to Spring framework no schemas for the database are needed to be created prior to use the tool.
 
-### 1.3. Upload the portals configuration to the **Portal Database**.
+### 1.3. Upload the portals configuration to the **Portal Database**
 
 This is needed if you want to use the automated search (Elsevier/ScienceDirect, Springer, Nature, Wiley, PubMed/PubMed Central, and GoogleScholar). The manual PubMed search does not use the **Portal Database** to work.
 
@@ -92,7 +92,7 @@ If everything works well you should see the following response. Of course the `i
 	`]`<br>
 `}`<br>
 
-### 1.4. Add some keyWords for the search.
+### 1.4. Add some keyWords for the search
 * `name` contains the keywords, where " " around the string is used for exact match if more than one word is used. Only AND operand is supported. In order to perform OR operator add more keywords to the Database.
 * `collection` is the current collection where we want the article to be saved. By default `To evaluate`, but you can configure the project to use different collections for other purposes.
 * `usage` is a label for the articles found using the keyword. You can add different labels to differentiate search types. 
@@ -163,7 +163,28 @@ Go to your browser and type: http://localhost:8188/literature/test <br>
 
 ## 3. The Fronted
 
-**Pre-requisites:** Apache web server.
+**Pre-requisites:** Apache web server installed & running
+
+### 3.1. Copy the frontend to apache folder & launch
+
+Replace `/Library/WebServer/Documents/` with your apache folder in the following commands:
+
+`sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb`
+`sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb`
+
+In your browser type: http://localhost/NMOLiteratureWeb/index.html
+
+*If you decide to change the name or the url project you will have to update the html links
+### 3.2. Update metedata html to your desired metadata properties
+
+Edit NMOLiteratureWeb/article/metadata.html
+
+### 3.3. Go to the Wiki to learn how to add an article manually
+
+
+
+
+
 
 
 ## 4. The Crontab Services
