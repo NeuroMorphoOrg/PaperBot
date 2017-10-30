@@ -7,29 +7,8 @@ angular.module('Articles').
             };
            
             $scope.usages = [
-                {value: 1, text: 'Describing'},
-                {value: 2, text: 'Using'},
-                {value: 3, text: 'Citing'},
-                {value: 4, text: 'About'}
+                {value: 1, text: 'Describing'}
             ];
-function statusListTransformer(row){
-        var status = [];
-        var nReconstructions = [];
-        if(row.get('currentStatusList') !== null){
-            for (var i=0; i<brainRegion.length; i++) {
-                 brainRegionArray.add(brainRegion[i].toString());
-            }
-            row.get('currentStatusList').forEach(function (element) {
-                status.push(element.specificDetails);
-                nReconstructions.push(element.nReconstructions);
-
-            });
-            row.put('status', status);
-            row.put('nReconstructions', nReconstructions);
-            row.remove('currentStatusList');
-            return row;
-      }
-     }
 
             $rootScope.id = $routeParams.id;
             $rootScope.usage = [];
