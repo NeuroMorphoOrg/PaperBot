@@ -17,11 +17,11 @@ This is needed if you want to use the automated search (Elsevier/ScienceDirect, 
 
 To create the data from the terminal:
 <br>
-`$ mongo`
+`mongo`
 <br>
-`$ use portal`
+`use portal`
 <br>
-`$ db.portal.insertMany([`<br>
+`db.portal.insertMany([`<br>
 `... {`<br>
 `...   "name": "PubMed",`<br>
 `...   "apiUrl": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils",`<br>
@@ -97,7 +97,7 @@ If everything works well you should see the following response. Of course the `i
 * `collection` is the current collection where we want the article to be saved. By default `To evaluate`, but you can configure the project to use different collections for other purposes.
 * `usage` is a label for the articles found using the keyword. You can add different labels to differentiate search types. 
 
-`$ db.keyword.insert(`<br>
+`db.keyword.insert(`<br>
 `{`<br>
   `"name": "\"digitally reconstructed neuron\" AND \"filament tracer\"",`<br>
   `"collection": "To evaluate",`<br>
