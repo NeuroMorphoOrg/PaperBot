@@ -99,7 +99,7 @@ If everything works well you should see the following response. Of course the `i
 
 `db.keyword.insert(`<br>
 `{`<br>
-  `"name": "\"digitally reconstructed neuron\" AND \"filament tracer\"",`<br>
+  `"name": "\"reconstructed neuron\" AND neurolucida",`<br>
   `"collection": "To evaluate",`<br>
   `"usage": "Describing"`<br>
 `});`<br>
@@ -195,7 +195,7 @@ Lets update a name for a given tag. For example:
 
 ## 4. The Crontab Services
 
-Now that everuything is set is fun to see from the Web page how the DB populates.
+Now that everything is set, it is fun to see how the Database populates from the Web page.
 
 ### 4.1. Configuration file
 
@@ -223,11 +223,19 @@ You should see the following at the end:
 
 ### 4.3. Launch
 `cd target`<br>
+
+You can launch it disociated from the terminal in background
+
 `nohup java -jar LiteratureSearchService-1.0.jar &`<br>
+
+Or launch it associated to the terminal in foreground to see how it works and its logs
+
+`java -jar LiteratureSearchService-1.0.jar`<br>
+
 
 ### 4.4. Go to the browser & refresh
 
-You will see how the web populates.
+You will see how the web populates. It is ready to use.
 
 
 
