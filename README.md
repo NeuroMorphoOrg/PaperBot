@@ -177,14 +177,39 @@ In your browser type: http://localhost/NMOLiteratureWeb/index.html
 *If you decide to change the name or the url project you will have to update the html links
 ### 3.2. Update metedata html to your desired metadata properties
 
-Edit NMOLiteratureWeb/article/metadata.html
+Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, do you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
+
+Lets update a name for a given tag. For example:
+
+ <tr>
+    <td><strong>Cell Type:</strong></td>
+    <td><span editable-text="metadata.cellType">{{metadata.cellType}}</span></td>
+ </tr>
+ 
+ Update Cell Type for your desired name and cellType too. Your new metadata tag will be saved in the DB with that name. You can add as many as you want.
+ 
+ The `metadataFinished` is a nice feature that allow you to remember if you had finished reviewing a paper. If it is set to false when you navigate to the Positive folder you will see a red flag that will remind that there is pending work.
 
 ### 3.3. Go to the Wiki to learn how to add an article manually
 
 
-
-
-
-
-
 ## 4. The Crontab Services
+
+Now that everuything is set is fun to see from the Web page how the DB populates.
+
+### 4.1. Configuration file
+
+Because it is a microservice architecture, the services can run in different servers with different ips and dataBases. The search access 3 services: LiteratureServiceBoot, LiteraturePubMedServiceBoot, and LiteraturePortalServiceBoot. Remember to update the uris localhost to the desired server ip if you are not runing them locally.
+
+`endpoints.shutdown.enabled=true`
+`server.port= 8087`
+`logging.level.org.springframework.web=ERROR`
+`logging.level.org.neuromorpho=DEBUG`
+`logging.file=./LiteratureSearch.log`
+`uriLiteratureService=http://localhost:8188/literature`
+`uriPortalService=http://localhost:8189/literature`
+`uriPubMedService=http://localhost:8186/literature/pubmed`
+
+### 4.2. Clean and build the search service
+
+
