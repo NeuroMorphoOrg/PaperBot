@@ -181,10 +181,10 @@ Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported sin
 
 Lets update a name for a given tag. For example:
 
- <tr>
+ `<tr>
     <td><strong>Cell Type:</strong></td>
     <td><span editable-text="metadata.cellType">{{metadata.cellType}}</span></td>
- </tr>
+ </tr>`
  
  Update Cell Type for your desired name and cellType too. Your new metadata tag will be saved in the DB with that name. You can add as many as you want.
  
@@ -201,15 +201,18 @@ Now that everuything is set is fun to see from the Web page how the DB populates
 
 Because it is a microservice architecture, the services can run in different servers with different ips and dataBases. The search access 3 services: LiteratureServiceBoot, LiteraturePubMedServiceBoot, and LiteraturePortalServiceBoot. Remember to update the uris localhost to the desired server ip if you are not runing them locally.
 
-`endpoints.shutdown.enabled=true`
-`server.port= 8087`
-`logging.level.org.springframework.web=ERROR`
-`logging.level.org.neuromorpho=DEBUG`
-`logging.file=./LiteratureSearch.log`
-`uriLiteratureService=http://localhost:8188/literature`
-`uriPortalService=http://localhost:8189/literature`
-`uriPubMedService=http://localhost:8186/literature/pubmed`
+`endpoints.shutdown.enabled=true` <br>
+`server.port= 8087`<br>
+`logging.level.org.springframework.web=ERROR`<br>
+`logging.level.org.neuromorpho=DEBUG`<br>
+`logging.file=./LiteratureSearch.log`<br>
+`uriLiteratureService=http://localhost:8188/literature`<br>
+`uriPortalService=http://localhost:8189/literature`<br>
+`uriPubMedService=http://localhost:8186/literature/pubmed`<br>
 
 ### 4.2. Clean and build the search service
+
+cd LiteratureMetadataServiceBoot
+mvn clean install
 
 
