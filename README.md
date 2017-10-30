@@ -102,7 +102,7 @@ If everything works well you should see the following response. Of course the `i
   `"name": "\"digitally reconstructed neuron\" AND \"filament tracer\"",`<br>
   `"collection": "To evaluate",`<br>
   `"usage": "Describing"`<br>
-`}`<br>
+`});`<br>
 
 ## 2. The Boot MicroServices
 Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
