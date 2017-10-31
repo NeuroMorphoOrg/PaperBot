@@ -4,6 +4,7 @@ LiterMate is a configurable, modular, open-source web-based solution to automati
 Without user interactions, LiterMate retrieves and stores article information (full reference, corresponding email contact, and full-text keyword hits) based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, HighWire, PubMed/PubMedCentral, and GoogleScholar.
 Although different portals require different search configurations, the common interface of LiterMate unifies the process from the user perspective. Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance to the project goals and seamless annotation of suitable metadata dimensions.
 
+
 ## 1. DataBase
 
 ### 1.1. Install & launch MongoDB
@@ -167,7 +168,7 @@ Go to your browser and type: http://localhost:8188/literature/test <br>
 
 ## 3. Fronted
 
-**Pre-requisites:** Apache web server installed & running
+**Pre-requisites:** Apache web server installed & running: https://httpd.apache.org
 
 ### 3.1. Copy the frontend to apache folder & launch
 
