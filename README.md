@@ -1,19 +1,23 @@
 # LiterMate
 
-## 1. The DataBase
+LiterMate is a configurable, modular, open-source web-based solution to automatically find and efficiently annotate peer-reviewed publications based on periodic full-text searches across publisher portals.
+Without user interactions, LiterMate retrieves and stores article information (full reference, corresponding email contact, and full-text keyword hits) based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, HighWire, PubMed/PubMedCentral, and GoogleScholar.
+Although different portals require different search configurations, the common interface of LiterMate unifies the process from the user perspective. Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance to the project goals and seamless annotation of suitable metadata dimensions.
 
-### 1.1.  Install & launch MongoDB
+## 1. DataBase
+
+### 1.1. Install & launch MongoDB
 Follow the instructions: https://docs.mongodb.com/manual/administration/install-community/
  
 ### 1.2. No schema needed
-Thanks to Spring framework no schemas for the database are needed to be created prior to use the tool.
+Thanks to Spring framework no schemas for the database are needed to be created prior to using the tool.
 
 ### 1.3. Upload the portals configuration to the **Portal Database**
 
-This is needed if you want to use the automated search (Elsevier/ScienceDirect, Springer, Nature, Wiley, PubMed/PubMed Central, and GoogleScholar). The manual PubMed search does not use the **Portal Database** to work.
+This is needed if you want to use the automated search (Elsevier/ScienceDirect, Springer, Nature, Wiley, PubMed/PubMed Central, and GoogleScholar). The manual PubMed search does not use the **Portal Database**.
 
-* The `searchPeriod` is defined in days. 
-* `active` can be set to true if you want to launch the concrete portal or false otherwise. For example, you may want to launch only one of the portal for a large range and set the other to false.
+* `searchPeriod` is defined in days. 
+* `active` can be set to true if you want to launch the specific portal or false otherwise. For example, you may want to launch only one of the portal for a given time range and set the others to false.
 
 To create the data from the terminal:
 <br>
@@ -92,9 +96,9 @@ If everything works well you should see the following response. Of course the `i
 	`]`<br>
 `}`<br>
 
-### 1.4. Add some keyWords for the search
-* `name` contains the keywords, where " " around the string is used for exact match if more than one word is used. Only AND operand is supported. In order to perform OR operator add more keywords to the Database.
-* `collection` is the current collection where we want the article to be saved. By default `To evaluate`, but you can configure the project to use different collections for other purposes.
+### 1.4. Add keywords for the search
+* `name` contains the keywords, where " " around the string is used for exact match if inputting more than one word and to avoid approximate string matching. Only AND operand is supported. In order to perform OR operation add more keywords to the Database.
+* `collection` is the group in wich the article will be saved. By default this is set to the `To evaluate` group, but you can configure the project to use different groups for other purposes.
 * `usage` is a label for the articles found using the keyword. You can add different labels to differentiate search types. 
 
 `db.keyword.insert(`<br>
@@ -104,20 +108,20 @@ If everything works well you should see the following response. Of course the `i
   `"usage": "Describing"`<br>
 `});`<br>
 
-## 2. The Boot MicroServices
+## 2. Boot MicroServices
 Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
 
-**Pre-requisites**: mvn and git installed
+**Pre-requisites**: Maven to compile and build the code: https://maven.apache.org/install.html
 
 ### 2.1. Download the code
 
-From the terminal type:<br>
+Download the code from git from the download button or you can use the terminal if git is installed in your system typing the following:<br>
 `git clone https://github.com/NeuroMorphoOrg/LiterMate.git`
 
 ### 2.2. The properties file
 
-The properties file contains the configuration for the services, each of them connect to a database independently so you can have several different databases or one. In this case all of the are connected to `nmotest`.
-You can also update the server ports, just be aware that there are other services that may depend on these connections and you should update them accordingly (the Web Frontend & the LiteratureSearchService).
+The properties file contains the configuration for the services; each of the services connects to a database independently so you can have several different databases or one. In this case all of the services are connected to `nmotest`.
+You can also update the server ports; just be aware that there are other services that may depend on these connections (the Web Frontend & the LiteratureSearchService) and you should update them accordingly.
 
 `server.port= 8180`<br>
 `logging.level.org.springframework.web=ERROR`<br>
@@ -144,7 +148,7 @@ You should see the following at the end:
 `cd target`<br>
 `nohup java -jar LiteratureMetadataServiceBoot-1.0.jar &`<br>
 
-_**NOTE Although the service can be used on your local machine they are designed to run in a server. If you run them locally and restart your computer this step needs to be execute again. Same happens in a server. Servers are not that often rebooted, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
+_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
 
 ### 2.5. Test the service is up & running
 Go to your browser and type: http://localhost:8180/literature/metadata/test
@@ -161,7 +165,7 @@ Go to your browser and type: http://localhost:8189/literature/portal/test <br>
 Go to your browser and type: http://localhost:8188/literature/test <br>
 
 
-## 3. The Fronted
+## 3. Fronted
 
 **Pre-requisites:** Apache web server installed & running
 
@@ -174,10 +178,10 @@ Replace `/Library/WebServer/Documents/` with your apache folder in the following
 
 In your browser type: http://localhost/NMOLiteratureWeb/index.html
 
-*If you decide to change the name or the url project you will have to update the html links
-### 3.2. Update metedata html to your desired metadata properties
+If you decide to change the name or the url project you will have to update the html links
+### 3.2. Update metadata html to your desired metadata properties
 
-Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, do you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
+Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, so you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
 
 Lets update a name for a given tag. For example:
 
@@ -186,20 +190,20 @@ Lets update a name for a given tag. For example:
     `<td><span editable-text="metadata.cellType">{{metadata.cellType}}</span></td>`<br>
  `</tr>`<br>
  
- Update Cell Type for your desired name and cellType too. Your new metadata tag will be saved in the DB with that name. You can add as many as you want.
+ Update Cell Type for your desired name and cellType too. Your new metadata tag will be saved in the DB with that name. You can add as many `<tr>` groups as you want.
  
- The `metadataFinished` is a nice feature that allow you to remember if you had finished reviewing a paper. If it is set to false when you navigate to the Positive folder you will see a red flag that will remind that there is pending work.
+ The `metadataFinished` is a nice feature that allows you to remember if you had finished reviewing a paper. If it is set to false, when you navigate to the Positive group of articles a red flag will remind you that there is pending work.
 
 ### 3.3. Go to the Wiki to learn how to add an article manually
 
 
-## 4. The Crontab Services
+## 4. Crontab Services
 
 Now that everything is set, it is fun to see how the Database populates from the Web page.
 
 ### 4.1. Configuration file
 
-Because it is a microservice architecture, the services can run in different servers with different ips and dataBases. The search access 3 services: LiteratureServiceBoot, LiteraturePubMedServiceBoot, and LiteraturePortalServiceBoot. Remember to update the uris localhost to the desired server ip if you are not runing them locally.
+Because it is a microservice architecture, the services can run in different servers with different IPs and dataBases. The article search connects to 3 services: LiteratureServiceBoot, LiteraturePubMedServiceBoot, and LiteraturePortalServiceBoot. Remember to update the URLs localhost to the desired server IP if you are not running them locally.
 
 `endpoints.shutdown.enabled=true` <br>
 `server.port= 8087`<br>
@@ -224,7 +228,7 @@ You should see the following at the end:
 ### 4.3. Launch
 `cd target`<br>
 
-You can launch it disociated from the terminal in background
+You can launch it dissociated from the terminal in background
 
 `nohup java -jar LiteratureSearchService-1.0.jar &`<br>
 
