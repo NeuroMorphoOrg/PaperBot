@@ -5,7 +5,7 @@ angular.module('Articles').
                 status: 1,
                 usage: [1]
             };
-           
+
             $scope.usages = [
                 {value: 1, text: 'Describing'}
             ];
@@ -80,16 +80,19 @@ angular.module('Articles').
 
             };
 
-           
+
             $scope.getPubMed = function () {
                 $rootScope.articleStatus = 'To evaluate';
                 $scope.article.searchPortal = {};
                 $scope.article.searchPortal.source = 'manual';
-                articlesCommunicationService.getObjectId().then(function (data) {
-                    $rootScope.id = data.id;
-                }).catch(function () {
-                    $scope.error = 'Error generating id for the new article';
-                });
+                if ($rootScope.id == null) {
+
+                    articlesCommunicationService.getObjectId().then(function (data) {
+                        $rootScope.id = data.id;
+                    }).catch(function () {
+                        $scope.error = 'Error generating id for the new article';
+                    });
+                }
                 $scope.error = '';
                 articlesCommunicationService.getPubMed($scope.article.pmid).then(function (data) {
                     $scope.article.title = data.title;
@@ -123,7 +126,7 @@ angular.module('Articles').
                 return selected.length ? selected.join(', ') : 'Not set';
             };
 
-           
+
             $scope.opened = {};
 
             $scope.open = function ($event, elementOpened) {
