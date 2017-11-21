@@ -162,7 +162,7 @@ Repeat the steps **2.2 to 2.5** for the services: LiteraturePubMedServiceBoot, L
 
 URLs to test they are up & running: <br>
 Go to your browser and type: http://localhost:8186/literature/pubmed/test <br>
-Go to your browser and type: http://localhost:8189/literature/portal/test <br>
+Go to your browser and type: http://localhost:8189/literature/portals/test <br>
 Go to your browser and type: http://localhost:8188/literature/test <br>
 
 
