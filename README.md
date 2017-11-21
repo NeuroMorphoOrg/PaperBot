@@ -175,7 +175,11 @@ Go to your browser and type: http://localhost:8188/literature/test <br>
 Apache default directory is: <br>
 	- MacOS: `/Library/WebServer/Documents/` <br>
 	- Linux: `/var/www/html` <br>
-	- Windows: `C:\Program Files\Apache Software Foundation\Apache2.2\htdocs` <br>
+	- Windows v2.2 and up (replace 2.2 with the version you had installed):
+	`C:\Program Files\Apache Software Foundation\Apache2.2\htdocs` <br>
+	- Windows v2:
+	`C:\Program Files\Apache Group\Apache2\htdocs` <br>
+	
 
 Replace from the following commands `/Library/WebServer/Documents/` with your apache folder in the following commands:
 
