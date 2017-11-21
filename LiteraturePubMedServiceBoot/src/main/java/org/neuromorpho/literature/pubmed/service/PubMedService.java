@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.JAXBException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -76,7 +75,7 @@ public class PubMedService {
         return article;
     }
 
-    private void fillAuthorList(String pmid, Article article) throws JAXBException {
+    private void fillAuthorList(String pmid, Article article) {
         RestTemplate restTemplate = new RestTemplate();
 
         String xml = restTemplate.getForObject(
