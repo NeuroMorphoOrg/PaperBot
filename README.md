@@ -112,17 +112,22 @@ If everything works well you should see the following response. Of course the `i
 ## 2. Boot MicroServices
 Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
 
-**Pre-requisites**: Maven to compile and build the code: https://maven.apache.org/install.html
+**Pre-requisites**: Maven to compile and build the code: https://maven.apache.org/install.html and Java 8
+
 
 ### 2.1. Download the code
 
 Download the code from git from the download button or you can use the terminal if git is installed in your system typing the following:<br>
 `git clone https://github.com/NeuroMorphoOrg/LiterMate.git`
 
-### 2.2. The properties file
+### 2.2. The properties files
 
-The properties file contains the configuration for the services; each of the services connects to a database independently so you can have several different databases or one. In this case all of the services are connected to `nmotest`.
-You can also update the server ports; just be aware that there are other services that may depend on these connections (the Web Frontend & the LiteratureSearchService) and you should update them accordingly.
+Each of the services contain a properties file with its own configuration. The location of the properties files:<br>
+`./LiteratureMetadataServiceBoot/src/main/java/application.properties` <br> `./LiteraturePortalServiceBoot/src/main/java/application.properties` <br> `./LiteraturePubMedServiceBoot/src/main/java/application.properties` <br> `./LiteratureSearchService/src/main/java/application.properties` <br>
+`./LiteratureServiceBoot/src/main/java/application.properties` <br>
+
+Each of the services connects to a database independently so you can have several different databases or one. In this case all of the services are connected to `nmotest`.
+You can update the server ports; just be aware that there are other services that may depend on these connections (the Web Frontend & the LiteratureSearchService) and you should update them accordingly.
 
 `server.port= 8180`<br>
 `logging.level.org.springframework.web=ERROR`<br>
@@ -149,7 +154,7 @@ You should see the following at the end:
 `cd target`<br>
 `nohup java -jar LiteratureMetadataServiceBoot-1.0.jar &`<br>
 
-_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
+_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
 
 ### 2.5. Test the service is up & running
 Go to your browser and type: http://localhost:8180/literature/metadata/test
@@ -162,7 +167,7 @@ Repeat the steps **2.2 to 2.5** for the services: LiteraturePubMedServiceBoot, L
 
 URLs to test they are up & running: <br>
 Go to your browser and type: http://localhost:8186/literature/pubmed/test <br>
-Go to your browser and type: http://localhost:8189/literature/portal/test <br>
+Go to your browser and type: http://localhost:8189/literature/portals/test <br>
 Go to your browser and type: http://localhost:8188/literature/test <br>
 
 
@@ -172,7 +177,16 @@ Go to your browser and type: http://localhost:8188/literature/test <br>
 
 ### 3.1. Copy the frontend to apache folder & launch
 
-Replace `/Library/WebServer/Documents/` with your apache folder in the following commands:
+Apache default directory is: <br>
+	- MacOS: `/Library/WebServer/Documents/` <br>
+	- Linux: `/var/www/html` <br>
+	- Windows v2.2 and up (replace 2.2 with the version you had installed):
+	`C:\Program Files\Apache Software Foundation\Apache2.2\htdocs` <br>
+	- Windows v2:
+	`C:\Program Files\Apache Group\Apache2\htdocs` <br>
+	
+
+Replace from the following commands `/Library/WebServer/Documents/` with your apache folder in the following commands:
 
 `sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 `sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
@@ -180,6 +194,7 @@ Replace `/Library/WebServer/Documents/` with your apache folder in the following
 In your browser type: http://localhost/NMOLiteratureWeb/index.html
 
 If you decide to change the name or the url project you will have to update the html links
+
 ### 3.2. Update metadata html to your desired metadata properties
 
 Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, so you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
