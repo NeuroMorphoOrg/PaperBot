@@ -112,7 +112,8 @@ If everything works well you should see the following response. Of course the `i
 ## 2. Boot MicroServices
 Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
 
-**Pre-requisites**: Maven to compile and build the code: https://maven.apache.org/install.html
+**Pre-requisites**: Maven to compile and build the code: https://maven.apache.org/install.html and ##Java 8
+
 
 ### 2.1. Download the code
 
