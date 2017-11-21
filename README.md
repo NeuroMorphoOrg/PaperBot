@@ -149,7 +149,7 @@ You should see the following at the end:
 `cd target`<br>
 `nohup java -jar LiteratureMetadataServiceBoot-1.0.jar &`<br>
 
-_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
+_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
 
 ### 2.5. Test the service is up & running
 Go to your browser and type: http://localhost:8180/literature/metadata/test
@@ -172,7 +172,12 @@ Go to your browser and type: http://localhost:8188/literature/test <br>
 
 ### 3.1. Copy the frontend to apache folder & launch
 
-Replace `/Library/WebServer/Documents/` with your apache folder in the following commands:
+Apache default directory is: 
+	MacOS: `/Library/WebServer/Documents/`
+	Linux: `/var/www/html`
+	Windows: `C:\Program Files\Apache Software Foundation\Apache2.2\htdocs`
+
+Replace from the following commands `/Library/WebServer/Documents/` with your apache folder in the following commands:
 
 `sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 `sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
@@ -180,6 +185,7 @@ Replace `/Library/WebServer/Documents/` with your apache folder in the following
 In your browser type: http://localhost/NMOLiteratureWeb/index.html
 
 If you decide to change the name or the url project you will have to update the html links
+
 ### 3.2. Update metadata html to your desired metadata properties
 
 Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, so you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
