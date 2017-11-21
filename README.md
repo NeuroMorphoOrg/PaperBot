@@ -119,10 +119,14 @@ Microservices run an embedded tomcat using Spring Boot (.jar). All of them are i
 Download the code from git from the download button or you can use the terminal if git is installed in your system typing the following:<br>
 `git clone https://github.com/NeuroMorphoOrg/LiterMate.git`
 
-### 2.2. The properties file
+### 2.2. The properties files
 
-The properties file contains the configuration for the services; each of the services connects to a database independently so you can have several different databases or one. In this case all of the services are connected to `nmotest`.
-You can also update the server ports; just be aware that there are other services that may depend on these connections (the Web Frontend & the LiteratureSearchService) and you should update them accordingly.
+Each of the services contain a properties file with its own configuration. The location of the properties files:<br>
+`./LiteratureMetadataServiceBoot/src/main/java/application.properties` <br> `./LiteraturePortalServiceBoot/src/main/java/application.properties` <br> `./LiteraturePubMedServiceBoot/src/main/java/application.properties` <br> `./LiteratureSearchService/src/main/java/application.properties` <br>
+`./LiteratureServiceBoot/src/main/java/application.properties` <br>
+
+Each of the services connects to a database independently so you can have several different databases or one. In this case all of the services are connected to `nmotest`.
+You can update the server ports; just be aware that there are other services that may depend on these connections (the Web Frontend & the LiteratureSearchService) and you should update them accordingly.
 
 `server.port= 8180`<br>
 `logging.level.org.springframework.web=ERROR`<br>
