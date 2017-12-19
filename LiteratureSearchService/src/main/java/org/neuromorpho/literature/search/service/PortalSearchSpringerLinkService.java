@@ -37,6 +37,7 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
         Integer page = 1;
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
         RestTemplate restTemplate = new RestTemplate();
+        this.searchPortal = new Search(this.portal.getName(), this.keyWord);
 
         /*
          * Springer incorrectly returning media type html inestead of json
@@ -62,7 +63,6 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
                     + ")&p=100&s=" + page
                     + "&api_key=" + this.token;
             log.debug("API retrieving from URI: " + uri);
-            this.searchPortal = new Search(this.portal.getName(), this.keyWord);
             page++;
             Map<String, Object> result = restTemplate.getForObject(uri, Map.class);
 
