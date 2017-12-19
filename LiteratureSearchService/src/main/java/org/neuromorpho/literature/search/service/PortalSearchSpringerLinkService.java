@@ -5,229 +5,123 @@
  */
 package org.neuromorpho.literature.search.service;
 
-import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import java.util.Map;
+import org.neuromorpho.literature.search.communication.ArticleResponse;
+import org.neuromorpho.literature.search.model.article.Article;
 import org.neuromorpho.literature.search.model.article.Author;
+import org.neuromorpho.literature.search.model.article.Search;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PortalSearchSpringerLinkService extends PortalSearch {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    @Value("${springerToken}")
+    private String token;
+
     @Override
-    protected void searchPage() {
-        try {
-            DateFormat yearFormat = new SimpleDateFormat("yyyy");
+    public void searchForTitlesApi() {
+        Integer page = 1;
+        DateFormat yearFormat = new SimpleDateFormat("yyyy");
+        RestTemplate restTemplate = new RestTemplate();
 
-            List<String> queryParameterList = new ArrayList<>();
-            queryParameterList.add("query=" + this.keyWord);
-            queryParameterList.add("facet-start-year=" + yearFormat.format(this.startDate.getTime()));
-            queryParameterList.add("facet-end-year=" + yearFormat.format(this.endDate.getTime()));
-            queryParameterList.add("date-facet-mode=between");
+        /*
+         * Springer incorrectly returning media type html inestead of json
+         */
+        List<HttpMessageConverter<?>> mc = restTemplate.getMessageConverters();
+        // Add JSON message handler
+        MappingJackson2HttpMessageConverter json = new MappingJackson2HttpMessageConverter();
+        List<MediaType> supportedMediaTypes = new ArrayList();
+        supportedMediaTypes.add(MediaType.TEXT_HTML);
+        // Add default media type in case marketplace uses incorrect MIME type, otherwise
+        // Spring refuses to process it, even if its valid JSON
+        json.setSupportedMediaTypes(supportedMediaTypes);
+        mc.add(json);
+        restTemplate.setMessageConverters(mc);
+        /*
+        * Springer incorrectly returning media type html inestead of json
+         */
+        Integer iterations = 1;
+        do {//iterate over pages
+            String uri = this.portal.getApiUrl()
+                    + "q=(" + this.keyWord
+                    + "AND year:" + yearFormat.format(this.startDate.getTime())
+                    + ")&p=100&s=" + page
+                    + "&api_key=" + this.token;
+            log.debug("API retrieving from URI: " + uri);
+            this.searchPortal = new Search(this.portal.getName(), this.keyWord);
+            page++;
+            Map<String, Object> result = restTemplate.getForObject(uri, Map.class);
 
-            String queyParamsStr = "";
-            for (String queryParameter : queryParameterList) {
-                queyParamsStr = queyParamsStr + "&" + queryParameter;
+            ArrayList<Map> nResultsMap = (ArrayList) result.get("result");
+            String totalStr = (String) nResultsMap.get(0).get("total");
+            Integer total = Integer.parseInt(totalStr);
+            String pageLengthStr = (String) nResultsMap.get(0).get("pageLength");
+            Integer pageLength = Integer.parseInt(pageLengthStr);
+            iterations = total / pageLength;
+            log.debug("Articles Found : " + total);
+
+            ArrayList<Map> infoList = (ArrayList) result.get("records");
+            for (Map info : infoList) {
+                Article article = new Article();
+                String title = (String) info.get("title");
+                article.setTitle(title);
+                article.setDoi((String) info.get("doi"));
+                article.setJournal((String) info.get("publicationName"));
+
+                ArrayList<Map> urlListMap = (ArrayList) info.get("url");
+                article.setLink((String) urlListMap.get(0).get("value"));
+
+                String dateStr = (String) info.get("publicationDate");
+                try {
+                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                    article.setPublishedDate(format.parse(dateStr));
+                } catch (ParseException ex) {
+                    log.error("Date error:" + dateStr + " for title: " + title);
+                }
+                ArrayList<Map> authorListMap = (ArrayList) info.get("creators");
+
+                List<Author> authorList = new ArrayList();
+                for (Map authorMap : authorListMap) {
+                    String completeName = (String) authorMap.get("creator");
+                    String[] name = completeName.split(", ");
+                    Author author = new Author(name[1] + " " + name[0], null);
+                    authorList.add(author);
+                }
+                article.setAuthorList(authorList);
+                article.setAbstractText((String) info.get("abstract"));
+
+                //call pubmed to retrieve pubmedID
+                String pmid = pubMedConnection.findTitleFromPMID(title, "pubmed");
+                if (pmid == null) {
+                    pmid = pubMedConnection.findTitleFromPMID(title, "pmc");
+                }
+                if (pmid != null) {
+                    article.setPmid(pmid);
+                }
+                log.debug(article.toString());
+
+                // calling rest to save the article & updating the portal search values
+                ArticleResponse response = literatureConnection.saveArticle(article, Boolean.FALSE, this.collection);
+                log.debug(searchPortal.toString());
+
+                literatureConnection.saveSearchPortal(response.getId(), this.searchPortal);
             }
-            String urlFinal = this.portal.getUrl() + "?" + queyParamsStr;
-            log.debug("Accessing portal url: " + urlFinal);
-            this.searchDoc = Jsoup.connect(urlFinal)
-                    .timeout(30 * 1000)
-                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-                    .userAgent("Chrome").get();
-        } catch (IOException ex) {
-            log.error("Exception trying to load the url:" + this.portal.getUrl());
-        }
-    }
+        } while (iterations > 0);
 
-    @Override
-    protected Elements findArticleList() {
-        Elements articleList = this.searchDoc.select("ol[id=results-list] > li");
-        return articleList;
-    }
-
-    @Override
-    protected String fillTitle(Element articleData) {
-        Element elem = articleData.select("h2 > a[class=title]").first();
-        String articleLink = elem.attr("href");
-        this.article.setTitle(elem.text());
-        return this.portal.getBase() + articleLink;
-    }
-
-    @Override
-    protected void fillJournal(Element articleData, Element articlePage) {
-        fillJournal1(articlePage);
-        if (this.article.getJournal() == null) {
-            fillJournal2(articlePage);
-        }
-        if (this.article.getJournal() == null) {
-            fillBook(articlePage);
-        }
-    }
-
-    private void fillJournal1(Element articlePage) {
-        Element elem = articlePage.select("meta[name=citation_journal_title]").first();
-        if (elem != null) {
-            this.article.setJournal(elem.attr("content"));
-        }
-    }
-
-    // For inaccessible articles
-    private void fillJournal2(Element articlePage) {
-        Element elem = articlePage.select("p[class=BookTitle] > a").first();
-        if (elem != null) {
-            this.article.setJournal(elem.text());
-        }
-    }
-
-    private void fillBook(Element articlePage) {
-        Element elem = articlePage.select("meta[name=citation_inbook_title]").first();
-        if (elem != null) {
-            this.article.setJournal(elem.attr("content"));
-        }
-    }
-
-    @Override
-    protected void fillAuthorList(Element articleData, Element articlePage) {
-        List<Author> authorList = new ArrayList();
-        Elements elemList = articlePage.select("div[class=authors__list] > ul > li");
-
-        for (Element elem : elemList) {
-            Element authorName = elem.select("span[class=authors__name]").first();
-            Elements contactEmail = elem.select("span[class=author-information] a[class=gtm-email-author]");
-            String contactEmailStr = null;
-            if (contactEmail.size() > 0) {
-                contactEmailStr = contactEmail.get(0).attr("href").split(":")[1];
-            }
-            Author author = new Author(authorName.text(), contactEmailStr);
-            authorList.add(author);
-        }
-        this.article.setAuthorList(authorList);
-    }
-
-    @Override
-    protected void fillPublishedDate(Element articleData, Element articlePage) {
-        this.fillPublishedDate1(articlePage);
-        if (article.getPublishedDate() == null) {
-            this.fillPublishedDate2(articlePage);
-        }
-        if (article.getPublishedDate() == null) {
-            this.fillPublishedDate3(articlePage);
-        }
-
-    }
-
-    private void fillPublishedDate1(Element articlePage) {
-        Element elem = articlePage.select("meta[name=citation_online_date]").first();
-        if (elem != null) {
-            Date publishedDate = this.tryParseDate(elem.attr("content"));
-            this.article.setPublishedDate(publishedDate);
-        }
-    }
-
-    private void fillPublishedDate2(Element articlePage) {
-        Element elem = articlePage.select("span[class=version-date] > time").first();
-        if (elem != null) {
-
-            Date publishedDate = this.tryParseDate(elem.text());
-            this.article.setPublishedDate(publishedDate);
-        }
-    }
-
-    private void fillPublishedDate3(Element articlePage) {
-        Element elem = articlePage.select("dd[class=article-dates__first-online] > time").first();
-        if (elem != null) {
-            Date publishedDate = this.tryParseDate(elem.attr("datetime"));
-            this.article.setPublishedDate(publishedDate);
-        }
-
-    }
-
-    @Override
-    protected void fillDoi(Element articleData, Element articlePage) {
-        fillDoi1(articlePage);
-        if (article.getDoi() == null) {
-            fillDoi2(articlePage);
-        }
-
-    }
-
-    private void fillDoi1(Element articlePage) {
-        Element elem = articlePage.select("meta[name=citation_doi]").first();
-        if (elem != null) {
-            article.setDoi(elem.attr("content"));
-        }
-
-    }
-
-    private void fillDoi2(Element articlePage) {
-        Element elem = articlePage.select("dd[@class=doi]").first();
-        if (elem != null) {
-            article.setDoi(elem.text());
-        }
-    }
-
-    @Override
-    protected void fillLinks(Element articleData, Element articlePage) {
-        this.fillLink(articlePage);
-        this.fillSupLinks(articlePage);
-    }
-
-    private void fillLink(Element articlePage) {
-        Element element = articlePage.select("meta[name=citation_pdf_url]").first();
-        this.searchPortal.setLink(element.attr("content"));
-    }
-
-    private void fillSupLinks(Element articlePage) {
-        Elements supplementaryLinkElementList = articlePage.select("section[id=SupplementaryMaterial] a");
-        log.debug("Number of supplementary links: " + supplementaryLinkElementList.size());
-//        for (Element supplementaryLinkElement : supplementaryLinkElementList) {
-//            String supplementaryLink = supplementaryLinkElement.attr("href");
-//            log.debug(supplementaryLink);
-//            this.searchPortal.setSupplementaryLink(supplementaryLink);
-//        }
-    }
-
-    @Override
-    protected Boolean loadNextPage() {
-        Boolean nextPage = Boolean.FALSE;
-        try {
-            Elements linkList = this.searchDoc.select("div[class=functions-bar functions-bar-bottom] a[class=next]");
-            if (linkList != null && !linkList.isEmpty()) {
-                String link = linkList.get(linkList.size() - 1).attr("href");
-                this.searchDoc = Jsoup.connect(this.portal.getBase() + link)
-                        .timeout(30 * 1000)
-                        .userAgent("Chrome")
-                        .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8").get();
-                nextPage = Boolean.TRUE;
-            }
-        } catch (IOException ex) {
-            log.error("Exception loading next page", ex);
-        }
-        return nextPage;
-    }
-
-    @Override
-    protected void fillIsAccessible(Element articleData, Element articlePage) {
-        Element link = articlePage.select("form[id=getaccess-webshop]").first();
-        if (link != null) {
-            this.inaccessible = Boolean.TRUE;
-        }
-    }
-
-    @Override
-    protected void searchForTitlesApi() {
-        throw new UnsupportedOperationException("Not needed if accessing through web and not API");
     }
 
 }
