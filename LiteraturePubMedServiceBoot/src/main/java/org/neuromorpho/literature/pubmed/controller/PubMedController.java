@@ -25,19 +25,35 @@ public class PubMedController {
         return "PubMed up & running!";
     }
 
-     /*
+    /*
      * Retrieves article data from PubMed based in the PMID provided
      */
     @CrossOrigin
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Article retrievePubMedArticleData(
             @RequestParam(required = true) String pmid,
-            @RequestParam(required = true) String db) 
+            @RequestParam(required = true) String db)
             throws Exception {
         log.debug("Calling pubmed with pmid: " + pmid);
         Article article = pubMedService.retrievePubMedArticleData(pmid, db);
         log.debug("Data from pubmed: " + article.toString());
         return article;
+
+    }
+
+    /*
+     * Retrieves article data from PubMed based in the PMID provided
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/pmid", method = RequestMethod.GET)
+    public String retrievePMIDFromTitle(
+            @RequestParam(required = true) String title,
+            @RequestParam(required = true) String db)
+            throws Exception {
+        log.debug("Calling pubmed with title: " + title);
+        String pmid = pubMedService.retrievePMIDFromTitle(title, db);
+        log.debug("PMID from pubmed: " + pmid);
+        return pmid;
 
     }
 

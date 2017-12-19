@@ -1,5 +1,6 @@
 package org.neuromorpho.literature.pubmed.service;
 
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,6 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+import org.apache.lucene.search.spell.JaroWinklerDistance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.xml.sax.InputSource;
 
 @Service
 public class PubMedService {
@@ -29,11 +34,61 @@ public class PubMedService {
     private String uri;
 
     public Article retrievePubMedArticleData(String pmid, String db) throws Exception {
-        log.debug("Retrieveng data from PubMed for article pmid: " + pmid);
         Article article = this.fillArticleData(pmid, db);
         this.fillAuthorList(pmid, article);
         return article;
 
+    }
+
+    public String retrievePMIDFromTitle(String title, String db) throws Exception {
+        String pmid = "";
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = uri + "/esearch.fcgi?"
+                + "db=" + db
+                + "&retmode=json"
+                + "&term=" + title
+                + "&field=title";
+        log.debug("Accessing " + url);
+
+        Map<String, Object> pmidMap = restTemplate.getForObject(
+                url,
+                Map.class);
+        Map result = (HashMap) pmidMap.get("esearchresult");
+        ArrayList<String> uidList = (ArrayList) result.get("idlist");
+
+        for (String uid : uidList) {
+            String xmlUri = uri + "/esummary.fcgi?"
+                    + "db=" + db
+                    + "&retmode=xml"
+                    + "&version=2.0"
+                    + "&id=" + uid;
+            log.debug("Accessing " + xmlUri);
+
+            String articleXML = restTemplate.getForObject(
+                    xmlUri,
+                    String.class);
+            String posibleTitle = this.getTitle(articleXML);
+            JaroWinklerDistance jwDistance = new JaroWinklerDistance();
+            Float distance = jwDistance.getDistance(posibleTitle, title);
+            log.debug("possible match title: " + posibleTitle
+                    + " JaroWinklerDistance to the real title: " + distance);
+
+            if (distance >= 0.9) {
+                if (db.equals("pmc")) {
+                    uid = "PMC" + uid;
+                }
+                pmid = uid;
+            }
+        }
+        
+        return pmid;
+    }
+
+    private String getTitle(String xml) throws Exception {
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        InputSource source = new InputSource(new StringReader(xml));
+        return xpath.evaluate("//Title", source);
     }
 
     private Article fillArticleData(String pmid, String db) throws Exception {
