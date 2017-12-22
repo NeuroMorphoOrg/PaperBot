@@ -5,223 +5,117 @@
  */
 package org.neuromorpho.literature.search.service;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import org.neuromorpho.literature.search.communication.ArticleResponse;
+import org.neuromorpho.literature.search.model.article.Article;
 import org.neuromorpho.literature.search.model.article.Author;
+import org.neuromorpho.literature.search.model.article.Search;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PortalSearchNatureService extends PortalSearch {
 
-    private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected void searchPage() {
-        try {
+    public void searchForTitlesApi() {
 
-            DateFormat yearFormat = new SimpleDateFormat("yyyy");
-            List<String> queryParameterList = new ArrayList<>();
-            queryParameterList.add("date_range=" + yearFormat.format(this.startDate.getTime()) + "-" + yearFormat.format(this.endDate.getTime()));
-            queryParameterList.add("q=" + this.keyWord);
+        DateFormat yearFormat = new SimpleDateFormat("yyyy");
+        this.searchPortal = new Search(this.portal.getName(), this.keyWord);
 
-            String queyParamsStr = "";
-            for (String queryParameter : queryParameterList) {
-                queyParamsStr = queyParamsStr + "&" + queryParameter;
-            }
-            String urlFinal = this.portal.getUrl() + "?" + queyParamsStr;
-            log.debug("Accessing portal url: " + urlFinal);
-            this.searchDoc = Jsoup.connect(urlFinal)
-                    .timeout(30 * 1000)
-                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-                    .userAgent("Chrome").get();
+        Integer total = 0;
+        Integer startRecord = 1;
+        do {//iterate over pages
 
-        } catch (IOException ex) {
-            log.error("Exception trying to load the url:" + this.portal.getUrl());
-        }
-    }
+            String uri = this.portal.getApiUrl()
+                    + "queryType=searchTerms&query=" + this.keyWord
+                    + " AND prism.publicationDate=" + yearFormat.format(this.startDate.getTime())
+                    + "&httpAccept=application/json&startRecord=" + startRecord;
+            log.debug("API retrieving from URI: " + uri);
+            String data;
+            try {
+                data = Jsoup.connect(uri).ignoreContentType(true).execute().body();
+                Gson gson = new Gson();
+                Map result = gson.fromJson(data, Map.class);
 
-    @Override
-    protected Elements findArticleList() {
-        Elements articleList = this.searchDoc.select("ol[class=clean-list] > li");
-        return articleList;
-    }
+                Map feed = (Map) result.get("feed");
 
-    @Override
-    protected String fillTitle(Element articleData) {
-        Element elem = articleData.select("div > h2[role=heading] > a").first();
-        String articleLink = elem.attr("href");
-        this.article.setTitle(elem.text());
-        log.debug("Article title: " + this.article.getTitle());
-        return articleLink;
-    }
+                Double totalD = (Double) feed.get("opensearch:totalResults");
+                total = totalD.intValue();
+                Double pageLengthD = (Double) feed.get("opensearch:itemsPerPage");
+                Integer pageLength = pageLengthD.intValue();
 
-    @Override
-    protected void fillPublishedDate(Element articleData, Element articlePage) {
-        Element elem = articleData.select("p >time").first();
-        Date publishedDate = this.tryParseDate(elem.attr("datetime"));
-        this.article.setPublishedDate(publishedDate);
-    }
+                startRecord = startRecord + pageLength;
+                log.debug("Articles Found : " + total);
 
-    @Override
-    protected void fillJournal(Element articleData, Element articlePage) {
-        Element elem = articleData.select("div > div > div[class=grid grid-7 mq640-grid-12 mt10] > a").first();
-        this.article.setJournal(elem.text());
+                ArrayList<Map> infoList = (ArrayList) feed.get("entry");
+                if (infoList != null) {
+                    for (Map info : infoList) {
+                        Article article = new Article();
 
-    }
+                        Map data1 = (Map) info.get("sru:recordData");
+                        Map data2 = (Map) data1.get("pam:message");
+                        Map data3 = (Map) data2.get("pam:article");
+                        Map data4 = (Map) data3.get("xhtml:head");
+                        String title1 = (String) data4.get("dc:title");
+                        String title2 = title1.replace("<i>", "");
+                        String title = title2.replace("</i>", "");
+                        article.setTitle(title);
+                        article.setDoi((String) data4.get("prism:doi"));
+                        article.setJournal((String) data4.get("prism:publicationName"));
+                        article.setLink((String) data4.get("link"));
 
-    @Override
-    protected void fillAuthorList(Element articleData, Element articlePage) {
-        List<Author> authorList = new ArrayList();
-        Elements authorElemList = articleData.select("div > ul > li[itemprop=creator]");
-        for (Element authorElem : authorElemList) {
-            String completeName = authorElem.text();
-            completeName = completeName.replace(",", "");
-            completeName = completeName.replace("&", "");
-            completeName = completeName.trim();
-            Author author = new Author(completeName, null);
-            authorList.add(author);
-        }
-        this.article.setAuthorList(authorList);
-    }
+                        String dateStr = (String) data4.get("prism:publicationDate");
+                        try {
+                            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                            article.setPublishedDate(format.parse(dateStr));
+                        } catch (ParseException ex) {
+                            log.error("Date error:" + dateStr + " for title: " + title);
+                        }
+                        ArrayList<String> authorListMap = (ArrayList) data4.get("dc:creator");
 
-    @Override
-    protected void fillDoi(Element articleData, Element articlePage) {
-        Element doiElement = articlePage.select("meta[name=citation_doi]").first();
-        article.setDoi(doiElement.attr("content").split(":")[1]);
-    }
+                        List<Author> authorList = new ArrayList();
+                        if (authorListMap != null) {
+                            for (String authorStr : authorListMap) {
+                                Author author = new Author(authorStr, null);
+                                authorList.add(author);
+                            }
+                        }
+                        article.setAuthorList(authorList);
+                        article.setAbstractText((String) data4.get("dc:description"));
 
-    @Override
-    protected void fillLinks(Element articleData, Element articlePage) {
-        this.fillLink1(articlePage);
-        if (this.searchPortal.getLink() == null) {
-            this.fillLink2(articlePage);
-        }
-        if (this.searchPortal.getLink() == null) {
-            this.fillLink3(articlePage);
-        }
+                        //call pubmed to retrieve pubmedID
+                        String pmid = pubMedConnection.findTitleFromPMID(title, "pubmed");
+                        if (pmid == null) {
+                            pmid = pubMedConnection.findTitleFromPMID(title, "pmc");
+                        }
+                        if (pmid != null) {
+                            article.setPmid(pmid);
+                        }
+                        log.debug(article.toString());
+                        if (!authorList.isEmpty()) {
+                            // calling rest to save the article & updating the portal search values
+                            ArticleResponse response = literatureConnection.saveArticle(article, Boolean.FALSE, this.collection);
+                            log.debug(searchPortal.toString());
 
-    }
-
-    private void fillLink1(Element articlePage) {
-        Element pdfLink = articlePage.select("div[data-container-type=reading-companion] > div > ul > li > a").first();
-        if (pdfLink != null) {
-            this.searchPortal.setLink(pdfLink.attr("href"));
-
-            Elements supplementaryLinkElementList = articlePage.select("section[aria-labelledby=supplementary-information] h3[class=text17] > a");
-            log.debug("Number of supplementary links: " + supplementaryLinkElementList.size());
-            for (Element supplementaryLinkElement : supplementaryLinkElementList) {
-                String supplementaryLink = supplementaryLinkElement.attr("href");
-                log.debug(supplementaryLink);
-                this.searchPortal.setSupplementaryLink(supplementaryLink);
-            }
-        }
-
-    }
-
-    private void fillLink2(Element articlePage) {
-        Element pdfLink = articlePage.select("li[class=download-option articlepdf] > a").first();
-        if (pdfLink != null) {
-            this.searchPortal.setLink(pdfLink.attr("href"));
-
-            List<Element> supplementaryLinkElementList = articlePage.select("div[id=supplementary-information] > div[class=content] a");
-            log.debug("Number of supplementary links: " + supplementaryLinkElementList.size());
-            for (Element supplementaryLinkElement : supplementaryLinkElementList) {
-                if (!supplementaryLinkElement.attr("href").endsWith(".html")) {
-                    String supplementaryLink = supplementaryLinkElement.attr("href");
-                    log.debug(supplementaryLink);
-                    this.searchPortal.setSupplementaryLink(supplementaryLink);
+                            literatureConnection.saveSearchPortal(response.getId(), this.searchPortal);
+                        }
+                    }
                 }
+            } catch (IOException ex) {
+                log.error("Exception loading url", ex);
             }
-//            supplementaryLinkElementList = articlePage.select("div[class=box supp-info] h2[class=pdf] >following-sibling::ol dt > a");
-//            log.debug("Number of supplementary links: " + supplementaryLinkElementList.size());
-//            for (Element supplementaryLinkElement : supplementaryLinkElementList) {
-//                String supplementaryLink = supplementaryLinkElement.attr("href");
-//                log.debug(supplementaryLink);
-//                this.searchPortal.setSupplementaryLink(supplementaryLink);
-//            }
-        }
+        } while (startRecord <= total);
 
     }
-
-    private void fillLink3(Element articlePage) {
-        Element pdfLink = articlePage.select(".a[class=download-pdf]").first();
-
-        if (pdfLink != null) {
-            this.searchPortal.setLink(pdfLink.attr("href"));
-        }
-//        Elements supplementaryLinkElementList = articlePage.select("div[class=box supp-info] h2[class=pdf] > following-sibling::ol dt > a");
-//        log.debug("Number of supplementary links: " + supplementaryLinkElementList.size());
-//        for (Element supplementaryLinkElement : supplementaryLinkElementList) {
-//            String supplementaryLink = supplementaryLinkElement.attr("href");
-//            log.debug(supplementaryLink);
-//            this.searchPortal.setSupplementaryLink(supplementaryLink);
-//        }
-
-    }
-
-    @Override
-    protected void fillIsAccessible(Element articleData, Element articlePage) {
-        fillIsAccessible1(articlePage);
-        fillIsAccessible2(articlePage);
-        fillIsAccessible3(articlePage);
-
-    }
-
-    private void fillIsAccessible1(Element articlePage) {
-        Element element = articlePage.select("div[class=subscribe-prompt]").first();
-        if (element != null) {
-            this.inaccessible = Boolean.TRUE;
-        }
-
-    }
-
-    private void fillIsAccessible2(Element articlePage) {
-        Element element = articlePage.select("li[class=readcube-purchase]").first();
-        if (element != null) {
-            this.inaccessible = Boolean.TRUE;
-        }
-
-    }
-
-    private void fillIsAccessible3(Element articlePage) {
-        Element element = articlePage.select("ul[class=subscribe-box]").first();
-        if (element != null) {
-            this.inaccessible = Boolean.TRUE;
-        }
-
-    }
-
-    @Override
-    protected Boolean loadNextPage() {
-        Boolean nextPage = Boolean.FALSE;
-        try {
-            Element link = this.searchDoc.select("li[data-page=next] > a").first();
-            if (link != null) {
-                String linkStr = link.attr("href");
-                this.searchDoc = Jsoup.connect(this.portal.getBase() + linkStr)
-                        .timeout(30 * 1000)
-                        .userAgent("Chrome")
-                        .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8").get();
-                nextPage = Boolean.TRUE;
-
-            }
-        } catch (IOException ex) {
-            log.error("Exception loading next page", ex);
-        }
-        return nextPage;
-    }
-
-    @Override
-    protected void searchForTitlesApi() {
-        throw new UnsupportedOperationException("Not needed if accessing through web and not API");
-    }
-
 }
