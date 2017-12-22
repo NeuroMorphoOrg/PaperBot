@@ -17,7 +17,6 @@ import org.neuromorpho.literature.search.model.article.Author;
 import org.neuromorpho.literature.search.model.article.Search;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -28,9 +27,6 @@ import org.springframework.web.client.RestTemplate;
 public class PortalSearchSpringerLinkService extends PortalSearch {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @Value("${springerToken}")
-    private String token;
 
     @Override
     public void searchForTitlesApi() {
@@ -55,13 +51,13 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
         /*
         * Springer incorrectly returning media type html inestead of json
          */
-        Integer iterations = 1;
+        Integer iterations = 0;
         do {//iterate over pages
             String uri = this.portal.getApiUrl()
                     + "q=(" + this.keyWord
-                    + "AND year:" + yearFormat.format(this.startDate.getTime())
-                    + ")&p=100&s=" + page
-                    + "&api_key=" + this.token;
+                    + " AND year:" + yearFormat.format(this.startDate.getTime())
+                    + ")&s=" + page
+                    + "&api_key=" + this.portal.getToken();
             log.debug("API retrieving from URI: " + uri);
             page++;
             Map<String, Object> result = restTemplate.getForObject(uri, Map.class);
@@ -120,7 +116,7 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
 
                 literatureConnection.saveSearchPortal(response.getId(), this.searchPortal);
             }
-        } while (iterations > 0);
+        } while (iterations > 0 && iterations >= page - 1);
 
     }
 
