@@ -20,6 +20,7 @@ public class Portal {
     private String db;
     private String apiUrl;
     private String apiUrl2;
+    private String token;
 
     public Portal(String name) {
         this.name = name;
@@ -102,6 +103,14 @@ public class Portal {
 
     public void setBase(String base) {
         this.base = base;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

@@ -17,8 +17,6 @@ public class PortalController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final PortalDtoAssembler portalDtoAssembler = new PortalDtoAssembler();
-
     @Autowired
     private PortalService portalService;
 
@@ -28,13 +26,8 @@ public class PortalController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<PortalDto> getPortalList() {
-        List<Portal> portalList = portalService.findActives();
-        List<PortalDto> portalDtoList = new ArrayList();
-        for (Portal portal : portalList) {
-            portalDtoList.add(portalDtoAssembler.createPortalDto(portal));
-        }
-        return portalDtoList;
+    public List<Portal> getPortalList() {
+        return portalService.findActives();
     }
 
 }
