@@ -39,6 +39,7 @@ public class Article {
     private Date evaluatedDate;
     private String status;
     private List<String> dataUsage;
+    private String abstact;
 
     public Article() {
     }
@@ -182,6 +183,14 @@ public class Article {
 
     public Boolean isPublishedDateNull() {
         return this.doi == null;
+    }
+
+    public String getAbstact() {
+        return abstact;
+    }
+
+    public void setAbstact(String abstact) {
+        this.abstact = abstact;
     }
 
     public void mergeAuthorData(List<Author> newAuthorList) {

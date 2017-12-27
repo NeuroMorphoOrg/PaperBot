@@ -139,14 +139,14 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     @Override
     public void update(String id, ArticleStatus newCollection) {
         ArticleCollection articleOld = findById(id);
+        log.debug("Updating collection article title: " + articleOld.getArticle().getTitle());
         if (newCollection != articleOld.getArticleStatus()) {
 
             if (articleOld.getArticleStatus().equals(ArticleStatus.TO_EVALUATE)) {
                 articleOld.getArticle().setEvaluatedDate(new Date());
             }
-
-            mongoOperations.remove(articleOld.getArticle(), articleOld.getArticleStatus().getCollection());
             mongoOperations.save(articleOld.getArticle(), newCollection.getCollection());
+            mongoOperations.remove(articleOld.getArticle(), articleOld.getArticleStatus().getCollection());
         }
     }
 

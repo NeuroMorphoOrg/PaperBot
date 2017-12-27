@@ -17,6 +17,7 @@ public class ArticleDto implements java.io.Serializable {
     private SearchPortalDto searchPortal;
     private String articleStatus;
     private List<String> usage;
+    private String abstact;
 
     public ArticleDto(String id) {
         this.id = id;
@@ -119,6 +120,14 @@ public class ArticleDto implements java.io.Serializable {
 
     public void setUsage(List<String> usage) {
         this.usage = usage;
+    }
+
+    public String getAbstact() {
+        return abstact;
+    }
+
+    public void setAbstact(String abstact) {
+        this.abstact = abstact;
     }
 
     @Override

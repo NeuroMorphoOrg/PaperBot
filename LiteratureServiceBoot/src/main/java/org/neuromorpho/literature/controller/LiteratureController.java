@@ -1,6 +1,5 @@
 package org.neuromorpho.literature.controller;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +47,7 @@ public class LiteratureController {
         return "Literature up & running!";
     }
 
-    @CrossOrigin    
+    @CrossOrigin
     @RequestMapping(value = "/count", method = RequestMethod.GET)
     public Map<String, Long> getSummary(
             @RequestParam(required = false) String date) {
@@ -106,10 +105,14 @@ public class LiteratureController {
     public ArticleDto createArticle(
             @PathVariable String articleStatus,
             @RequestBody ArticleDto article) {
-        String _id = literatureService.saveArticle(articleDtoAssembler.createArticle(article, articleStatus));
+
+        Article articleTeated = articleDtoAssembler.createArticle(article);
+
+        String _id = literatureService.saveArticle(
+                new ArticleCollection(articleTeated, ArticleStatus.getArticleStatus(articleStatus)));
         return new ArticleDto(_id);
     }
-    
+
     @CrossOrigin
     @RequestMapping(method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.OK)
@@ -118,7 +121,7 @@ public class LiteratureController {
         throw new UnsupportedOperationException("Operation not permited");
 //        literatureService.deleteArticle(id);
     }
-    
+
     @CrossOrigin
     @RequestMapping(value = "status/{status}", method = RequestMethod.GET)
     public Page<ArticleDto> getArticles(
@@ -136,15 +139,14 @@ public class LiteratureController {
         return new PageImpl<ArticleDto>(articleDtoList, new PageRequest(page,
                 articlePage.getSize(), articlePage.getSort()), articlePage.getTotalElements());
     }
-    
+
     @CrossOrigin
     @RequestMapping(value = "objectId", method = RequestMethod.GET)
     public @ResponseBody
     IdDto getNewObjectId() {
         return new IdDto(new ObjectId().toString());
     }
-    
-    
+
     @CrossOrigin
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ArticleDto findArticleByPMID(

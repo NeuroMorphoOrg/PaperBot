@@ -71,38 +71,8 @@ public class ArticleDtoAssembler {
         }
     }
 
-    public ArticleCollection createArticle(ArticleDto articleDto, String articleStatus) {
-        if (!articleStatus.equals("Neuromorpho")
-                && (articleDto.getTitle() == null
-                || articleDto.getAuthorList() == null
-                || articleDto.getAuthorList().isEmpty()
-                || articleDto.getJournal() == null
-                || articleDto.getPublishedDate() == null)) {
-            throw new MissingDataException("article data");
-        }
-        Article article = new Article();
-        article.setPmid(articleDto.getPmid());
-        article.setTitle(articleDto.getTitle());
-        article.setDoi(articleDto.getDoi());
-        article.setLink(articleDto.getLink());
-        article.setJournal(articleDto.getJournal());
-        article.setOcDate(new Date());
-        article.setPublishedDate(articleDto.getPublishedDate());
-        List<Author> authorList = new ArrayList();
-        for (AuthorDto author : articleDto.getAuthorList()) {
-            authorList.add(authorDtoAssembler.createAuthor(author));
-        }
-        article.setAuthorList(authorList);
-        article.setDataUsage(articleDto.getUsage());
-        return new ArticleCollection(article, ArticleStatus.getArticleStatus(articleStatus));
-    }
-
     public Article createArticle(ArticleDto articleDto) {
-        if (articleDto.getTitle() == null
-                || articleDto.getAuthorList() == null
-                || articleDto.getAuthorList().isEmpty()
-                || articleDto.getJournal() == null
-                || articleDto.getPublishedDate() == null) {
+        if (articleDto.getTitle() == null) {
             throw new MissingDataException("article data");
         }
         Article article = new Article();
@@ -119,8 +89,7 @@ public class ArticleDtoAssembler {
         }
         article.setAuthorList(authorList);
         article.setDataUsage(articleDto.getUsage());
-        article.setSearchPortal(
-                searchPortalDtoAssembler.createSearchPortal(articleDto.getSearchPortal()));
+        article.setAbstact(articleDto.getAbstact());
         return article;
     }
 

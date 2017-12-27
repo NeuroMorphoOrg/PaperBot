@@ -2,6 +2,8 @@ package org.neuromorpho.literature.controller.search;
 
 import org.neuromorpho.literature.controller.ArticleDto;
 import org.neuromorpho.literature.controller.ArticleDtoAssembler;
+import org.neuromorpho.literature.model.article.Article;
+import org.neuromorpho.literature.model.article.ArticleCollection;
 import org.neuromorpho.literature.service.search.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,6 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-
     private final SearchDtoAssembler searchDtoAssembler = new SearchDtoAssembler();
     private final ArticleDtoAssembler articleDtoAssembler = new ArticleDtoAssembler();
 
@@ -32,8 +33,10 @@ public class SearchController {
     public ArticleDto saveOrUpdateArticle(
             @PathVariable String articleStatus,
             @RequestBody ArticleDto article) {
+        Article articleTeated = articleDtoAssembler.createArticle(article);
+
         String _id = searchService.saveOrUpdateArticle(
-                articleDtoAssembler.createArticle(article, articleStatus));
+                new ArticleCollection(articleTeated, ArticleCollection.ArticleStatus.getArticleStatus(articleStatus)));
         return new ArticleDto(_id);
     }
 
