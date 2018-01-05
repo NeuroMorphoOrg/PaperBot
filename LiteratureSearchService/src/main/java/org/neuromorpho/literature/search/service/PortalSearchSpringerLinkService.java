@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.neuromorpho.literature.search.communication.ArticleResponse;
 import org.neuromorpho.literature.search.model.article.Article;
 import org.neuromorpho.literature.search.model.article.Author;
@@ -72,7 +74,7 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
 
             ArrayList<Map> infoList = (ArrayList) result.get("records");
             for (Map info : infoList) {
-                Article article = new Article();
+                article = new Article();
                 String title = (String) info.get("title");
                 article.setTitle(title);
                 article.setDoi((String) info.get("doi"));
@@ -94,7 +96,11 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
                 for (Map authorMap : authorListMap) {
                     String completeName = (String) authorMap.get("creator");
                     String[] name = completeName.split(", ");
+                    if (name.length < 2) {
+                        name = completeName.split(" ");
+                    }
                     Author author = new Author(name[1] + " " + name[0], null);
+
                     authorList.add(author);
                 }
                 article.setAuthorList(authorList);
@@ -118,6 +124,61 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
             }
         } while (iterations > 0 && iterations >= page - 1);
 
+    }
+
+    @Override
+    protected Elements findArticleList() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void searchPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected Boolean loadNextPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected String fillTitle(Element articleData) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillPublishedDate(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillJournal(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillAuthorList(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillDoi(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillLinks(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillIsAccessible(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void searchForTitles() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
