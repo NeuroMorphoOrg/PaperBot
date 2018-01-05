@@ -46,6 +46,8 @@ public class PortalSearchPubMedService extends PortalSearch {
 
         Map result = (HashMap) pmidMap.get("esearchresult");
         ArrayList<String> uidList = (ArrayList) result.get("idlist");
+        log.debug("Articles Found : " + uidList.size());
+
         for (String uid : uidList) {
             try {
                 this.inaccessible = Boolean.FALSE;
@@ -66,7 +68,7 @@ public class PortalSearchPubMedService extends PortalSearch {
                 log.debug(article.toString());
                 ArticleResponse response = literatureConnection.saveArticle(
                         article, this.inaccessible, this.collection);
-                literatureConnection.saveSearchPortal(response.getId(), this.searchPortal);            
+                literatureConnection.saveSearchPortal(response.getId(), this.searchPortal);
 
             } catch (Exception ex) {
                 log.error("Exception: " + uri, ex);
@@ -75,8 +77,8 @@ public class PortalSearchPubMedService extends PortalSearch {
         }
 
     }
-    
-     public String getPMIDFromPMC(String uid) {
+
+    public String getPMIDFromPMC(String uid) {
         RestTemplate restTemplate = new RestTemplate();
 
         Map<String, Object> pmidFromPMCMap = restTemplate.getForObject(
@@ -96,7 +98,6 @@ public class PortalSearchPubMedService extends PortalSearch {
         Author author = new Author(name + ". " + completeName[0], null);
         return author;
     }
-
 
     private static String getCorrectedName(String name) {
         String result = name.replace("&amp;", "&");
