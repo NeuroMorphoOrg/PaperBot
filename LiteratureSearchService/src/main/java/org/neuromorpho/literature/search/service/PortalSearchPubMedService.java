@@ -99,11 +99,6 @@ public class PortalSearchPubMedService extends PortalSearch {
         return author;
     }
 
-    private static String getCorrectedName(String name) {
-        String result = name.replace("&amp;", "&");
-        return result.replace("&lt;i&gt;", "");
-    }
-
     @Override
     protected Elements findArticleList() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
