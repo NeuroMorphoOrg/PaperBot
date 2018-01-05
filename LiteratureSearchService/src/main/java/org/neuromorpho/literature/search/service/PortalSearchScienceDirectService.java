@@ -6,14 +6,13 @@
 package org.neuromorpho.literature.search.service;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.neuromorpho.literature.search.communication.ArticleResponse;
 import org.neuromorpho.literature.search.model.article.Article;
 import org.neuromorpho.literature.search.model.article.Author;
@@ -54,7 +53,7 @@ public class PortalSearchScienceDirectService extends PortalSearch {
             ArrayList<Map> infoList = (ArrayList) nResultsMap.get("entry");
             if (total > 0) {
                 for (Map info : infoList) {
-                    Article article = new Article();
+                    article = new Article();
                     String title = (String) info.get("dc:title");
                     article.setTitle(title);
                     article.setDoi((String) info.get("prism:doi"));
@@ -101,13 +100,14 @@ public class PortalSearchScienceDirectService extends PortalSearch {
                     literatureConnection.saveSearchPortal(response.getId(), this.searchPortal);
                 }
 
-                ArrayList<Map> linkList = (ArrayList) nResultsMap.get("link");
-                for (Map link : linkList) {
-                    String ref = (String) link.get("@ref");
-                    if (ref.equals("next")) {
-                        uri = (String) link.get("@href");
-                        next = Boolean.TRUE;
-                    }
+            }
+            ArrayList<Map> linkList = (ArrayList) nResultsMap.get("link");
+            next = Boolean.FALSE;
+            for (Map link : linkList) {
+                String ref = (String) link.get("@ref");
+                if (ref.equals("next")) {
+                    uri = (String) link.get("@href");
+                    next = Boolean.TRUE;
                 }
             }
 
@@ -115,17 +115,59 @@ public class PortalSearchScienceDirectService extends PortalSearch {
 
     }
 
-    private Date tryParseDate(String dateString) {
-        List<String> formatStrings = Arrays.asList("dd MMMM yyyy", "MMMM yyyy");
+    @Override
+    protected Elements findArticleList() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-        for (String formatString : formatStrings) {
-            try {
-                return new SimpleDateFormat(formatString).parse(dateString);
-            } catch (ParseException e) {
-            }
-        }
+    @Override
+    protected void searchPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-        return null;
+    @Override
+    protected Boolean loadNextPage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected String fillTitle(Element articleData) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillPublishedDate(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillJournal(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillAuthorList(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillDoi(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillLinks(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fillIsAccessible(Element articleData, Element articlePage) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void searchForTitles() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
