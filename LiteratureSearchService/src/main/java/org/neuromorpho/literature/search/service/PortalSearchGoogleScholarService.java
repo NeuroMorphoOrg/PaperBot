@@ -24,32 +24,42 @@ import org.springframework.stereotype.Service;
 public class PortalSearchGoogleScholarService extends PortalSearch {
 
     private final Integer maxMin = 15;
-    private final Integer minMin = 4;
+    private final Integer minMin = 5;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     protected void searchPage() {
-        try {
-            DateFormat yearFormat = new SimpleDateFormat("yyyy");
-            List<String> queryParameterList = new ArrayList<>();
-            queryParameterList.add("q=" + this.keyWord);
-            queryParameterList.add("hl=en");
-            queryParameterList.add("&as_sdt=0,47");
-            queryParameterList.add("as_ylo=" + yearFormat.format(this.startDate.getTime()));
+        DateFormat yearFormat = new SimpleDateFormat("yyyy");
+        List<String> queryParameterList = new ArrayList<>();
+        queryParameterList.add("q=" + this.keyWord);
+        queryParameterList.add("hl=en");
+        queryParameterList.add("&as_sdt=0,47");
+        queryParameterList.add("as_ylo=" + yearFormat.format(this.startDate.getTime()));
 
-            String queyParamsStr = "";
-            for (String queryParameter : queryParameterList) {
-                queyParamsStr = queyParamsStr + "&" + queryParameter;
-            }
-            String urlFinal = this.portal.getUrl() + "?" + queyParamsStr;
-            log.debug("Accessing portal url: " + urlFinal);
+        String queyParamsStr = "";
+        for (String queryParameter : queryParameterList) {
+            queyParamsStr = queyParamsStr + "&" + queryParameter;
+        }
+        String urlFinal = this.portal.getUrl() + "?" + queyParamsStr;
+        log.debug("Accessing portal url: " + urlFinal);
+        try {
+            Random rand = new Random();
+            // nextInt is normally exclusive of the top value,
+            // so add 1 to make it inclusive
+            Integer randomNum = rand.nextInt((maxMin - minMin) + 1) + minMin;
+            log.debug("Random minutes to sleep: " + randomNum);
+            log.debug("......................................");
+            Thread.sleep(randomNum * 60 * 1000);
             this.searchDoc = Jsoup.connect(urlFinal)
                     .timeout(30 * 1000)
+                    .followRedirects(true)
                     .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
                     .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36").get();
 
         } catch (IOException ex) {
-            log.error("Exception trying to load the url:" + this.portal.getUrl(), ex);
+            log.error("Exception trying to load the url:" + urlFinal, ex);
+        } catch (InterruptedException ex) {
+            log.error("Exception with random sleep process ", ex);
         }
 
     }
@@ -171,6 +181,5 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
     protected void searchForTitlesApi() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 
 }
