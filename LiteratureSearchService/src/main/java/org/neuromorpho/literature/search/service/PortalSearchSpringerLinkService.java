@@ -84,12 +84,8 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
                 article.setLink((String) urlListMap.get(0).get("value"));
 
                 String dateStr = (String) info.get("publicationDate");
-                try {
-                    DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                    article.setPublishedDate(format.parse(dateStr));
-                } catch (ParseException ex) {
-                    log.error("Date error:" + dateStr + " for title: " + title);
-                }
+                article.setPublishedDate(this.tryParseDate(dateStr));
+
                 ArrayList<Map> authorListMap = (ArrayList) info.get("creators");
 
                 List<Author> authorList = new ArrayList();
@@ -104,7 +100,6 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
                     authorList.add(author);
                 }
                 article.setAuthorList(authorList);
-                article.setAbstractText((String) info.get("abstract"));
 
                 //call pubmed to retrieve pubmedID
                 String pmid = pubMedConnection.findTitleFromPMID(title, "pubmed");

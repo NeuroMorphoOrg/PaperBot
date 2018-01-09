@@ -63,7 +63,7 @@ public class PortalSearchScienceDirectService extends PortalSearch {
 
                     String dateStr = (String) info.get("prism:coverDisplayDate");
 
-                    article.setPublishedDate(tryParseDate(dateStr));
+                    article.setPublishedDate(this.tryParseDate(dateStr));
 
                     Map authors = (HashMap) info.get("authors");
                     List<Author> authorList = new ArrayList();
@@ -80,8 +80,6 @@ public class PortalSearchScienceDirectService extends PortalSearch {
                         }
                     }
                     article.setAuthorList(authorList);
-
-                    article.setAbstractText((String) info.get("prism:teaser"));
 
                     //call pubmed to retrieve pubmedID
                     String pmid = pubMedConnection.findTitleFromPMID(title, "pubmed");

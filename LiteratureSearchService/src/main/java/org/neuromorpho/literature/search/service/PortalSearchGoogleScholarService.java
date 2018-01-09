@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PortalSearchGoogleScholarService extends PortalSearch {
 
-    private final Integer maxMin = 10;
+    private final Integer maxMin = 15;
     private final Integer minMin = 4;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -56,7 +56,7 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
 
     @Override
     protected Elements findArticleList() {
-        Elements articleList = this.searchDoc.select("div[class=gs_r]");
+        Elements articleList = this.searchDoc.select("div[class=gs_ri]");
         return articleList;
     }
 
@@ -66,7 +66,6 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
         Element elem = articleData.select("h3[class=gs_rt] > a").first();
         String articleLink = elem.attr("href");
         this.article.setTitle(elem.text().trim());
-        this.searchPortal.setLink(this.portal.getBase() + articleLink);
         log.debug("Article title: " + this.article.getTitle());
         return articleLink;
     }
@@ -128,7 +127,7 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
     @Override
     protected void fillLinks(Element articleData, Element articlePage) {
         Element elem = articleData.select("h3[class=gs_rt] > a").first();
-        this.searchPortal.setLink(elem.attr("href"));
+        this.article.setLink(elem.attr("href"));
     }
 
     @Override
@@ -165,12 +164,13 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
 
     @Override
     protected void fillIsAccessible(Element articleData, Element articlePage) {
-        //think if from google can be done
+        //no way to know if its accessible through google
     }
 
     @Override
     protected void searchForTitlesApi() {
-        throw new UnsupportedOperationException("Not needed if accessing through web and not API");
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
 
 }

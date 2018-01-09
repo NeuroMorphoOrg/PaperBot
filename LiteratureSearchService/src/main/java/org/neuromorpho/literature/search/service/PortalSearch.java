@@ -1,34 +1,27 @@
 package org.neuromorpho.literature.search.service;
 
-import java.io.StringReader;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import org.apache.lucene.search.spell.JaroWinklerDistance;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.neuromorpho.literature.search.model.article.Article;
+import org.neuromorpho.literature.search.communication.ArticleResponse;
 import org.neuromorpho.literature.search.model.article.Search;
 import org.neuromorpho.literature.search.model.portal.KeyWord;
 import org.neuromorpho.literature.search.model.portal.Portal;
-import org.neuromorpho.literature.search.communication.ArticleResponse;
 import org.neuromorpho.literature.search.communication.LiteratureConnection;
+import org.neuromorpho.literature.search.communication.PubMedConnection;
+import org.neuromorpho.literature.search.model.article.Article;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.xml.sax.InputSource;
 
 @Service
 public abstract class PortalSearch implements IPortalSearch {
@@ -41,21 +34,20 @@ public abstract class PortalSearch implements IPortalSearch {
     protected Portal portal;
     protected String keyWord;
     protected String collection;
-    protected Integer numArticlesTotal;
     protected Date startDate;
     protected Date endDate;
     protected Integer searchPeriod;
-    protected Article article;
     protected Boolean inaccessible;
-    protected Integer i = 0;
+    protected Article article;
 
     @Autowired
     protected LiteratureConnection literatureConnection;
+    @Autowired
+    protected PubMedConnection pubMedConnection;
 
     @Override
-    public Integer findArticleList(KeyWord keyWord, Portal portal) {
+    public void findArticleList(KeyWord keyWord, Portal portal) {
         try {
-            this.numArticlesTotal = 0;
             this.portal = portal;
             this.keyWord = keyWord.getName();
             this.searchPeriod = portal.getSearchPeriod();
@@ -65,34 +57,25 @@ public abstract class PortalSearch implements IPortalSearch {
             this.collection = keyWord.getCollection();
 
             log.debug("Executing portal " + portal.getName() + " for keyword " + keyWord.getName());
-            if (i < 10) {
-                if (this.portal.hasAPI()) {
-                    this.searchForTitlesApi();
-                } else {
-
-                    Integer numPages = 1;
-                    this.searchPage();
-                    this.searchForTitles(numPages);
-                  
-                }
+            if (this.portal.hasAPI()) {
+                this.searchForTitlesApi();
+            } else {
+                this.searchPage();
+                this.searchForTitles();
             }
 
+        } catch (IOException ex) { // if jsour returns this exception, the page was empty
+            log.debug("Aticles found 0 ");
         } catch (Exception ex) {
             log.error("Exception " + this.portal.getName(), ex);
         }
-
-        log.debug(this.portal.getName() + " found for keyWord: " + keyWord.getName() + " " + numArticlesTotal);
-
-        return numArticlesTotal;
 
     }
 
     //to be override by the sons
     protected abstract Elements findArticleList();
 
-    protected abstract void searchForTitlesApi();
-
-    protected abstract void searchPage();
+    protected abstract void searchPage() throws IOException;
 
     protected abstract Boolean loadNextPage();
 
@@ -110,23 +93,20 @@ public abstract class PortalSearch implements IPortalSearch {
 
     protected abstract void fillIsAccessible(Element articleData, Element articlePage);
 
-    protected void searchForTitles(Integer numPages) throws Exception {
+    protected void searchForTitles() throws Exception {
         try {
 
             Elements articleList = this.findArticleList();
             for (Element articleElement : articleList) {
                 this.createArticle(articleElement);
             }
-              Boolean existsNextPage = this.loadNextPage();
+            Boolean existsNextPage = this.loadNextPage();
             if (existsNextPage) {
-                log.debug("Reading page number: " + numPages);
-                numPages++;
-                searchForTitles(numPages);
+                searchForTitles();
             }
-           
+
         } catch (Exception ex) {
             log.error("Exception: ", ex);
-
         }
     }
 
@@ -160,14 +140,17 @@ public abstract class PortalSearch implements IPortalSearch {
                     if (!this.inaccessible) {
                         this.fillLinks(articleData, articlePage);
                     }
-                    this.getPMIDFromTitle(this.article.getTitle(), "pubmed");
-                    if (this.article.getPmid() == null) {
-                        this.getPMIDFromTitle(this.article.getTitle(), "pmc");
+                    //call pubmed to retrieve pubmedID
+                    String pmid = pubMedConnection.findTitleFromPMID(this.article.getTitle(), "pubmed");
+                    if (pmid == null) {
+                        pmid = pubMedConnection.findTitleFromPMID(this.article.getTitle(), "pmc");
+                    }
+                    if (pmid != null) {
+                        this.article.setPmid(pmid);
                     }
                     log.debug(this.article.toString());
-                   // calling rest to save the article & updating the portal search values
-                    ArticleResponse response = literatureConnection.saveArticle
-                                (this.article, this.inaccessible, this.collection);
+                    // calling rest to save the article & updating the portal search values
+                    ArticleResponse response = literatureConnection.saveArticle(this.article, this.inaccessible, this.collection);
                     log.debug(this.searchPortal.toString());
 
                     literatureConnection.saveSearchPortal(response.getId(), this.searchPortal);
@@ -177,27 +160,26 @@ public abstract class PortalSearch implements IPortalSearch {
             }
         } catch (SocketTimeoutException ex) {
             i++;
-            log.warn("Timeout exception number: " + i +" for article: " + this.article.getTitle());
-        } catch (Exception ex) {
-            read = Boolean.TRUE;
+            log.warn("Timeout exception number: " + i + " for article: " + this.article.getTitle());
+        } catch (IOException ex) {
             log.error("Exception for article: " + this.article.getTitle(), ex);
         }
     }
 
-    private Date getSearchStartDate() {
+    protected Date getSearchStartDate() {
         Calendar date = Calendar.getInstance();   //current date
         date.add(Calendar.MONTH, -(this.searchPeriod));
         date.set(Calendar.DAY_OF_MONTH, 1);
         return date.getTime();
     }
 
-    private Date getSearchEndDate() {
+    protected Date getSearchEndDate() {
         Calendar date = Calendar.getInstance();   //current date
         return date.getTime();
     }
 
     protected Date tryParseDate(String dateStr) {
-        String[] formatStrings = {"dd MMM yyyy", "dd MMMMM yyyy", "MMMMM yyyy", "yyyy", "yyyy/MM/dd", "yyyy-MM-dd", "MMM yyyy"};
+        String[] formatStrings = {"dd MMM yyyy", "dd MMMMM yyyy", "MMMMM yyyy", "yyyy", "yyyy/MM/dd", "yyyy-MM-dd", "MMM yyyy", "yyyy-MM"};
         for (String formatString : formatStrings) {
             try {
                 return new SimpleDateFormat(formatString, Locale.US).parse(dateStr.toLowerCase());
@@ -221,53 +203,6 @@ public abstract class PortalSearch implements IPortalSearch {
         return Boolean.FALSE;
     }
 
-    public void getPMIDFromTitle(String title, String database) throws Exception {
-        String uri = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
-        log.debug("Filling pmid from title ");
-        RestTemplate restTemplate = new RestTemplate();
+    protected abstract void searchForTitlesApi();
 
-        String url = uri + "esearch.fcgi?"
-                + "db=" + database
-                + "&retmode=json"
-                + "&term=" + title
-                + "&field=title";
-        Map<String, Object> pmidMap = restTemplate.getForObject(
-                url,
-                Map.class);
-        log.debug("Accessing " + url);
-        Map result = (HashMap) pmidMap.get("esearchresult");
-        ArrayList<String> uidList = (ArrayList) result.get("idlist");
-
-        for (String uid : uidList) {
-            String xmlUri = uri + "esummary.fcgi?"
-                    + "db=" + database
-                    + "&retmode=xml"
-                    + "&version=2.0"
-                    + "&id=" + uid;
-            log.debug("Accessing " + xmlUri);
-
-            String articleXML = restTemplate.getForObject(
-                    xmlUri,
-                    String.class);
-            String posibleTitle = this.getTitle(articleXML);
-            JaroWinklerDistance jwDistance = new JaroWinklerDistance();
-            Float distance = jwDistance.getDistance(posibleTitle, article.getTitle());
-            log.debug("possible match title: " + posibleTitle
-                    + " JaroWinklerDistance to the real title: " + distance);
-
-            if (distance >= 0.9) {
-                if (database.equals("pmc")) {
-                    uid = "PMC" + uid;
-                }
-                article.setPmid(uid);
-            }
-        }
-
-    }
-
-    private String getTitle(String xml) throws Exception {
-        XPath xpath = XPathFactory.newInstance().newXPath();
-        InputSource source = new InputSource(new StringReader(xml));
-        return xpath.evaluate("//Title", source);
-    }
 }

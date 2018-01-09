@@ -8,6 +8,6 @@ import org.neuromorpho.literature.search.model.portal.Portal;
 
 public interface IPortalSearch {
     
-    public Integer findArticleList(KeyWord keyWord, Portal portal) throws Exception;
+    public void findArticleList(KeyWord keyWord, Portal portal) throws Exception;
     
 }

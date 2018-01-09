@@ -9,8 +9,8 @@ public class Portal {
     private Boolean active;
     private String db;
     private String apiUrl;
-    private String apiUrl2;
-
+    private String token;
+    
     public Portal(String name) {
         this.name = name;
     }
@@ -74,16 +74,16 @@ public class Portal {
         this.apiUrl = apiUrl;
     }
 
-    public String getApiUrl2() {
-        return apiUrl2;
-    }
-
-    public void setApiUrl2(String apiUrl2) {
-        this.apiUrl2 = apiUrl2;
-    }
-
     public Boolean hasAPI() {
         return apiUrl != null;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

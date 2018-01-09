@@ -25,30 +25,26 @@ public class PortalSearchWileyService extends PortalSearch {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected void searchPage() {
-        try {
-            DateFormat yearFormat = new SimpleDateFormat("yyyy");
-            List<String> queryParameterList = new ArrayList<>();
-            queryParameterList.add("searchRowCriteria[0].queryString=" + this.keyWord);
-            queryParameterList.add("searchRowCriteria[0].fieldName=all-fields");
-            queryParameterList.add("searchRowCriteria[0].booleanConnector=and");
-            queryParameterList.add("dateRange=between");
-            queryParameterList.add("startYear=" + yearFormat.format(this.startDate.getTime()));
-            queryParameterList.add("endYear=" + yearFormat.format(this.endDate.getTime()));
-            String queyParamsStr = "";
-            for (String queryParameter : queryParameterList) {
-                queyParamsStr = queyParamsStr + "&" + queryParameter;
-            }
-            String urlFinal = this.portal.getUrl() + "?" + queyParamsStr;
-            log.debug("Accessing portal url: " + urlFinal);
-            this.searchDoc = Jsoup.connect(urlFinal)
-                    .timeout(30 * 1000)
-                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-                    .userAgent("Chrome").post();
-
-        } catch (IOException ex) {
-            log.error("Exception trying to load the url:" + this.portal.getUrl());
+    protected void searchPage() throws IOException {
+        String urlFinal = null;
+        DateFormat yearFormat = new SimpleDateFormat("yyyy");
+        List<String> queryParameterList = new ArrayList<>();
+        queryParameterList.add("searchRowCriteria[0].queryString=" + this.keyWord);
+        queryParameterList.add("searchRowCriteria[0].fieldName=all-fields");
+        queryParameterList.add("searchRowCriteria[0].booleanConnector=and");
+        queryParameterList.add("dateRange=between");
+        queryParameterList.add("startYear=" + yearFormat.format(this.startDate.getTime()));
+        queryParameterList.add("endYear=" + yearFormat.format(this.endDate.getTime()));
+        String queyParamsStr = "";
+        for (String queryParameter : queryParameterList) {
+            queyParamsStr = queyParamsStr + "&" + queryParameter;
         }
+        urlFinal = this.portal.getUrl() + "?" + queyParamsStr;
+        log.debug("Accessing portal url: " + urlFinal);
+        this.searchDoc = Jsoup.connect(urlFinal)
+                .timeout(30 * 1000)
+                .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+                .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7").post();
 
     }
 
@@ -68,128 +64,79 @@ public class PortalSearchWileyService extends PortalSearch {
 
     @Override
     protected void fillJournal(Element articleData, Element articlePage) {
-        Element elem = articleData.select("div[class^=citation] h3").get(0);
-        String journal = elem.text().substring(0, 1).toUpperCase()
-                + elem.text().substring(1).toLowerCase();
+        Element elem = articlePage.select("meta[name=citation_journal_title]").first();
+        if (elem == null) {
+            elem = articlePage.select("meta[name=citation_book_title]").first();
+        }
+        String journal = elem.attr("content");
         this.article.setJournal(journal);
     }
 
     @Override
     protected void fillAuthorList(Element articleData, Element articlePage) {
-//        try {
+
         List<Author> authorList = new ArrayList();
-        List<Element> elemList = articlePage.select("div[class=article-header__authors-container] > ul > li");
-        if (!elemList.isEmpty()) {
-            for (Element elem : elemList) {
-                String authorStr = elem.attr("data-author-name");
-
-                List<Element> contactEmail = elem.select("a[class=article-header__authors-item-email]");
-                String contactEmailStr = null;
-                if (contactEmail.size() > 0) {
-                    contactEmailStr = contactEmail.get(0).text();
-                }
-                Author author = new Author(authorStr, contactEmailStr);
-                authorList.add(author);
-            }
-
-        } else {
-            elemList = articlePage.select("div[id=articleMeta] > ol[id=authors] > li");
-            for (Element elem : elemList) {
-                String authorStr = elem.text().replaceAll("[^A-Za-z \\.]", "");
-                Author author = new Author(authorStr, null);
-                authorList.add(author);
-            }
+        Elements elemList = articlePage.select("meta[name=citation_author]");
+        for (Element elem : elemList) {
+            String[] authorStr = elem.attr("content").split(", ");
+            Author author = new Author(authorStr[1] + " " + authorStr[0], null);
+            authorList.add(author);
         }
         this.article.setAuthorList(authorList);
 
     }
 
     @Override
-    protected void fillPublishedDate(Element articleData, Element articlePage
-    ) {
-        fillDate1(articlePage);
-        if (article.getPublishedDate() == null) {
-            fillDate2(articlePage);
-        }
-
-    }
-    // The journal of Physiology
-
-    private void fillDate1(Element articlePage) {
-        Element elem = articlePage.select("time[id=first-published-date]").first();
-        if (elem != null) {
-            Date publishedDate = this.tryParseDate(elem.text());
+    protected void fillPublishedDate(Element articleData, Element articlePage) {
+        try {
+            Element elem = articlePage.select("meta[name=citation_online_date]").first();
+            String date = elem.attr("content");
+            Date publishedDate = this.tryParseDate(date);
             this.article.setPublishedDate(publishedDate);
+        } catch (Exception ex) {
+            log.error("Exception: error reading date");
         }
-    }
-
-    private void fillDate2(Element articlePage) {
-        Element elem = articlePage.select("div[id=articleMeta] p[id=publishedOnlineDate]").first();
-        String date = elem.text().split(": ")[1];
-        Date publishedDate = this.tryParseDate(date);
-        this.article.setPublishedDate(publishedDate);
     }
 
     @Override
     protected void fillDoi(Element articleData, Element articlePage) {
-        fillDoi1(articlePage);
-        if (article.getDoi() == null) {
-            fillDoi2(articlePage);
-        }
-    }
-
-    private void fillDoi1(Element articlePage) {
-        Element elem = articlePage.select("div[id=articleMeta] > p[id=doi]").first();
-        if (elem != null) {
-            String doi = elem.text();
-            doi = doi.replace("DOI: ", "");
-            article.setDoi(doi);
-        }
-    }
-
-    // The journal of Physiology
-    private void fillDoi2(Element articlePage) {
         Element elem = articlePage.select("meta[name=citation_doi]").first();
-        article.setDoi(elem.attr("content"));
+        String doi = elem.attr("content");
+        article.setDoi(doi);
     }
 
     @Override
     protected void fillLinks(Element articleData, Element articlePage) {
-        this.fillLink(articleData, articlePage);
-    }
-
-    private void fillLink(Element articleData, Element articlePage) {
-        List<Element> elementList = articleData.select("ul[class=productMenu] > li > a");
-        for (Element element : elementList) {
-            if (element.text().startsWith("PDF") && this.searchPortal.getLink() != null) {
-                this.searchPortal.setLink(this.portal.getBase() + element.attr("href"));
-            }
+        Element elem = articlePage.select("meta[name=citation_fulltext_html_url]").first();
+        if (elem == null){
+            elem = articlePage.select("meta[name=citation_abstract_html_url]").first();
         }
-
-        List<Element> supplementaryLinkElementList = articlePage.select("section[aria-labelledby=supplementary-information] h3[class=text17] > a");
-        log.debug("Number of supplementary links: " + supplementaryLinkElementList.size());
-        for (Element supplementaryLinkElement : supplementaryLinkElementList) {
-            String supplementaryLink = supplementaryLinkElement.attr("href");
-            log.debug(supplementaryLink);
-            this.searchPortal.setSupplementaryLink(supplementaryLink);
-        }
-
+        String link = elem.attr("content");
+        this.article.setLink(link);
     }
 
     @Override
     protected Boolean loadNextPage() {
         Boolean nextPage = Boolean.FALSE;
         try {
-            Elements linkList = this.searchDoc.select("div[class=paginationFilter] > ol > li > a");
-            if (linkList != null && !linkList.isEmpty()) {
-                String link = linkList.get(linkList.size()-1).attr("href");
-                this.searchDoc = Jsoup.connect(this.portal.getBase() + link)
-                        .timeout(30 * 1000)
-                        .userAgent("Chrome")
-                        .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8").get();
-                nextPage = Boolean.TRUE;
-
+            Element selected = this.searchDoc.select("div[class=paginationFilter] > ol > li[class=selected]").first();
+            if (selected == null) {
+                return nextPage;
             }
+            Element next = selected.nextElementSibling();
+            if (next == null) {
+                return nextPage;
+            }
+            Element linkEl = next.selectFirst("a");
+            String link = linkEl.attr("href");
+            log.debug("Accessing portal url next page: " + this.portal.getBase() + link);
+
+            this.searchDoc = Jsoup.connect(this.portal.getBase() + link)
+                    .timeout(30 * 1000)
+                    .userAgent("Chrome")
+                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8").get();
+            nextPage = Boolean.TRUE;
+
         } catch (IOException ex) {
             log.error("Exception loading next page", ex);
         }
@@ -206,7 +153,7 @@ public class PortalSearchWileyService extends PortalSearch {
 
     @Override
     protected void searchForTitlesApi() {
-        throw new UnsupportedOperationException("Not needed if accessing through web and not API");
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

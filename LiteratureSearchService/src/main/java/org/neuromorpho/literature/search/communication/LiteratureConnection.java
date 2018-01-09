@@ -16,8 +16,7 @@ public class LiteratureConnection {
     @Value("${uriLiteratureService}")
     private String uri;
     
-    @Value("${uriPubMedService}")
-    private String uriPubMed;
+   
     
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -41,13 +40,5 @@ public class LiteratureConnection {
         restTemplate.put(url, search);
     }
      
-    public Article findPubMed(String pmid) {
-        String url = uriPubMed + "/literature/pubmed/" + pmid;
-        log.debug("Creating rest connection for URI: " + url);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Article> responseEntity = 
-                restTemplate.getForEntity(url, Article.class);
-        return responseEntity.getBody();
-    }
 
 }

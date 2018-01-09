@@ -8,11 +8,12 @@ public class Article implements java.io.Serializable {
     private String id;
     private String pmid;
     private String title;
+    private String link;
     private String journal;
     private String doi;
     private Date publishedDate;
     private List<Author> authorList;
-
+ 
     public Article(String id) {
         this.id = id;
     }
@@ -76,15 +77,19 @@ public class Article implements java.io.Serializable {
         this.authorList = authorList;
     }
 
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
     @Override
     public String toString() {
-        String authorListStr = "";
-        for (Author author: this.authorList){
-            authorListStr = authorListStr + ", " + author.toString();
-        }
-        return "Article{" + "id=" + id + ", pmid=" + pmid + ", title=" + title
-                + ", journal=" + journal + ", doi=" + doi + ", publishedDate="
-                + publishedDate + ", authorList=" + authorList.toString() + '}';
+        return "Article{" + "id=" + id + ", pmid=" + pmid + ", title=" + title 
+                + ", link=" + link + ", journal=" + journal + ", doi=" + doi 
+                + ", publishedDate=" + publishedDate + ", authorList=" + authorList.toString() + '}';
     }
 
 }

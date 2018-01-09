@@ -41,12 +41,10 @@ public class Application implements CommandLineRunner {
         List<KeyWord> keyWordList = portalConnection.findAllKeyWords();
 
         for (Portal portal : portalList) {
-            Integer numArticlesTotal = 0;
             IPortalSearch portalSearch = portalSearchFactory.launchPortalSearch(portal.getName());
 
             for (KeyWord word : keyWordList) {
-                Integer numArticles = portalSearch.findArticleList(word, portal);
-                numArticlesTotal = numArticlesTotal + numArticles;
+                portalSearch.findArticleList(word, portal);
             }
 
         }

@@ -10,10 +10,8 @@ import java.util.List;
 
 public class Search implements java.io.Serializable {
 
-    private String link;
     private String source;
     private String keyWord;
-    private List<String> supplementaryLink;
 
     public Search() {
     }
@@ -21,14 +19,6 @@ public class Search implements java.io.Serializable {
     public Search(String source, String keyWord) {
         this.source = source;
         this.keyWord = keyWord;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
     }
 
     public String getSource() {
@@ -47,26 +37,9 @@ public class Search implements java.io.Serializable {
         this.keyWord = keyWord;
     }
 
-    public List<String> getSupplementaryLink() {
-        return supplementaryLink;
-    }
-
-    public void setSupplementaryLink(List<String> supplementaryLink) {
-        this.supplementaryLink = supplementaryLink;
-    }
-
-    public void setSupplementaryLink(String supplementaryLink) {
-        if (this.supplementaryLink == null) {
-            this.supplementaryLink = new ArrayList();
-        }
-        this.supplementaryLink.add(supplementaryLink);
-
-    }
-
     @Override
     public String toString() {
-        return "Search{" + "link=" + link + ", source=" + source + ", keyWord=" 
-                + keyWord + ", supplementaryLink=" + supplementaryLink + '}';
+        return "Search{" + "source=" + source + ", keyWord=" + keyWord + '}';
     }
     
     
