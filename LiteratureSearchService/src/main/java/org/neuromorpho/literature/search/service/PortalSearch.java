@@ -142,12 +142,15 @@ public abstract class PortalSearch implements IPortalSearch {
                     }
                     //call pubmed to retrieve pubmedID
                     String pmid = pubMedConnection.findTitleFromPMID(this.article.getTitle(), "pubmed");
-                    if (pmid == null) {
-                        pmid = pubMedConnection.findTitleFromPMID(this.article.getTitle(), "pmc");
-                    }
                     if (pmid != null) {
-                        this.article.setPmid(pmid);
+                        this.article = pubMedConnection.findArticleFromPMID(pmid, "pubmed");
+                    } else {
+                        pmid = pubMedConnection.findTitleFromPMID(this.article.getTitle(), "pmc");
+                        if (pmid != null) {
+                            this.article = pubMedConnection.findArticleFromPMID(pmid, "pmc");
+                        }
                     }
+
                     log.debug(this.article.toString());
                     // calling rest to save the article & updating the portal search values
                     ArticleResponse response = literatureConnection.saveArticle(this.article, this.inaccessible, this.collection);
