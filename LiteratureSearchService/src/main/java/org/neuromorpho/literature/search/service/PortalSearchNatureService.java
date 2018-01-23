@@ -69,7 +69,7 @@ public class PortalSearchNatureService extends PortalSearch {
 
                     List<Author> authorList = new ArrayList();
 
-                    for (Element creator : result.select("dc|creator")) {
+                    for (Element creator : record.select("dc|creator")) {
                         Author author = new Author(creator.text(), null);
                         authorList.add(author);
 
