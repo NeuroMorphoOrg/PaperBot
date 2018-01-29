@@ -5,9 +5,6 @@
  */
 package org.neuromorpho.literature.search.model.article;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Search implements java.io.Serializable {
 
     private String source;
