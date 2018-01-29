@@ -11,7 +11,6 @@ import java.util.List;
 import org.neuromorpho.literature.exceptions.MissingDataException;
 import org.neuromorpho.literature.model.article.Article;
 import org.neuromorpho.literature.model.article.ArticleCollection;
-import org.neuromorpho.literature.model.article.ArticleCollection.ArticleStatus;
 import org.neuromorpho.literature.model.article.Author;
 
 public class ArticleDtoAssembler {
@@ -36,6 +35,7 @@ public class ArticleDtoAssembler {
         articleDto.setTitle(article.getTitle());
         articleDto.setLink(article.getLink());
         articleDto.setEvaluatedDate(article.getEvaluatedDate());
+        articleDto.setUsage(article.getDataUsage());
 
         return articleDto;
     }
@@ -50,8 +50,10 @@ public class ArticleDtoAssembler {
             }
             articleDto.setId(article.getId().toString());
             List<AuthorDto> authorList = new ArrayList();
-            for (Author author : article.getAuthorList()) {
-                authorList.add(authorDtoAssembler.createAuthorDto(author));
+            if (article.getAuthorList() != null) {
+                for (Author author : article.getAuthorList()) {
+                    authorList.add(authorDtoAssembler.createAuthorDto(author));
+                }
             }
             articleDto.setAuthorList(authorList);
             articleDto.setDoi(article.getDoi());
@@ -89,7 +91,9 @@ public class ArticleDtoAssembler {
         }
         article.setAuthorList(authorList);
         article.setDataUsage(articleDto.getUsage());
-        article.setAbstact(articleDto.getAbstact());
+        article.setSearchPortal(
+                searchPortalDtoAssembler.createSearchPortal(articleDto.getSearchPortal()));
+
         return article;
     }
 

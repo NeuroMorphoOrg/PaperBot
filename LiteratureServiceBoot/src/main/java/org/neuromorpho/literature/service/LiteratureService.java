@@ -26,12 +26,8 @@ public class LiteratureService {
         return articleRepository.getSummary(date);
     }
 
-    public List<String> getFieldValues(String field) {
-        return articleRepository.findFieldValues(field);
-    }
-
-    public Page<Article> getArticles(Map<String, List<String>> fieldQuery, Integer page) {
-        return articleRepository.findByFieldQuery(fieldQuery, page);
+    public Page<Article> getArticleList(String collection, Map<String, String> fieldQuery, Integer page) {
+        return articleRepository.findByFieldQuery(collection, fieldQuery, page);
     }
 
     public Page<Article> getArticles(String text, ArticleStatus articleStatus, Integer page) {
@@ -57,7 +53,12 @@ public class LiteratureService {
         return articleRepository.findByPMID(pmid);
     }
 
-    public void update(String id, Article article) {
+    public void replaceArticle(String id, Article article) {
+        log.debug("Updating fields for : " + id);
+        articleRepository.replace(id, article);
+    }
+    
+    public void updateArticle(String id, Map<String, Object> article) {
         log.debug("Updating fields for : " + id);
         articleRepository.update(id, article);
     }

@@ -26,22 +26,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 import org.springframework.data.mongodb.core.query.Update;
 
 @Repository
 public class ArticleRepositoryImpl implements ArticleRepository {
 
-    private final String positivesCollection = ArticleStatus.POSITIVE.getCollection();
     private final String toEvaluateCollection = ArticleStatus.TO_EVALUATE.getCollection();
 
     private final Integer pageSize = 50;
@@ -69,6 +61,8 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         ArticleCollection oldArticle = this.existsArticle(article.getArticle());
         String id;
         if (oldArticle != null) {
+            id = oldArticle.getArticle().getId().toString();
+            log.debug("Updating article with id: " + id);
             Article old = oldArticle.getArticle();
             Article newArticle = article.getArticle();
             //if article was in collection inaccessible update
@@ -78,23 +72,35 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             // if new article has more data than saved article update
             Query query = new Query(Criteria.where("_id").is(old.getId()));
             Update update = new Update();
+            Boolean needUpdate = Boolean.FALSE;
             if (!newArticle.isDoiNull() && old.isDoiNull()) {
                 update.set("doi", newArticle.getDoi());
+                needUpdate = Boolean.TRUE;
             }
             if (!newArticle.isPMIDNull() && old.isPMIDNull()) {
                 update.set("pmid", newArticle.getPmid());
+                needUpdate = Boolean.TRUE;
+
             }
             if (!newArticle.isPublishedDateNull() && old.isPublishedDateNull()) {
                 update.set("publishedDate", newArticle.getPublishedDate());
+                needUpdate = Boolean.TRUE;
+
             }
             if (!newArticle.isJournalNull() && old.isJournalNull()) {
                 update.set("journal", newArticle.getJournal());
-            }
-            old.mergeAuthorData(newArticle.getAuthorList());
-            update.set("authorList", old.getAuthorList());
-            mongoOperations.updateFirst(query, update, oldArticle.getArticleStatus().getCollection());
+                needUpdate = Boolean.TRUE;
 
-            id = oldArticle.getArticle().getId().toString();
+            }
+            if (!newArticle.isAuthorListNull() && old.isAuthorListNull()) {
+                update.set("authorList", newArticle.getAuthorList());
+                needUpdate = Boolean.TRUE;
+
+            }
+            if (needUpdate) {
+                mongoOperations.updateFirst(query, update, oldArticle.getArticleStatus().getCollection());
+            }
+
         } else {
             mongoOperations.save(article.getArticle(), article.getArticleStatus().getCollection());
             id = article.getArticle().getId().toString();
@@ -121,7 +127,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             Long articles = mongoOperations.count(null, status.getCollection());
             articlesNumbers.put(status.getStatus(), articles);
         }
-        
+
         return articlesNumbers;
     }
 
@@ -151,13 +157,13 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     }
 
     @Override
-    public void update(String id, Article articleNew) {
+    public void replace(String id, Article articleNew) {
         ArticleCollection articleOld = findById(id);
         if (articleOld == null) {
             articleNew.setId(new ObjectId(id));
             this.save(new ArticleCollection(articleNew, ArticleStatus.TO_EVALUATE));
         } else {
-             Article article = articleOld.getArticle();
+            Article article = articleOld.getArticle();
             article.setPmid(articleNew.getArticle().getPmid());
             article.setDoi(articleNew.getArticle().getDoi());
             article.setLink(articleNew.getArticle().getLink());
@@ -171,6 +177,20 @@ public class ArticleRepositoryImpl implements ArticleRepository {
 
     }
 
+    @Override
+    public void update(String id, Map<String, Object> article) {
+        ArticleCollection articleOld = findById(id);
+        if (articleOld != null) {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("_id").is(id));
+            Update update = new Update();
+            for (Map.Entry<String, Object> entry : article.entrySet()) {
+                update.set(entry.getKey(), entry.getValue());
+            }
+            mongoOperations.updateFirst(query, update, Map.class);
+        }
+
+    }
 
     @Override
     public void update(String id, SearchPortal searchPortal, String keyWord) {
@@ -266,40 +286,6 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         return duplicate;
     }
 
-
-    /*
-    * From positive collection. What about others?
-     */
-    @Override
-    public List<String> findFieldValues(String field) {
-
-        Aggregation aggregation;
-        if (field.equals("publishedDate") || field.equals("evaluatedDate")) {
-            aggregation = newAggregation(
-                    match(Criteria.where("dataUsage").is("DESCRIBING_NEURONS")),
-                    project().and(field).project("year").as("value"),
-                    group("value"),
-                    sort(Sort.Direction.DESC, "value"));
-        } else {
-            aggregation = newAggregation(
-                    project().and(field).as("value"),
-                    group("value"),
-                    sort(Sort.Direction.DESC, "value"));
-
-        }
-        AggregationResults<AggregationValue> groupResults = mongoOperations.aggregate(aggregation, positivesCollection, AggregationValue.class
-        );
-        List<AggregationValue> result = groupResults.getMappedResults();
-        List<String> resultList = new ArrayList();
-        if (result.get(0).getId() != null) {
-            for (AggregationValue value : result) {
-                resultList.add(value.getId());
-                log.debug("field value found: " + value.getId());
-            }
-        }
-        return resultList;
-    }
-
     @Override
     public Page<Article> findByText(String text, ArticleStatus status, Integer pageStart) {
         PageRequest pageRequest = new PageRequest(pageStart, pageSize);
@@ -329,18 +315,20 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     }
 
     @Override
-    public Page<Article> findByFieldQuery(Map<String, List<String>> fieldQuery,
+    public Page<Article> findByFieldQuery(
+            String collection,
+            Map<String, String> fieldQuery,
             Integer pageStart) {
         PageRequest pageRequest = new PageRequest(pageStart, pageSize);
         Query query = new Query();
-        String collection = positivesCollection;
         for (Map.Entry pair : fieldQuery.entrySet()) {
-            List<String> valueList = (List<String>) pair.getValue();
-            if (pair.getKey().equals("articleStatus")) {
-                collection = ArticleStatus.valueOf(valueList.get(0)).getCollection();
+            log.debug("Adding Filter to query:" + pair);
+            if (pair.getValue().toString().contains("$exist")) {
+                query.addCriteria(Criteria.where(pair.getKey().toString()).exists(true));
             } else {
-                Criteria criteriaOr = getOrCriteriaListExactMatch(pair);
-                query.addCriteria(criteriaOr);
+//                Criteria criteriaOr = getOrCriteriaListExactMatch(pair);
+//                query.addCriteria(criteriaOr);
+                query.addCriteria(Criteria.where(pair.getKey().toString()).is(pair.getValue().toString()));
             }
         }
 
@@ -350,16 +338,10 @@ public class ArticleRepositoryImpl implements ArticleRepository {
                 * pageSize);
         query.limit(pageSize);
 
-        List<Article> articleList = mongoOperations.find(query, Article.class, collection);
+        String status = ArticleStatus.getArticleStatus(collection).getCollection();
+        List<Article> articleList = mongoOperations.find(query, Article.class, status);
 
-//        if (articleList.isEmpty()) {
-//            articleList = mongoOperations.find(query, Article.class, negativesCollection);
-//            for (Article article : articleList) {
-//                article.addNegativeStatus();
-//
-//            }
-//        }
-        Long n = mongoOperations.count(query, Article.class, collection);
+        Long n = mongoOperations.count(query, Article.class, status);
         Page<Article> articlePage = new PageImpl<>(articleList, pageRequest, n);
         return articlePage;
 

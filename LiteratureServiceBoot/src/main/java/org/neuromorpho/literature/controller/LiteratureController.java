@@ -64,38 +64,42 @@ public class LiteratureController {
     @CrossOrigin
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateArticle(
+    public void replaceArticle(
             @PathVariable String id,
             @RequestBody ArticleDto article) {
+        log.debug("Replacing article: " + article.toString());
+        literatureService.replaceArticle(id, articleDtoAssembler.createArticle(article));
+    }
+    
+    @CrossOrigin
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateArticle(
+            @PathVariable String id,
+            @RequestBody Map<String, Object> article) {
         log.debug("Updating article: " + article.toString());
-        literatureService.update(id, articleDtoAssembler.createArticle(article));
+        literatureService.updateArticle(id, article);
     }
 
     @CrossOrigin
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Page<ArticleDto> getArticles(
-            @RequestParam(required = false) String publishedYear,
-            @RequestParam(required = false) String ocYear,
-            @RequestParam(required = false) String pmid,
-            @RequestParam(required = false) String species,
-            @RequestParam(required = false) String usage,
-            @RequestParam(required = false) String ltDate,
-            @RequestParam(required = false) String gtDate,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = true) String articleStatus,
+            @RequestParam(required = true) String collection,
+            @RequestParam(required = false) Map<String, String> keyValueMap,
             @RequestParam(required = true) Integer page) {
-        Map<String, List<String>> keyValueMap = fieldsAssembler.getFieldQuery(
-                publishedYear, ocYear, ltDate, gtDate,
-                pmid, species, usage, email, articleStatus);
+        log.debug("Find articles by query collection : " + collection + " and page: " + page);
+        keyValueMap.remove("collection");
+        keyValueMap.remove("page");
+        Page<Article> articlePage = literatureService.getArticleList(
+                collection, keyValueMap, page);
+        log.debug("Found #articles : " + articlePage.getTotalElements());
 
-        Page<Article> articlePage = literatureService.getArticles(
-                keyValueMap, page);
         List<ArticleDto> articleDtoList = new ArrayList();
         for (Article article : articlePage) {
             ArticleCollection articleCollection = new ArticleCollection(article, null);
             articleDtoList.add(articleDtoAssembler.createArticleDto(articleCollection));
         }
-        return new PageImpl<ArticleDto>(articleDtoList, new PageRequest(page,
+        return new PageImpl<>(articleDtoList, new PageRequest(page,
                 articlePage.getSize(), articlePage.getSort()), articlePage.getTotalElements());
     }
 
@@ -128,6 +132,7 @@ public class LiteratureController {
             @PathVariable String status,
             @RequestParam(required = false) String text,
             @RequestParam(required = true) Integer page) {
+        log.debug("Find articles by text collection : " + status + " and page: " + page);
         ArticleStatus articleStatus = ArticleStatus.getArticleStatus(status);
         Page<Article> articlePage = literatureService.getArticles(
                 text, articleStatus, page);
@@ -136,7 +141,7 @@ public class LiteratureController {
             ArticleCollection articleCollection = new ArticleCollection(article, articleStatus);
             articleDtoList.add(articleDtoAssembler.createArticleDto(articleCollection));
         }
-        return new PageImpl<ArticleDto>(articleDtoList, new PageRequest(page,
+        return new PageImpl<>(articleDtoList, new PageRequest(page,
                 articlePage.getSize(), articlePage.getSort()), articlePage.getTotalElements());
     }
 

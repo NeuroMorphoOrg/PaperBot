@@ -28,15 +28,15 @@ public interface ArticleRepository {
 
     public ArticleCollection existsArticle(Article article);
 
-    public List<String> findFieldValues(String field);
-
     public void update(String id, ArticleStatus newCollection);
 
-    public void update(String id, Article article);
+    public void update(String id, Map<String, Object> article);
+
+    public void replace(String id, Article article);
     
     public void update(String id, SearchPortal searchPortal, String keyWord);
 
-    public Page<Article> findByFieldQuery(Map<String, List<String>> fieldQuery, Integer pageStart);
+    public Page<Article> findByFieldQuery(String collection, Map<String, String> fieldQuery, Integer pageStart);
 
     public Page<Article> findByText(String text, ArticleStatus status, Integer pageStart);
 

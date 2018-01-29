@@ -17,7 +17,6 @@ public class SearchService {
     private ArticleRepository articleRepository;
 
     public String saveOrUpdateArticle(ArticleCollection article) {
-        log.debug("Updating article for title: " + article.getArticle().getTitle());
         String id = articleRepository.saveOrUpdate(article);
         return id;
     }

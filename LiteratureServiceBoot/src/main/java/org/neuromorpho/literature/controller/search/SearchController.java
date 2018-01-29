@@ -33,6 +33,8 @@ public class SearchController {
     public ArticleDto saveOrUpdateArticle(
             @PathVariable String articleStatus,
             @RequestBody ArticleDto article) {
+        log.debug("Saving or updating article through search service: " + article.toString());
+
         Article articleTeated = articleDtoAssembler.createArticle(article);
 
         String _id = searchService.saveOrUpdateArticle(

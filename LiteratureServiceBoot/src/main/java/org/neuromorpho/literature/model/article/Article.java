@@ -154,12 +154,10 @@ public class Article {
         return link;
     }
 
-   
     public void setLink(String link) {
         this.link = link;
-        
-    }
 
+    }
 
     public String getStatus() {
         return status;
@@ -193,16 +191,8 @@ public class Article {
         this.abstact = abstact;
     }
 
-    public void mergeAuthorData(List<Author> newAuthorList) {
-        if (this.authorList.size() < newAuthorList.size()) {
-            this.authorList = newAuthorList;
-        } else {
-            for (Integer i = 0; i < newAuthorList.size(); i++) {
-                this.authorList.get(i).mergeAuthorName(newAuthorList.get(i));
-                this.authorList.get(i).mergeAuthorEmail(newAuthorList.get(i));
-            }
-        }
-
+    public Boolean isAuthorListNull() {
+        return (this.authorList == null || this.authorList.isEmpty());
     }
 
     public void updateSearchPortal(SearchPortal searchPortal, String keyWord) {
@@ -212,7 +202,6 @@ public class Article {
         this.searchPortal.updateSearchPortal(searchPortal, keyWord);
     }
 
-    
     public Boolean hasContactEmail(List<Author> authorList) {
         for (Author author : this.authorList) {
             if (author.hasContactEmail()) {
