@@ -16,7 +16,7 @@ Thanks to Spring framework no schemas for the database are needed to be created 
 ### 1.3. Get an API key for ScienceDiect, SpringerLink and CrossRef (Wiley)
 
 The portals ScienceDiect and SpringerLink require the user to register and obtain an API to use their APIs. You can register and find the key at https://dev.elsevier.com/user/registration and https://dev.springer.com/signup  
-To be able to download the PDFs from Wiley the user must obtain a key following the instructions provided in http://olabout.wiley.com/WileyCDA/Section/id-829772.html
+CrossRef provides an option to retrieve the pdf urls, some of the portals are completely open, but Wiley for example requies th CrossRef key to download their article. The key is obtained following the instructions provided in http://olabout.wiley.com/WileyCDA/Section/id-829772.html
 
 ### 1.4. Upload the portals configuration to the **Portal Database**
 
