@@ -13,11 +13,15 @@ Follow the instructions: https://docs.mongodb.com/manual/administration/install-
 ### 1.2. No schema needed
 Thanks to Spring framework no schemas for the database are needed to be created prior to using the tool.
 
-### 1.3. Upload the portals configuration to the **Portal Database**
+### 1.3. Get an API key for ScienceDiect and SpringerLink
+
+The portals ScienceDiect and SpringerLink require the user to register and obtain an API to use their APIs. You can register and find the key at https://dev.elsevier.com/user/registration and https://dev.springer.com/signup  
+
+### 1.4. Upload the portals configuration to the **Portal Database**
 
 This is needed if you want to use the automated search (Elsevier/ScienceDirect, Springer, Nature, Wiley, PubMed/PubMed Central, and GoogleScholar). The manual PubMed search does not use the **Portal Database**.
-
-* `searchPeriod` is defined in days. 
+* `token` is the api key obtained in **1.3**, please replace the `...   "token": "replace with your token"`<br> with the api key you had obtained. 
+* `searchPeriod` is defined in months. 
 * `active` can be set to true if you want to launch the specific portal or false otherwise. For example, you may want to launch only one of the portal for a given time range and set the others to false.
 
 To create the data from the terminal:
@@ -46,7 +50,7 @@ To create the data from the terminal:
 `...   "apiUrl": "https://api.elsevier.com/content/search/scidir?",`<br>
 `...   "searchPeriod": 3,`<br>
 `...   "active": true`<br>
-`...   "token": "`<br>
+`...   "token": "replace with your token""`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "Nature",`<br>
@@ -66,7 +70,7 @@ To create the data from the terminal:
 `...   "apiUrl": "http://api.springer.com/metadata/json?",`<br>
 `...   "searchPeriod": 3,`<br>
 `...   "active": true`<br>
-`...   "token": "`<br>
+`...   "token": "replace with your token"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "GoogleScholar",`<br>
