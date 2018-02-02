@@ -6,8 +6,8 @@ Although different portals require different search configurations, the common i
 
 The user must understand and respect the terms of use of the portals, we are not responsible of any misuse of this tool:
 
-https://www.google.com/policies/terms/
-http://olabout.wiley.com/WileyCDA/Section/id-826542.html
+https://www.google.com/policies/terms/ <br>
+http://olabout.wiley.com/WileyCDA/Section/id-826542.html <br>
 
 
 
