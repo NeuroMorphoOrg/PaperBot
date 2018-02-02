@@ -20,7 +20,7 @@ The portals ScienceDiect and SpringerLink require the user to register and obtai
 ### 1.4. Upload the portals configuration to the **Portal Database**
 
 This is needed if you want to use the automated search (Elsevier/ScienceDirect, Springer, Nature, Wiley, PubMed/PubMed Central, and GoogleScholar). The manual PubMed search does not use the **Portal Database**.
-* `token` is the api key obtained in **1.3**, please replace the `...   "token": "replace with your token"`<br> with the api key you had obtained. 
+* `token` is the api key obtained in **1.3**, please replace from the db.portal.insertMany command the `...   "token": "replace with your token"`<br> with your api key.
 * `searchPeriod` is defined in months. 
 * `active` can be set to true if you want to launch the specific portal or false otherwise. For example, you may want to launch only one of the portal for a given time range and set the others to false.
 
@@ -98,7 +98,7 @@ If everything works well you should see the following response. Of course the `i
 	`]`<br>
 `}`<br>
 
-### 1.4. Add keywords for the search
+### 1.5. Add keywords for the search
 * `name` contains the keywords, where " " around the string is used for exact match if inputting more than one word and to avoid approximate string matching. Only AND operand is supported. In order to perform OR operation add more keywords to the Database.
 * `collection` is the group in wich the article will be saved. By default this is set to the `To evaluate` group, but you can configure the project to use different groups for other purposes.
 * `usage` is a label for the articles found using the keyword. You can add different labels to differentiate search types. 
