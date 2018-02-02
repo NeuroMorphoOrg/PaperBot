@@ -30,52 +30,49 @@ To create the data from the terminal:
 `... {`<br>
 `...   "name": "PubMed",`<br>
 `...   "apiUrl": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils",`<br>
-`...   "searchPeriod": 384,`<br>
+`...   "searchPeriod": 3,`<br>
 `...   "active": true,`<br>
 `...   "db": "pubmed"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "PubMedCentral",`<br>
 `...   "apiUrl": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils",`<br>
-`...   "apiUrl2": "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?",`<br>
-`...   "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/",`<br>
-`...   "searchPeriod": 384,`<br>
+`...   "searchPeriod": 3,`<br>
 `...   "active": true,`<br>
 `...   "db": "pmc"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "ScienceDirect",`<br>
-`...   "url": "http://www.sciencedirect.com/science",`<br>
-`...   "base": "http://www.sciencedirect.com",`<br>
-`...   "searchPeriod": 384,`<br>
+`...   "apiUrl": "https://api.elsevier.com/content/search/scidir?",`<br>
+`...   "searchPeriod": 3,`<br>
 `...   "active": true`<br>
+`...   "token": "`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "Nature",`<br>
-`...   "url": "http://www.nature.com/search?",`<br>
-`...   "base": "http://www.nature.com",`<br>
-`...   "searchPeriod": 384,`<br>
+`...   "apiUrl": "http://api.nature.com/content/opensearch/request?",`<br>
+`...   "searchPeriod": 3,`<br>
 `...   "active": true`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "Wiley",`<br>
 `...   "url": "http://onlinelibrary.wiley.com/advanced/search?",`<br>
-`...   "searchPeriod": 384,`<br>
-`...   "active": true,`<br>
+`...   "searchPeriod": 3,`<br>
+`...   "active": false,`<br>
 `...   "base": "http://onlinelibrary.wiley.com"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "SpringerLink",`<br>
-`...   "url": "http://link.springer.com/search?",`<br>
-`...   "base": "http://link.springer.com",`<br>
-`...   "searchPeriod": 384,`<br>
+`...   "apiUrl": "http://api.springer.com/metadata/json?",`<br>
+`...   "searchPeriod": 3,`<br>
 `...   "active": true`<br>
+`...   "token": "`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "GoogleScholar",`<br>
 `...   "url": "https://scholar.google.com/scholar?l=es&",`<br>
 `...   "base": "https://scholar.google.com",`<br>
-`...   "searchPeriod": 384,`<br>
+`...   "searchPeriod": 3,`<br>
 `...   "active": true`<br>
 `... }`<br>
 `... ]`<br>
