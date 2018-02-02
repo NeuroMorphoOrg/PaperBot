@@ -13,9 +13,10 @@ Follow the instructions: https://docs.mongodb.com/manual/administration/install-
 ### 1.2. No schema needed
 Thanks to Spring framework no schemas for the database are needed to be created prior to using the tool.
 
-### 1.3. Get an API key for ScienceDiect and SpringerLink
+### 1.3. Get an API key for ScienceDiect, SpringerLink and CrossRef (Wiley)
 
 The portals ScienceDiect and SpringerLink require the user to register and obtain an API to use their APIs. You can register and find the key at https://dev.elsevier.com/user/registration and https://dev.springer.com/signup  
+To be able to download the PDFs from Wiley the user must obtain a key following the instructions provided in http://olabout.wiley.com/WileyCDA/Section/id-829772.html
 
 ### 1.4. Upload the portals configuration to the **Portal Database**
 
