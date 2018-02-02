@@ -77,7 +77,7 @@ public class LiteratureController {
     public void updateArticle(
             @PathVariable String id,
             @RequestBody Map<String, Object> article) {
-        log.debug("Updating article: " + article.toString());
+        log.debug("Updating article id: " + id + " with data: " + article.toString());
         literatureService.updateArticle(id, article);
     }
 

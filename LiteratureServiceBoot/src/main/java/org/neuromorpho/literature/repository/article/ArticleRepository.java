@@ -6,7 +6,6 @@
 package org.neuromorpho.literature.repository.article;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import org.neuromorpho.literature.model.article.Article;
 import org.neuromorpho.literature.model.article.ArticleCollection;

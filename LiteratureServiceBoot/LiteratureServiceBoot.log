@@ -57,3 +57,73 @@
 2018-01-29 16:39:18.252 DEBUG 7883 --- [http-nio-8188-exec-8] o.n.l.c.search.SearchController          : Saving or updating article through search service: ArticleDto{evaluatedDate=null, id=null, pmid=28365869, title=Fast assembling of neuron fragments in serial 3D sections, journal=Brain informatics, doi=10.1007/s40708-017-0063-9, publishedDate=Fri Sep 01 00:00:00 EDT 2017, authorList=AuthorDto{name=Hanbo Chen, email=null}AuthorDto{name=Daniel Maxim Iascone, email=null}AuthorDto{name=Nuno Maçarico da Costa, email=null}AuthorDto{name=Ed S Lein, email=null}AuthorDto{name=Tianming Liu, email=null}AuthorDto{name=Hanchuan Peng, email=hanchuanp@alleninstitute.org.}, link=null}
 2018-01-29 16:39:22.877 DEBUG 7883 --- [http-nio-8188-exec-8] o.n.l.r.article.ArticleRepositoryImpl    : Updating article with id: 58f79f12e4b075376508f31a
 2018-01-29 16:40:05.326 DEBUG 7883 --- [http-nio-8188-exec-9] o.n.l.service.search.SearchService       : Updating search for article: 58f79f12e4b075376508f31a
+2018-02-01 00:16:29.375  INFO 7102 --- [main] org.neuromorpho.literature.Application   : Starting Application on MacBook-Pro-de-Patricia.local with PID 7102 (/Users/pmaraver/Documents/NetbeansProjects/LiterMate/LiteratureServiceBoot/target/classes started by pmaraver in /Users/pmaraver/Documents/NetbeansProjects/LiterMate/LiteratureServiceBoot)
+2018-02-01 00:16:29.400 DEBUG 7102 --- [main] org.neuromorpho.literature.Application   : Running with Spring Boot v1.5.4.RELEASE, Spring v4.3.9.RELEASE
+2018-02-01 00:16:29.403  INFO 7102 --- [main] org.neuromorpho.literature.Application   : No active profile set, falling back to default profiles: default
+2018-02-01 00:16:30.055  INFO 7102 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@4efc180e: startup date [Thu Feb 01 00:16:29 EST 2018]; root of context hierarchy
+2018-02-01 00:16:42.512  INFO 7102 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8188 (http)
+2018-02-01 00:16:42.655  INFO 7102 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2018-02-01 00:16:42.679  INFO 7102 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.15
+2018-02-01 00:16:43.952  INFO 7102 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-02-01 00:16:45.349  INFO 7102 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-02-01 00:16:45.379  INFO 7102 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-02-01 00:16:45.384  INFO 7102 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-02-01 00:16:45.386  INFO 7102 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-02-01 00:16:45.388  INFO 7102 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-02-01 00:17:01.451  INFO 7102 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-02-01 00:17:02.081  INFO 7102 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8188 (http)
+2018-02-01 00:17:02.128  INFO 7102 --- [main] org.neuromorpho.literature.Application   : Started Application in 34.981 seconds (JVM running for 38.963)
+2018-02-01 11:54:57.029  INFO 7102 --- [Thread-4] ationConfigEmbeddedWebApplicationContext : Closing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@4efc180e: startup date [Thu Feb 01 00:16:29 EST 2018]; root of context hierarchy
+2018-02-01 11:54:57.034  INFO 7102 --- [Thread-4] o.s.j.e.a.AnnotationMBeanExporter        : Unregistering JMX-exposed beans on shutdown
+2018-02-01 21:59:24.693  INFO 21453 --- [main] org.neuromorpho.literature.Application   : Starting Application on MacBook-Pro-de-Patricia.local with PID 21453 (/Users/pmaraver/Documents/NetbeansProjects/LiterMate/LiteratureServiceBoot/target/classes started by pmaraver in /Users/pmaraver/Documents/NetbeansProjects/LiterMate/LiteratureServiceBoot)
+2018-02-01 21:59:24.704 DEBUG 21453 --- [main] org.neuromorpho.literature.Application   : Running with Spring Boot v1.5.4.RELEASE, Spring v4.3.9.RELEASE
+2018-02-01 21:59:24.705  INFO 21453 --- [main] org.neuromorpho.literature.Application   : No active profile set, falling back to default profiles: default
+2018-02-01 21:59:24.866  INFO 21453 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@2767e23c: startup date [Thu Feb 01 21:59:24 EST 2018]; root of context hierarchy
+2018-02-01 21:59:29.681  INFO 21453 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8188 (http)
+2018-02-01 21:59:29.715  INFO 21453 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2018-02-01 21:59:29.719  INFO 21453 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.15
+2018-02-01 21:59:30.006  INFO 21453 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-02-01 21:59:30.373  INFO 21453 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-02-01 21:59:30.383  INFO 21453 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-02-01 21:59:30.385  INFO 21453 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-02-01 21:59:30.385  INFO 21453 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-02-01 21:59:30.386  INFO 21453 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-02-01 21:59:33.640  INFO 21453 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-02-01 21:59:33.853  INFO 21453 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8188 (http)
+2018-02-01 21:59:33.868  INFO 21453 --- [main] org.neuromorpho.literature.Application   : Started Application in 10.459 seconds (JVM running for 12.346)
+2018-02-01 22:01:26.262  INFO 21453 --- [http-nio-8188-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-02-01 22:01:26.414 DEBUG 21453 --- [http-nio-8188-exec-1] o.n.l.controller.LiteratureController    : Find articles by query collection : To evaluate and page: 0
+2018-02-01 22:01:26.752 DEBUG 21453 --- [http-nio-8188-exec-1] o.n.l.controller.LiteratureController    : Found #articles : 3235
+2018-02-01 22:05:07.726 DEBUG 21453 --- [http-nio-8188-exec-2] o.n.l.controller.LiteratureController    : Updating article id: 5a3d5479e4b059402375a0b4 with data: {PDFPath=/Users/pmaraver/nmofile/literature/pdf/2017/12/5a3d5479e4b059402375a0b4.pdf}
+2018-02-01 22:05:14.101 DEBUG 21453 --- [http-nio-8188-exec-2] o.n.l.service.LiteratureService          : Updating fields for : 5a3d5479e4b059402375a0b4
+2018-02-01 23:11:06.705  INFO 37533 --- [main] org.neuromorpho.literature.Application   : Starting Application on MacBook-Pro-de-Patricia.local with PID 37533 (/Users/pmaraver/Documents/NetbeansProjects/LiterMate/LiteratureServiceBoot/target/classes started by pmaraver in /Users/pmaraver/Documents/NetbeansProjects/LiterMate/LiteratureServiceBoot)
+2018-02-01 23:11:06.716 DEBUG 37533 --- [main] org.neuromorpho.literature.Application   : Running with Spring Boot v1.5.4.RELEASE, Spring v4.3.9.RELEASE
+2018-02-01 23:11:06.717  INFO 37533 --- [main] org.neuromorpho.literature.Application   : No active profile set, falling back to default profiles: default
+2018-02-01 23:11:06.891  INFO 37533 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@4efc180e: startup date [Thu Feb 01 23:11:06 EST 2018]; root of context hierarchy
+2018-02-01 23:11:12.018  INFO 37533 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8188 (http)
+2018-02-01 23:11:12.070  INFO 37533 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2018-02-01 23:11:12.073  INFO 37533 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.15
+2018-02-01 23:11:12.405  INFO 37533 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-02-01 23:11:12.908  INFO 37533 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-02-01 23:11:12.919  INFO 37533 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-02-01 23:11:12.921  INFO 37533 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-02-01 23:11:12.921  INFO 37533 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-02-01 23:11:12.922  INFO 37533 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-02-01 23:11:16.103  INFO 37533 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-02-01 23:11:16.398  INFO 37533 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8188 (http)
+2018-02-01 23:11:16.410  INFO 37533 --- [main] org.neuromorpho.literature.Application   : Started Application in 10.743 seconds (JVM running for 11.824)
+2018-02-01 23:11:50.689  INFO 37533 --- [http-nio-8188-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-02-01 23:11:50.821 DEBUG 37533 --- [http-nio-8188-exec-1] o.n.l.controller.LiteratureController    : Find articles by query collection : To evaluate and page: 0
+2018-02-01 23:12:18.160 DEBUG 37533 --- [http-nio-8188-exec-1] o.n.l.controller.LiteratureController    : Found #articles : 3235
+2018-02-01 23:16:09.591 DEBUG 37533 --- [http-nio-8188-exec-2] o.n.l.controller.LiteratureController    : Find articles by query collection : To evaluate and page: 0
+2018-02-01 23:16:15.017 DEBUG 37533 --- [http-nio-8188-exec-2] o.n.l.r.article.ArticleRepositoryImpl    : Adding Filter to query:pdfPath=$exist:false
+2018-02-01 23:16:24.098 DEBUG 37533 --- [http-nio-8188-exec-2] o.n.l.r.article.ArticleRepositoryImpl    : Adding Filter to query:doi$exist:true=
+2018-02-01 23:16:52.065 DEBUG 37533 --- [http-nio-8188-exec-2] o.n.l.controller.LiteratureController    : Found #articles : 0
+2018-02-01 23:17:49.911 DEBUG 37533 --- [http-nio-8188-exec-3] o.n.l.controller.LiteratureController    : Find articles by query collection : To evaluate and page: 0
+2018-02-01 23:18:00.473 DEBUG 37533 --- [http-nio-8188-exec-3] o.n.l.r.article.ArticleRepositoryImpl    : Adding Filter to query:pdfPath=$exist:false
+2018-02-01 23:18:00.474 DEBUG 37533 --- [http-nio-8188-exec-3] o.n.l.r.article.ArticleRepositoryImpl    : Adding Filter to query:doi$exist:true=
+2018-02-01 23:18:46.197 DEBUG 37533 --- [http-nio-8188-exec-3] o.n.l.controller.LiteratureController    : Found #articles : 0
+2018-02-01 23:18:52.518 DEBUG 37533 --- [http-nio-8188-exec-4] o.n.l.controller.LiteratureController    : Find articles by query collection : To evaluate and page: 0
+2018-02-01 23:18:52.519 DEBUG 37533 --- [http-nio-8188-exec-4] o.n.l.r.article.ArticleRepositoryImpl    : Adding Filter to query:pdfPath=$exist:false
+2018-02-01 23:18:52.519 DEBUG 37533 --- [http-nio-8188-exec-4] o.n.l.r.article.ArticleRepositoryImpl    : Adding Filter to query:doi=$exist:true
+2018-02-01 23:18:59.997 DEBUG 37533 --- [http-nio-8188-exec-4] o.n.l.controller.LiteratureController    : Found #articles : 2949

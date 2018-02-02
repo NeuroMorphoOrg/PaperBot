@@ -187,7 +187,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             for (Map.Entry<String, Object> entry : article.entrySet()) {
                 update.set(entry.getKey(), entry.getValue());
             }
-            mongoOperations.updateFirst(query, update, Map.class);
+            mongoOperations.updateFirst(query, update, articleOld.getArticleStatus().getCollection());
         }
 
     }
@@ -324,7 +324,8 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         for (Map.Entry pair : fieldQuery.entrySet()) {
             log.debug("Adding Filter to query:" + pair);
             if (pair.getValue().toString().contains("$exist")) {
-                query.addCriteria(Criteria.where(pair.getKey().toString()).exists(true));
+                String exists = pair.getValue().toString().split(":")[1];
+                query.addCriteria(Criteria.where(pair.getKey().toString()).exists(Boolean.parseBoolean(exists)));
             } else {
 //                Criteria criteriaOr = getOrCriteriaListExactMatch(pair);
 //                query.addCriteria(criteriaOr);
