@@ -104,12 +104,17 @@ If everything works well you should see the following response. Of course the `i
 
 **b) Replace `...   "token": "replace with your token"` with your api keys:**
 
-For example, if your api Key for SpringerLink is 111  and for ScienceDirect is 222 execute:
+For example, if your api Key for SpringerLink is 111 execute:
+<br>
 `db.portal.update({"name": "SpringerLink"},{$set: {"token": "111"}});`
-`db.portal.update({"name": "ScienceDirect"},{$set: {"token": "222"}});`
 
 If everything works well you should see the following response:
 `WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })`
+
+Same for ScienceDirect and an api Key 222:
+<br>
+`db.portal.update({"name": "ScienceDirect"},{$set: {"token": "222"}});`
+
 
 ### 1.4. Add keywords for the search
 * `name` contains the keywords, where " " around the string is used for exact match if inputting more than one word and to avoid approximate string matching. Only AND operand is supported. In order to perform OR operation add more keywords to the Database.
