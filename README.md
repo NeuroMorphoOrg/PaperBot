@@ -129,6 +129,11 @@ Same for ScienceDirect and an api Key 222:
   `"usage": "Describing"`<br>
 `});`<br>
 
+
+Close mongo console:
+<br>
+`exit`
+<br>
 ## 2. Boot MicroServices
 Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
 
