@@ -28,7 +28,7 @@ This is needed if you want to use the automated search (Elsevier/ScienceDirect, 
 * `searchPeriod` is defined in months. 
 * `active` can be set to true if you want to launch the specific portal or false otherwise. For example, you may want to launch only one of the portal for a given time range and set the others to false.
 
-**a) Insert the data from the terminal copying and pastying the following:
+**a) Insert the data from the terminal copying and pastying the following:**
 <br>
 `mongo`
 <br>
@@ -102,7 +102,7 @@ If everything works well you should see the following response. Of course the `i
 	`]`<br>
 `}`<br>
 
-**b) Replace `...   "token": "replace with your token"`<br> with your api keys:
+**b) Replace `...   "token": "replace with your token"`<br> with your api keys:**
 
 
 
