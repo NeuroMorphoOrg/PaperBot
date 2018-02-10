@@ -53,7 +53,7 @@ This is needed if you want to use the automated search (Elsevier/ScienceDirect, 
 `...   "name": "ScienceDirect",`<br>
 `...   "apiUrl": "https://api.elsevier.com/content/search/scidir?",`<br>
 `...   "searchPeriod": 3,`<br>
-`...   "active": true`<br>
+`...   "active": true,`<br>
 `...   "token": "replace with your token"`<br>
 `... },`<br>
 `... {`<br>
@@ -73,7 +73,7 @@ This is needed if you want to use the automated search (Elsevier/ScienceDirect, 
 `...   "name": "SpringerLink",`<br>
 `...   "apiUrl": "http://api.springer.com/metadata/json?",`<br>
 `...   "searchPeriod": 3,`<br>
-`...   "active": true`<br>
+`...   "active": true,`<br>
 `...   "token": "replace with your token"`<br>
 `... },`<br>
 `... {`<br>
