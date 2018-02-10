@@ -24,11 +24,11 @@ CrossRef provides an option to retrieve the pdf urls, some of the portals are co
 ### 1.3. Upload the portals configuration to the **Portal Database**
 
 This is needed if you want to use the automated search (Elsevier/ScienceDirect, Springer, Nature, Wiley, PubMed/PubMed Central, and GoogleScholar). The manual PubMed search does not use the **Portal Database**.
-* `token` is the api key obtained in **1.3**, please replace from the db.portal.insertMany command the `...   "token": "replace with your token"`<br> with your api key.
+* `token` is the api key obtained in **1.2**, once inserted you should replace the `...   "token": "replace with your token"`<br> with your api key.
 * `searchPeriod` is defined in months. 
 * `active` can be set to true if you want to launch the specific portal or false otherwise. For example, you may want to launch only one of the portal for a given time range and set the others to false.
 
-To create the data from the terminal:
+**a) Insert the data from the terminal copying and pastying the following:
 <br>
 `mongo`
 <br>
@@ -101,6 +101,10 @@ If everything works well you should see the following response. Of course the `i
 		`ObjectId("59272282f139a31a3a033501")`<br>
 	`]`<br>
 `}`<br>
+
+**b) Replace `...   "token": "replace with your token"`<br> with your api keys:
+
+
 
 ### 1.4. Add keywords for the search
 * `name` contains the keywords, where " " around the string is used for exact match if inputting more than one word and to avoid approximate string matching. Only AND operand is supported. In order to perform OR operation add more keywords to the Database.
