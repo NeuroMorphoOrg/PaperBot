@@ -105,14 +105,15 @@ If everything works well you should see the following response. Of course the `i
 **b) Replace `...   "token": "replace with your token"` with your api keys:**
 
 For example, if your api Key for SpringerLink is 111 execute:
-<br>
+<br><br>
 `db.portal.update({"name": "SpringerLink"},{$set: {"token": "111"}});`
 
 If everything works well you should see the following response:
+<br><br>
 `WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })`
 
 Same for ScienceDirect and an api Key 222:
-<br>
+<br><br>
 `db.portal.update({"name": "ScienceDirect"},{$set: {"token": "222"}});`
 
 
