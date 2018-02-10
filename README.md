@@ -54,7 +54,7 @@ To create the data from the terminal:
 `...   "apiUrl": "https://api.elsevier.com/content/search/scidir?",`<br>
 `...   "searchPeriod": 3,`<br>
 `...   "active": true`<br>
-`...   "token": "replace with your token""`<br>
+`...   "token": "replace with your token"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "Nature",`<br>
