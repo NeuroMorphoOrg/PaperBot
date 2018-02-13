@@ -191,16 +191,8 @@ If using Linux or Mac you can launch it typing:
 
 This will launch the rquired services with nohup and java -jar. Any error will be tracd in nohup.out. 
 `tail -f nohup.out `  To check everything is working<br> 
+` [           main] o.n.literature.<serviceAPP>.Application      : Started Application in 49.649 seconds (JVM running for 54.07)` <br>
 _**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
-
-### 2.5. Test the services are up & running
-Go to your browser and type: http://localhost:8180/literature/metadata/test
-Go to your browser and type: http://localhost:8186/literature/pubmed/test <br>
-Go to your browser and type: http://localhost:8189/literature/portals/test <br>
-Go to your browser and type: http://localhost:8188/literature/test <br>
-Go to your browser and type: http://localhost:8188/literature/crossref <br>
-
-You should see the following in the browser: `<ServiceName> up & running!`
 
 
 
