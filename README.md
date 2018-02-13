@@ -190,6 +190,7 @@ If using Linux or Mac you can launch it typing:
 `./launch.sh`<br>
 
 This will launch the rquired services with nohup and java -jar. Any error will be tracd in nohup.out. 
+`tail -f nohup.out `  To check everything is working<br> 
 _**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
 
 ### 2.5. Test the services are up & running
