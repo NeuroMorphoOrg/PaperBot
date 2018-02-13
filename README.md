@@ -4,27 +4,31 @@ LiterMate is a configurable, modular, open-source web-based solution to automati
 Without user interactions, LiterMate retrieves and stores article information (full reference, corresponding email contact, and full-text keyword hits) based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, HighWire, PubMed/PubMedCentral, and GoogleScholar.
 Although different portals require different search configurations, the common interface of LiterMate unifies the process from the user perspective. Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance to the project goals and seamless annotation of suitable metadata dimensions.
 
+The user must understand and respect the terms of use of the portals, we are not responsible of any misuse of this tool:
+
+https://www.google.com/policies/terms/ <br>
+http://olabout.wiley.com/WileyCDA/Section/id-826542.html <br>
+
+
 
 ## 1. DataBase
 
 ### 1.1. Install & launch MongoDB
 Follow the instructions: https://docs.mongodb.com/manual/administration/install-community/
  
-### 1.2. No schema needed
-Thanks to Spring framework no schemas for the database are needed to be created prior to using the tool.
-
-### 1.3. Get an API key for ScienceDiect and SpringerLink
+### 1.2. Get an API key for ScienceDiect, SpringerLink and CrossRef (Wiley)
 
 The portals ScienceDiect and SpringerLink require the user to register and obtain an API to use their APIs. You can register and find the key at https://dev.elsevier.com/user/registration and https://dev.springer.com/signup  
+CrossRef provides an option to retrieve the pdf urls, some of the portals are completely open, but Wiley for example requies the CrossRef key to download their articles. The key is obtained following the instructions provided in http://olabout.wiley.com/WileyCDA/Section/id-829772.html
 
-### 1.4. Upload the portals configuration to the **Portal Database**
+### 1.3. Upload the portals configuration to the **Portal Database**
 
 This is needed if you want to use the automated search (Elsevier/ScienceDirect, Springer, Nature, Wiley, PubMed/PubMed Central, and GoogleScholar). The manual PubMed search does not use the **Portal Database**.
-* `token` is the api key obtained in **1.3**, please replace from the db.portal.insertMany command the `...   "token": "replace with your token"`<br> with your api key.
+* `token` is the api key obtained in **1.2**, once inserted you should replace the `...   "token": "replace with your token"`<br> with your api key.
 * `searchPeriod` is defined in months. 
 * `active` can be set to true if you want to launch the specific portal or false otherwise. For example, you may want to launch only one of the portal for a given time range and set the others to false.
 
-To create the data from the terminal:
+**a) Insert the data from the terminal copying and pastying the following:**
 <br>
 `mongo`
 <br>
@@ -49,8 +53,8 @@ To create the data from the terminal:
 `...   "name": "ScienceDirect",`<br>
 `...   "apiUrl": "https://api.elsevier.com/content/search/scidir?",`<br>
 `...   "searchPeriod": 3,`<br>
-`...   "active": true`<br>
-`...   "token": "replace with your token""`<br>
+`...   "active": true,`<br>
+`...   "token": "replace with your token"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "Nature",`<br>
@@ -69,7 +73,7 @@ To create the data from the terminal:
 `...   "name": "SpringerLink",`<br>
 `...   "apiUrl": "http://api.springer.com/metadata/json?",`<br>
 `...   "searchPeriod": 3,`<br>
-`...   "active": true`<br>
+`...   "active": true,`<br>
 `...   "token": "replace with your token"`<br>
 `... },`<br>
 `... {`<br>
@@ -98,7 +102,22 @@ If everything works well you should see the following response. Of course the `i
 	`]`<br>
 `}`<br>
 
-### 1.5. Add keywords for the search
+**b) Replace `...   "token": "replace with your token"` with your api keys:**
+
+For example, if your api Key for SpringerLink is 111 execute:
+<br><br>
+`db.portal.update({"name": "SpringerLink"},{$set: {"token": "111"}});`
+
+If everything works well you should see the following response:
+<br><br>
+`WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })`
+
+Same for ScienceDirect and an api Key 222:
+<br><br>
+`db.portal.update({"name": "ScienceDirect"},{$set: {"token": "222"}});`
+
+
+### 1.4. Add keywords for the search
 * `name` contains the keywords, where " " around the string is used for exact match if inputting more than one word and to avoid approximate string matching. Only AND operand is supported. In order to perform OR operation add more keywords to the Database.
 * `collection` is the group in wich the article will be saved. By default this is set to the `To evaluate` group, but you can configure the project to use different groups for other purposes.
 * `usage` is a label for the articles found using the keyword. You can add different labels to differentiate search types. 
@@ -110,6 +129,11 @@ If everything works well you should see the following response. Of course the `i
   `"usage": "Describing"`<br>
 `});`<br>
 
+
+Close mongo console:
+<br>
+`exit`
+<br>
 ## 2. Boot MicroServices
 Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
 
