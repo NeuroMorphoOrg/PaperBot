@@ -216,9 +216,19 @@ Replace from the following commands `/Library/WebServer/Documents/` with your ap
 `sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 `sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 
-In your browser type: http://<ipAddress>/NMOLiteratureWeb
+In your browser type: http://[ipAddress]/NMOLiteratureWeb
 
-### 3.2. Update metadata html to your desired metadata properties
+### 3.2. If runing on a server and not your localhost remember to update the ip in the browser
+
+Update NMOLiteratureWeb/communications/articlesCommunicationService.js 
+
+`var url_literature = 'http://<serverIP>:8188/literature';`<br>
+`var url_reconstructions_status = 'http://<serverIP>:8182/literature/reconstructions/status';`<br>
+`var url_metadata = 'http://<serverIP>:8180/literature/metadata';`<br>
+`var url_pubmed = 'http://<serverIP>:8186/literature/pubmed';`<br>
+
+
+### 3.3. Update metadata html to your desired metadata properties 
 
 Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, so you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
 
@@ -233,7 +243,7 @@ Lets update a name for a given tag. For example:
  
  The `metadataFinished` is a nice feature that allows you to remember if you had finished reviewing a paper. If it is set to false, when you navigate to the Positive group of articles a red flag will remind you that there is pending work.
 
-### 3.3. Go to the Wiki to learn how to add an article manually
+### 3.4. Go to the Wiki to learn how to add an article manually
 
 
 ## 4. Crontab Services
