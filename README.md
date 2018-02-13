@@ -147,11 +147,11 @@ Download the code from git from the download button or you can use the terminal 
 
 ### 2.2. The properties files
 
-Each of the services contain a properties file with its own configuration. The location of the properties files:<br>
-`./LiteratureMetadataServiceBoot/src/main/java/application.properties` <br> `./LiteraturePortalServiceBoot/src/main/java/application.properties` <br> `./LiteraturePubMedServiceBoot/src/main/java/application.properties` <br> `./LiteratureSearchService/src/main/java/application.properties` <br>
-`./LiteratureServiceBoot/src/main/java/application.properties` <br>
+Each of the services contain a properties file with its own configuration in the location:<br>
+`./<ServiceName>/src/main/java/application.properties` <br> 
 
-Each of the services connects to a database independently so you can have several different databases or one. In this case all of the services are connected to `nmotest`.
+The services that requires download the PDFs needs the key obtained in **1.2** to download Wiley PDFs, if this key is not addd it will download only the open PDFs from CrossRef. Update the CrossRef properties file, the propeoty `token` value. The property `folder` should have write permisions and can be updated to your needs.
+Each of the services that requires DB access connects to a database independently, you can have several different databases or one. In this case all of the services are connected to a DB named `nmotest`.
 You can update the server ports; just be aware that there are other services that may depend on these connections (the Web Frontend & the LiteratureSearchService) and you should update them accordingly.
 
 `server.port= 8180`<br>
@@ -162,6 +162,9 @@ You can update the server ports; just be aware that there are other services tha
 `spring.data.mongodb.host=localhost`<br>
 `spring.data.mongodb.database=nmotest`<br>
 `spring.data.mongodb.port=27017`<br>
+`token=`<br>
+`folder=/home/services/literature/pdf/`<br>
+
 
 ### 2.3. Compile
 
