@@ -216,9 +216,7 @@ Replace from the following commands `/Library/WebServer/Documents/` with your ap
 `sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 `sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 
-In your browser type: http://localhost/NMOLiteratureWeb/index.html
-
-If you decide to change the name or the url project you will have to update the html links
+In your browser type: http://<ipAddress>/NMOLiteratureWeb/index.html
 
 ### 3.2. Update metadata html to your desired metadata properties
 
@@ -242,42 +240,17 @@ Lets update a name for a given tag. For example:
 
 Now that everything is set, it is fun to see how the Database populates from the Web page.
 
-### 4.1. Configuration file
-
-Because it is a microservice architecture, the services can run in different servers with different IPs and dataBases. The article search connects to 3 services: LiteratureServiceBoot, LiteraturePubMedServiceBoot, and LiteraturePortalServiceBoot. Remember to update the URLs localhost to the desired server IP if you are not running them locally.
-
-`endpoints.shutdown.enabled=true` <br>
-`server.port= 8087`<br>
-`logging.level.org.springframework.web=ERROR`<br>
-`logging.level.org.neuromorpho=DEBUG`<br>
-`logging.file=./LiteratureSearch.log`<br>
-`uriLiteratureService=http://localhost:8188/literature`<br>
-`uriPortalService=http://localhost:8189/literature`<br>
-`uriPubMedService=http://localhost:8186/literature/pubmed`<br>
-
-### 4.2. Clean and build the search service
-
-`cd LiteratureSearchService`<br>
-`mvn clean install`<br>
-
-You should see the following at the end:
-
-`[INFO] ------------------------------------------------------------------------`<br>
-`[INFO] BUILD SUCCESS`<br>
-`[INFO] ------------------------------------------------------------------------`<br>
-
-### 4.3. Launch
-`cd target`<br>
+### 4.1. Launch the crontab services
 
 You can launch it dissociated from the terminal in background
 
-`nohup java -jar LiteratureSearchService-1.0.jar &`<br>
+`nohup java -jar ./LiteraturSearchService/target/LiteratureSearchService-1.0.jar &`<br>
 
 Or launch it associated to the terminal in foreground to see how it works and its logs
 
-`java -jar LiteratureSearchService-1.0.jar`<br>
+`java -jar ./LiteraturSearchService/target/LiteratureSearchService-1.0.jar`<br>
 
-Or add to the crontab
+Or add it to the crontab. Same applies to LiteratureDownloadPDFService.
 
 ### 4.4. Go to the browser & refresh
 
