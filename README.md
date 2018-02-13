@@ -169,7 +169,7 @@ You can update the server ports; just be aware that there are other services tha
 ### 2.3. Compile
 
 From the terminal navigate inside the principal folder LiterMate-master and compile:<br>
-`cd LiterMate-master`<br>
+`cd LiterMate`<br>
 `mvn clean install`<br>
 
 This will compile all the services and you should see the `SUCCESS` for all the services at the end:
