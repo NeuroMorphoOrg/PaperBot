@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/literature/crosref")
+@RequestMapping("/literature/crossref")
 public class CrossRefController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
