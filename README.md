@@ -4,7 +4,7 @@ LiterMate is a configurable, modular, open-source web-based solution to automati
 Without user interactions, LiterMate retrieves and stores article information (full reference, corresponding email contact, and full-text keyword hits) based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, HighWire, PubMed/PubMedCentral, and GoogleScholar.
 Although different portals require different search configurations, the common interface of LiterMate unifies the process from the user perspective. Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance to the project goals and seamless annotation of suitable metadata dimensions.
 
-The user should read and understand the terms of use of the portals that are being scraper prior to activte this portion of the tool, we are not responsible of any misuse of it:
+The user should read and understand the terms of use of the portals that are using a scraper prior to activte this portion of the tool, we are not responsible of any misuse of it:
 
 https://www.google.com/policies/terms/ <br>
 http://olabout.wiley.com/WileyCDA/Section/id-826542.html <br>
