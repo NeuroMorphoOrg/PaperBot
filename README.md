@@ -168,35 +168,39 @@ You can update the server ports; just be aware that there are other services tha
 
 ### 2.3. Compile
 
-From the terminal type:<br>
-`cd LiteratureMetadataServiceBoot`<br>
+From the terminal navigate inside the principal folder LiterMate-master and compile:<br>
+`cd LiterMate-master`<br>
 `mvn clean install`<br>
 
-You should see the following at the end:
+This will compile all the services and you should see the `SUCCESS` for all the services at the end:
 
-`[INFO] ------------------------------------------------------------------------`<br>
-`[INFO] BUILD SUCCESS`<br>
-`[INFO] ------------------------------------------------------------------------`<br>
+` Reactor Summary:`<br>
+`[INFO] `<br>
+`[INFO] LiteratureCrossRefServiceBoot ...................... SUCCESS [ 21.782 s]`<br>
+`[INFO] LiteratureDownloadPDFService ....................... SUCCESS [  9.614 s]`<br>
+`[INFO] LiteratureMetadataServiceBoot ...................... SUCCESS [  0.996 s]`<br>
+`[INFO] LiteraturePubMedServiceBoot ........................ SUCCESS [  1.003 s]`<br>
+`[INFO] LiteratureServiceBoot .............................. SUCCESS [  1.607 s]`<br>
+`[INFO] LiteraturePortalServiceBoot ........................ SUCCESS [  1.122 s]`<br>
+`[INFO] LiteratureSearchService ............................ SUCCESS [  1.029 s]`<br>
+`[INFO] LiterMate .......................................... SUCCESS [  0.021 s]`<br>
 
 ### 2.4. Launch
-`cd target`<br>
-`nohup java -jar LiteratureMetadataServiceBoot-1.0.jar &`<br>
+If using Linux or Mac you can launch it typing:
+`./launch.sh`<br>
 
+This will launch the rquired services with nohup and java -jar. Any error will be tracd in nohup.out. 
 _**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
 
-### 2.5. Test the service is up & running
+### 2.5. Test the services are up & running
 Go to your browser and type: http://localhost:8180/literature/metadata/test
-
-You should see the following in the browser: `Metadata up & running!`
-
-### 2.6. Launch all of the other services
-
-Repeat the steps **2.2 to 2.5** for the services: LiteraturePubMedServiceBoot, LiteraturePortalServiceBoot, LiteratureServiceBoot
-
-URLs to test they are up & running: <br>
 Go to your browser and type: http://localhost:8186/literature/pubmed/test <br>
 Go to your browser and type: http://localhost:8189/literature/portals/test <br>
 Go to your browser and type: http://localhost:8188/literature/test <br>
+Go to your browser and type: http://localhost:8188/literature/crossref <br>
+
+You should see the following in the browser: `<ServiceName> up & running!`
+
 
 
 ## 3. Fronted
