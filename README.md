@@ -137,7 +137,7 @@ Close mongo console:
 ## 2. Boot MicroServices
 Microservices run an embedded tomcat using Spring Boot (.jar). All of them are independent and can be launched in any order
 
-**Pre-requisites**: Maven to compile and build the code: https://maven.apache.org/install.html and Java 8
+**Pre-requisites**: Maven to compile and build the code. Download: https://maven.apache.org/download.cgi and install: https://maven.apache.org/install.html and Java 8
 
 
 ### 2.1. Download the code
