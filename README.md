@@ -216,7 +216,7 @@ Replace from the following commands `/Library/WebServer/Documents/` with your ap
 `sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 `sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 
-In your browser type: http://<ipAddress>/NMOLiteratureWeb/index.html
+In your browser type: http://<ipAddress>/NMOLiteratureWeb
 
 ### 3.2. Update metadata html to your desired metadata properties
 
