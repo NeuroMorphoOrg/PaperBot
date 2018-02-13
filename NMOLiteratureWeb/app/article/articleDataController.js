@@ -20,12 +20,17 @@ angular.module('Articles').
                     $rootScope.usage = $scope.article.usage;
                     $rootScope.articleStatus = $scope.article.articleStatus;
                     var usage = [];
-                    $scope.usages.forEach(function (a) {
+                     $scope.usages.forEach(function (a) {
+                        if ($scope.article.usage == null) {
+                            $scope.article.usage = [];
+                            $scope.article.usage.push("Describing");
+                        }
                         $scope.article.usage.forEach(function (b) {
                             if (a.text === b) {
                                 usage.push(a.value);
                             }
                         });
+
                     });
                     $scope.radio = {
                         usage: usage

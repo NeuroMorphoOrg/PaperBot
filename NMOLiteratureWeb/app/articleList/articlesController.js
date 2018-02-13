@@ -3,9 +3,8 @@ angular.module('Articles').
             $scope.currentPage = 1;
             $scope.text = '';
             $scope.review = $routeParams.review;
-            var query = ["articleStatus=" + $routeParams.usage];
 
-            articlesService.findArticles($scope, query, articlesCommunicationService);
+            articlesService.findArticles($scope, $routeParams.usage, null, articlesCommunicationService);
 
 
             $scope.findArticlesByText = function (text) {
@@ -16,7 +15,7 @@ angular.module('Articles').
                 if ($scope.text !== null && $scope.text !== '') {
                     articlesService.findByText($scope, $routeParams.usage, articlesCommunicationService);
                 } else {
-                    articlesService.findArticles($scope, query, articlesCommunicationService);
+                    articlesService.findArticles($scope, $routeParams.usage, null, articlesCommunicationService);
 
                 }
             };

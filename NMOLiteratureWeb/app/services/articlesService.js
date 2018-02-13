@@ -39,8 +39,8 @@ angular.module('articles.service', []).
                     scope.lastElement = scope.currentPage * scope.articlePage.numberOfElements;
                 }
             };
-            var findArticles = function (scope, query, articlesCommunicationService) {
-                articlesCommunicationService.getArticleList(query, scope.currentPage - 1).then(function (data) {
+            var findArticles = function (scope, collection, query, articlesCommunicationService) {
+                articlesCommunicationService.getArticleList(collection, query, scope.currentPage - 1).then(function (data) {
                     scope.articlePage = data;
                     data.content.forEach(function (a) {
                         articlesCommunicationService.findMetadata(a.id).then(function (data2) {

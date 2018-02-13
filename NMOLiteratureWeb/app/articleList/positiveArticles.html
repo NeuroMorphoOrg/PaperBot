@@ -36,8 +36,8 @@
                 <td ng-if="article.pmid">{{article.pmid}}</td>
                 <td ng-if="!article.pmid">-</td>
                 <td title="{{article.title}}" data-toggle="tooltip"><a href='#/view/{{article.id}}/0'>{{article.title| limitTo : 30}} ... </td>
-                <td class="metadata-finished" ng-if="article.usage[0] === 'Describing' && article.metadata.finished"><span class="glyphicon glyphicon-check"></span></td>
-                <td class="metadata-not-finished" ng-if="article.usage[0] === 'Describing' && !article.metadata.finished"><span class="glyphicon glyphicon-edit"></span></td>
+                <td class="metadata-finished" ng-if="article.metadata.finished"><span class="glyphicon glyphicon-check"></span></td>
+                <td class="metadata-not-finished" ng-if="!article.metadata.finished"><span class="glyphicon glyphicon-edit"></span></td>
                 <td>{{article.metadata.comment}}</td>
                 
             </tr>

@@ -6,10 +6,11 @@ angular.module('Articles').
             $scope.pmidList = {};
             $scope.pmidList.values = [];
 
-            var query = ["articleStatus=Positive", "usage=" + $routeParams.usage];
+            var collection = "Positive";
+            var query = "";
 
 
-            articlesService.findArticles($scope, query, articlesCommunicationService);
+            articlesService.findArticles($scope, collection, query, articlesCommunicationService);
 
             $scope.setPage = function () {
                 $scope.filterDetails;

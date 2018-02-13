@@ -1,7 +1,7 @@
-var url_literature = 'http://localhost:8188/literature';
-var url_reconstructions_status = 'http://localhost:8182/literature/reconstructions/status';
-var url_metadata = 'http://localhost:8180/literature/metadata';
-var url_pubmed = 'http://localhost:8186/literature/pubmed';
+var url_literature = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8188/literature';
+var url_reconstructions_status = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8182/literature/reconstructions/status';
+var url_metadata = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8180/literature/metadata';
+var url_pubmed = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8186/literature/pubmed';
 
 angular.module('articles.communication', []).
         factory('articlesCommunicationService', function ($http) {
@@ -11,12 +11,12 @@ angular.module('articles.communication', []).
                 });
             };
 
-            var getArticleList = function (query, page) {
+            var getArticleList = function (collection, query, page) {
                 var text = "";
-                for (var i in query) {
-                    text = text + query[i] + "&";
+                if (query != null) {
+                    text = query + "&";
                 }
-                return $http.get(url_literature + "/query?" + text + "page=" + page).then(function (response) {
+                return $http.get(url_literature + "/query?collection=" + collection + "&" + text + "page=" + page).then(function (response) {
                     return response.data;
                 });
             };
