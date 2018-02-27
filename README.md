@@ -190,16 +190,9 @@ If using Linux or Mac you can launch it typing:
 `./launch.sh`<br>
 
 This will launch the rquired services with nohup and java -jar. Any error will be tracd in nohup.out. 
+`tail -f nohup.out `  To check everything is working<br> 
+` [           main] o.n.literature.<serviceAPP>.Application      : Started Application in 49.649 seconds (JVM running for 54.07)` <br>
 _**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
-
-### 2.5. Test the services are up & running
-Go to your browser and type: http://localhost:8180/literature/metadata/test
-Go to your browser and type: http://localhost:8186/literature/pubmed/test <br>
-Go to your browser and type: http://localhost:8189/literature/portals/test <br>
-Go to your browser and type: http://localhost:8188/literature/test <br>
-Go to your browser and type: http://localhost:8188/literature/crossref <br>
-
-You should see the following in the browser: `<ServiceName> up & running!`
 
 
 
@@ -223,11 +216,19 @@ Replace from the following commands `/Library/WebServer/Documents/` with your ap
 `sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 `sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
 
-In your browser type: http://localhost/NMOLiteratureWeb/index.html
+In your browser type: http://[ipAddress]/NMOLiteratureWeb
 
-If you decide to change the name or the url project you will have to update the html links
+### 3.2. If runing on a server and not your localhost remember to update the ip in the browser
 
-### 3.2. Update metadata html to your desired metadata properties
+Update NMOLiteratureWeb/communications/articlesCommunicationService.js 
+
+`var url_literature = 'http://<serverIP>:8188/literature';`<br>
+`var url_reconstructions_status = 'http://<serverIP>:8182/literature/reconstructions/status';`<br>
+`var url_metadata = 'http://<serverIP>:8180/literature/metadata';`<br>
+`var url_pubmed = 'http://<serverIP>:8186/literature/pubmed';`<br>
+
+
+### 3.3. Update metadata html to your desired metadata properties 
 
 Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, so you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
 
@@ -242,49 +243,24 @@ Lets update a name for a given tag. For example:
  
  The `metadataFinished` is a nice feature that allows you to remember if you had finished reviewing a paper. If it is set to false, when you navigate to the Positive group of articles a red flag will remind you that there is pending work.
 
-### 3.3. Go to the Wiki to learn how to add an article manually
+### 3.4. Go to the Wiki to learn how to add an article manually
 
 
 ## 4. Crontab Services
 
 Now that everything is set, it is fun to see how the Database populates from the Web page.
 
-### 4.1. Configuration file
-
-Because it is a microservice architecture, the services can run in different servers with different IPs and dataBases. The article search connects to 3 services: LiteratureServiceBoot, LiteraturePubMedServiceBoot, and LiteraturePortalServiceBoot. Remember to update the URLs localhost to the desired server IP if you are not running them locally.
-
-`endpoints.shutdown.enabled=true` <br>
-`server.port= 8087`<br>
-`logging.level.org.springframework.web=ERROR`<br>
-`logging.level.org.neuromorpho=DEBUG`<br>
-`logging.file=./LiteratureSearch.log`<br>
-`uriLiteratureService=http://localhost:8188/literature`<br>
-`uriPortalService=http://localhost:8189/literature`<br>
-`uriPubMedService=http://localhost:8186/literature/pubmed`<br>
-
-### 4.2. Clean and build the search service
-
-`cd LiteratureSearchService`<br>
-`mvn clean install`<br>
-
-You should see the following at the end:
-
-`[INFO] ------------------------------------------------------------------------`<br>
-`[INFO] BUILD SUCCESS`<br>
-`[INFO] ------------------------------------------------------------------------`<br>
-
-### 4.3. Launch
-`cd target`<br>
+### 4.1. Launch the crontab services
 
 You can launch it dissociated from the terminal in background
 
-`nohup java -jar LiteratureSearchService-1.0.jar &`<br>
+`nohup java -jar ./LiteraturSearchService/target/LiteratureSearchService-1.0.jar &`<br>
 
 Or launch it associated to the terminal in foreground to see how it works and its logs
 
-`java -jar LiteratureSearchService-1.0.jar`<br>
+`java -jar ./LiteraturSearchService/target/LiteratureSearchService-1.0.jar`<br>
 
-Or add to the crontab
+Or add it to the crontab. Same applies to LiteratureDownloadPDFService.
 
 ### 4.4. Go to the browser & refresh
 
