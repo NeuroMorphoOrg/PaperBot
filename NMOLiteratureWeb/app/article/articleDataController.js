@@ -20,7 +20,7 @@ angular.module('Articles').
                     $rootScope.usage = $scope.article.usage;
                     $rootScope.articleStatus = $scope.article.articleStatus;
                     var usage = [];
-                     $scope.usages.forEach(function (a) {
+                    $scope.usages.forEach(function (a) {
                         if ($scope.article.usage == null) {
                             $scope.article.usage = [];
                             $scope.article.usage.push("Describing");
@@ -87,10 +87,10 @@ angular.module('Articles').
 
 
             $scope.getPubMed = function () {
-                $rootScope.articleStatus = 'To evaluate';
                 $scope.article.searchPortal = {};
-                $scope.article.searchPortal.source = 'manual';
                 if ($rootScope.id == null) {
+                    $rootScope.articleStatus = 'To evaluate';
+                    $scope.article.searchPortal.source = 'manual';
 
                     articlesCommunicationService.getObjectId().then(function (data) {
                         $rootScope.id = data.id;
@@ -110,6 +110,36 @@ angular.module('Articles').
 
                 }).catch(function () {
                     $scope.error = 'Unable to get pubMed data';
+                });
+            };
+            $scope.getCrosRef = function () {
+                $scope.article.searchPortal = {};
+
+                if ($rootScope.id == null) {
+                    $rootScope.articleStatus = 'To evaluate';
+                    $scope.article.searchPortal.source = 'manual';
+
+                    articlesCommunicationService.getObjectId().then(function (data) {
+                        $rootScope.id = data.id;
+                    }).catch(function () {
+                        $scope.error = 'Error generating id for the new article';
+                    });
+                }
+                $scope.error = '';
+                articlesCommunicationService.getCrosRef($scope.article.doi).then(function (data) {
+                    $scope.article.title = data.title;
+
+                    $scope.article.doi = data.doi;
+                    $scope.article.journal = data.journal;
+                    $scope.article.authorList = data.authorList;
+                    $scope.article.publishedDate = new Date(data.publishedDate);
+                    $scope.article.link = null;
+                    //getPmid from title
+                    articlesCommunicationService.getPMIDFromTitle(data.title).then(function (pmid) {
+                        $scope.article.pmid = pmid;
+                    });
+                }).catch(function () {
+                    $scope.error = 'DOI not found in Crosef';
                 });
             };
 

@@ -52,6 +52,12 @@
                         <td><strong>DOI:</strong> </td>
                         <td><a ng-href="http://dx.doi.org/{{article.doi}}" target="_blank">
                                 <span editable-text="article.doi">{{article.doi}}</span></a></td>
+                         <td>
+                             <label> http://dx.doi.org/</label>
+                            <input type="text" class="form-control" ng-model="article.doi">
+                            <button type="button" ng-click="getCrosRef()" class="btn btn-default" ng-disabled="false">
+                            <img src="/NMOLiteratureWeb/images/doi.gif" width="70" /> 
+                            </button></td>
                     </tr>
                     <tr>
                         <td><strong>Link:</strong> </td>
