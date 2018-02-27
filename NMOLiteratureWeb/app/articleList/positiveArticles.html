@@ -21,7 +21,6 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th class="tipo1">Usage</th>
                 <th class="tipo1">Published Date</th>
                 <th class="tipo1">PMID</th>
                 <th class="tipo3">Title</th>
@@ -31,7 +30,6 @@
         </thead>
         <tbody>
             <tr ng-repeat="article in articlePage.content| filter:search">
-                <td>{{article.usage[0]}}</td>
                 <td>{{article.publishedDate| date:'yyyy-MM-dd'}}</td>
                 <td ng-if="article.pmid">{{article.pmid}}</td>
                 <td ng-if="!article.pmid">-</td>
