@@ -81,7 +81,7 @@ public class PubMedService {
                 pmid = uid;
             }
         }
-        
+
         return pmid;
     }
 
@@ -98,7 +98,7 @@ public class PubMedService {
                 + "db=" + db
                 + "&retmode=json"
                 + "&id=" + pmid;
-        log.debug("Accesing pubmed using url: " + pmid);
+        log.debug("Accesing pubmed using url: " + url);
         Map<String, Object> articleMap = restTemplate.getForObject(url, Map.class);
         Article article = new Article();
         Map result = (HashMap) articleMap.get("result");
@@ -123,9 +123,12 @@ public class PubMedService {
             } catch (ParseException ex) {
             }
         }
-        String locationId = (String) articleValues.get("elocationid");
-        if (locationId != null && locationId.contains("doi")) {
-            article.setDoi(locationId.split(":")[1].trim());
+        ArrayList<Map> articleIds = (ArrayList) articleValues.get("articleids");
+        for (Map articleId : articleIds) {
+            if (articleId.get("idtype").equals("doi")) {
+                article.setDoi((String) articleId.get("value"));
+                break;
+            }
         }
         return article;
     }
@@ -149,6 +152,7 @@ public class PubMedService {
             String email = null;
             if (e != null && e.text().contains("@")) {
                 email = e.text().substring(e.text().lastIndexOf(" ") + 1, e.text().length());
+                email = email.replaceAll(".$", "");
             }
             Element fn = a.select("ForeName").first();
             Element ln = a.select("LastName").first();
