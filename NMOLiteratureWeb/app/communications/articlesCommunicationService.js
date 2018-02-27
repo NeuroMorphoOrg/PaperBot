@@ -1,7 +1,8 @@
-var url_literature = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8188/literature';
-var url_reconstructions_status = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8182/literature/reconstructions/status';
-var url_metadata = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8180/literature/metadata';
-var url_pubmed = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8186/literature/pubmed';
+var url_literature = 'http://localhost:8188/literature';
+var url_reconstructions_status = 'http://localhost:8182/literature/reconstructions/status';
+var url_metadata = 'http://localhost:8180/literature/metadata';
+var url_pubmed = 'http://localhost:8186/literature/pubmed';
+var url_crosref = 'http://localhost:8184/literature/crossref';
 
 angular.module('articles.communication', []).
         factory('articlesCommunicationService', function ($http) {
@@ -80,6 +81,16 @@ angular.module('articles.communication', []).
                     return response.data;
                 });
             };
+            var getPMIDFromTitle = function (title) {
+                return $http.get(url_pubmed + '/pmid?db=pubmed&title=' + title).then(function (response) {
+                    return response.data;
+                });
+            };
+            var getCrosRef = function (doi) {
+                return $http.get(url_crosref + '?doi=' + doi).then(function (response) {
+                    return response.data;
+                });
+            };
 
             var getObjectId = function () {
                 return $http.get(url_literature + '/objectId').then(function (response) {
@@ -99,6 +110,8 @@ angular.module('articles.communication', []).
                 findArticle: findArticle,
                 findArticleByPmid: findArticleByPmid,
                 getPubMed: getPubMed,
+                getPMIDFromTitle: getPMIDFromTitle,
+                getCrosRef: getCrosRef,
                 getArticleListByText: getArticleListByText,
                 getObjectId: getObjectId
 
