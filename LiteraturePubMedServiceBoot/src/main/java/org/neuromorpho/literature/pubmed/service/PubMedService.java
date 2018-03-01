@@ -33,15 +33,28 @@ public class PubMedService {
     @Value("${uri}")
     private String uri;
 
-    public Article retrievePubMedArticleData(String pmid, String db) throws Exception {
+    public Article retrievePubMedArticleData(String pmid) throws Exception {
+        String db = "pubmed";
+        if (pmid.startsWith("PMC")){
+            db = "pmc";
+        }
         Article article = this.fillArticleData(pmid, db);
-        this.fillAuthorList(pmid, article);
+        
+        this.fillAuthorList(pmid, article, db);
         return article;
 
     }
 
-    public String retrievePMIDFromTitle(String title, String db) throws Exception {
-        String pmid = "";
+    public String retrievePMIDFromTitle(String title) throws Exception {
+        String pmid = this.retrievePMIDFromTitleDB(title, "pubmed");
+        if (pmid == null) {
+            pmid = retrievePMIDFromTitleDB(title, "pmc");
+        }
+        return pmid;
+    }
+
+    private String retrievePMIDFromTitleDB(String title, String db) throws Exception {
+        String pmid = null;
         RestTemplate restTemplate = new RestTemplate();
 
         String url = uri + "/esearch.fcgi?"
@@ -133,13 +146,13 @@ public class PubMedService {
         return article;
     }
 
-    private void fillAuthorList(String pmid, Article article) {
+    private void fillAuthorList(String pmid, Article article, String db) {
         RestTemplate restTemplate = new RestTemplate();
 
         String xml = restTemplate.getForObject(
                 uri
                 + "/efetch.fcgi?"
-                + "db=pubmed"
+                + "db=" + db
                 + "&id=" + pmid
                 + "&retmode=xml",
                 String.class);

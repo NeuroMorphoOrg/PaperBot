@@ -31,11 +31,10 @@ public class PubMedController {
     @CrossOrigin
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Article retrievePubMedArticleData(
-            @RequestParam(required = true) String pmid,
-            @RequestParam(required = true) String db)
+            @RequestParam(required = true) String pmid)
             throws Exception {
         log.debug("Calling pubmed with pmid: " + pmid);
-        Article article = pubMedService.retrievePubMedArticleData(pmid, db);
+        Article article = pubMedService.retrievePubMedArticleData(pmid);
         log.debug("Data from pubmed: " + article.toString());
         return article;
 
@@ -47,11 +46,10 @@ public class PubMedController {
     @CrossOrigin
     @RequestMapping(value = "/pmid", method = RequestMethod.GET)
     public String retrievePMIDFromTitle(
-            @RequestParam(required = true) String title,
-            @RequestParam(required = true) String db)
+            @RequestParam(required = true) String title)
             throws Exception {
         log.debug("Calling pubmed with title: " + title);
-        String pmid = pubMedService.retrievePMIDFromTitle(title, db);
+        String pmid = pubMedService.retrievePMIDFromTitle(title);
         log.debug("PMID from pubmed: " + pmid);
         return pmid;
 
