@@ -92,12 +92,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><strong>Source:</strong></td>
-                        <td>{{article.searchPortal.source}}</td>
-                    </tr>
-                    <tr>
                         <td><strong>Portal: [keyWords]:</strong></td>
-                        <td><span class="portalList" ng-repeat="portal in article.searchPortal.portalList">{{portal.name}} : {{portal.keyWordList}}
+                        <td><span class="portalList" ng-repeat="portal in article.searchPortal">{{portal.name}} : {{portal.keyWordList}}
                                 <span ng-show=" !$last">,</span>
 
                             </span>
