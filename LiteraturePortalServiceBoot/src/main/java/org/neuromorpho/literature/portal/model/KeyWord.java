@@ -1,34 +1,35 @@
 package org.neuromorpho.literature.portal.model;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "keyword")
 public class KeyWord {
 
     @Id
-    private ObjectId id;
-
+    private String id;
+    
+    @Indexed(unique = true, sparse = false)
     private String name;
     private String collection;
-    private String usage;
-    
-    @PersistenceConstructor
-   
 
+    @PersistenceConstructor
     public KeyWord() {
     }
 
-    public KeyWord(String name, String collection, String usage) {
+    public KeyWord(String name, String collection) {
         this.name = name;
         this.collection = collection;
-        this.usage = usage;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -45,14 +46,6 @@ public class KeyWord {
 
     public void setCollection(String collection) {
         this.collection = collection;
-    }
-
-    public String getUsage() {
-        return usage;
-    }
-
-    public void setUsage(String usage) {
-        this.usage = usage;
     }
 
 }

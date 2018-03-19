@@ -26,4 +26,8 @@ public class KeyWordService {
         return keyWordRepository.findAll();
     }
 
+    public void updateKeyWordList(List<KeyWord> keyWordList) {
+        log.debug("Updating keywords into DB");
+        keyWordRepository.save(keyWordList);
+    }
 }

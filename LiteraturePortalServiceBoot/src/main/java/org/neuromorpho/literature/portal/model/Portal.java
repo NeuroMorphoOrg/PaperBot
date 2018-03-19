@@ -1,6 +1,5 @@
 package org.neuromorpho.literature.portal.model;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Portal {
 
     @Id
-    private ObjectId id;
+    private String id;
 
     @Indexed(unique = true)
     private String name;
@@ -19,7 +18,6 @@ public class Portal {
     private Boolean active;
     private String db;
     private String apiUrl;
-    private String apiUrl2;
     private String token;
 
     public Portal(String name) {
@@ -29,13 +27,15 @@ public class Portal {
     public Portal() {
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
+
+   
 
     public String getName() {
         return name;
@@ -87,14 +87,6 @@ public class Portal {
 
     public void setApiUrl(String apiUrl) {
         this.apiUrl = apiUrl;
-    }
-
-    public String getApiUrl2() {
-        return apiUrl2;
-    }
-
-    public void setApiUrl2(String apiUrl2) {
-        this.apiUrl2 = apiUrl2;
     }
 
     public String getBase() {

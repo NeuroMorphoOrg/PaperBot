@@ -21,9 +21,18 @@ public class PortalService {
     @Autowired
     private PortalRepository portalRepository;
 
-    public List<Portal> findActives() {
-        log.debug("Retrieving the actives portals from DB");
-        return portalRepository.findByActive(Boolean.TRUE);
+    public List<Portal> findPortalList(Boolean active) {
+        log.debug("Retrieving portals from DB");
+        if (active != null) {
+            return portalRepository.findByActive(Boolean.TRUE);
+        } else {
+            return portalRepository.findAll();
+        }
+    }
+
+    public void updatePortalList(List<Portal> portalList) {
+        log.debug("Updating portals into DB");
+        portalRepository.save(portalList);
     }
 
 }
