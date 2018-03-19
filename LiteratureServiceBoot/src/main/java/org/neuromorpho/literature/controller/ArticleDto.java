@@ -2,6 +2,7 @@ package org.neuromorpho.literature.controller;
 
 import java.util.Date;
 import java.util.List;
+import org.neuromorpho.literature.model.article.Portal;
 
 public class ArticleDto implements java.io.Serializable {
 
@@ -14,7 +15,7 @@ public class ArticleDto implements java.io.Serializable {
     private Date publishedDate;
     private List<AuthorDto> authorList;
     private String link;
-    private SearchPortalDto searchPortal;
+    private List<Portal> searchPortal;
     private String articleStatus;
     private List<String> usage;
     private String abstact;
@@ -98,11 +99,11 @@ public class ArticleDto implements java.io.Serializable {
         this.evaluatedDate = evaluatedDate;
     }
 
-    public SearchPortalDto getSearchPortal() {
+    public List<Portal> getSearchPortal() {
         return searchPortal;
     }
 
-    public void setSearchPortal(SearchPortalDto searchPortal) {
+    public void setSearchPortal(List<Portal> searchPortal) {
         this.searchPortal = searchPortal;
     }
 

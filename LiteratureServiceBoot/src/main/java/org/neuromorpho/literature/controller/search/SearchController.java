@@ -25,7 +25,6 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-    private final SearchDtoAssembler searchDtoAssembler = new SearchDtoAssembler();
     private final ArticleDtoAssembler articleDtoAssembler = new ArticleDtoAssembler();
 
     @RequestMapping(value = "/{articleStatus}", method = RequestMethod.POST)
@@ -35,10 +34,10 @@ public class SearchController {
             @RequestBody ArticleDto article) {
         log.debug("Saving or updating article through search service: " + article.toString());
 
-        Article articleTeated = articleDtoAssembler.createArticle(article);
+        Article articleTreated = articleDtoAssembler.createArticle(article);
 
         String _id = searchService.saveOrUpdateArticle(
-                new ArticleCollection(articleTeated, ArticleCollection.ArticleStatus.getArticleStatus(articleStatus)));
+                new ArticleCollection(articleTreated, ArticleCollection.ArticleStatus.getArticleStatus(articleStatus)));
         return new ArticleDto(_id);
     }
 
@@ -46,8 +45,8 @@ public class SearchController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateSearch(
             @PathVariable String id,
-            @RequestBody SearchDto search) {
-        searchService.updateSearch(id, searchDtoAssembler.createSearch(search), search.getKeyWord());
+            @RequestBody Search search) {
+        searchService.updateSearch(id, search.getSource(), search.getKeyWord());
     }
 
 }

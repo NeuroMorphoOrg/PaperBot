@@ -15,7 +15,6 @@ import org.neuromorpho.literature.model.article.Author;
 
 public class ArticleDtoAssembler {
 
-    private final SearchPortalDtoAssembler searchPortalDtoAssembler = new SearchPortalDtoAssembler();
     private final AuthorDtoAssembler authorDtoAssembler = new AuthorDtoAssembler();
 
     public ArticleDto createArticleDto(Article article) {
@@ -63,8 +62,7 @@ public class ArticleDtoAssembler {
             articleDto.setTitle(article.getTitle());
             articleDto.setLink(article.getLink());
             articleDto.setEvaluatedDate(article.getEvaluatedDate());
-            articleDto.setSearchPortal(
-                    searchPortalDtoAssembler.createSearchPortalDto(article.getSearchPortal()));
+            articleDto.setSearchPortal(article.getSearchPortal());
             articleDto.setUsage(article.getDataUsage());
             return articleDto;
 
@@ -91,8 +89,7 @@ public class ArticleDtoAssembler {
         }
         article.setAuthorList(authorList);
         article.setDataUsage(articleDto.getUsage());
-        article.setSearchPortal(
-                searchPortalDtoAssembler.createSearchPortal(articleDto.getSearchPortal()));
+        article.setSearchPortal(articleDto.getSearchPortal());
 
         return article;
     }

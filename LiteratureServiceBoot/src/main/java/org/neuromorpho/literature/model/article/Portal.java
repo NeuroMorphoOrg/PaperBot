@@ -10,20 +10,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PortalResults {
+public class Portal implements java.io.Serializable{
 
     private String name;
     private List<String> keyWordList;
 
-    public PortalResults() {
+    public Portal() {
     }
 
-    public PortalResults(String name, List<String> keyWordList) {
+    public Portal(String name, List<String> keyWordList) {
         this.name = name;
         this.keyWordList = keyWordList;
     }
 
-    public PortalResults(String name, String keyWord) {
+    public Portal(String name, String keyWord) {
         this.name = name;
         this.keyWordList = new ArrayList();
         this.keyWordList.add(keyWord);

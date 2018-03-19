@@ -18,7 +18,6 @@ import org.neuromorpho.literature.exceptions.DuplicatedException;
 import org.neuromorpho.literature.model.article.Article;
 import org.neuromorpho.literature.model.article.ArticleCollection;
 import org.neuromorpho.literature.model.article.ArticleCollection.ArticleStatus;
-import org.neuromorpho.literature.model.article.SearchPortal;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -104,6 +103,7 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         } else {
             mongoOperations.save(article.getArticle(), article.getArticleStatus().getCollection());
             id = article.getArticle().getId().toString();
+            log.debug("Saving new article with id: " + id);
 
         }
         return id;
@@ -127,7 +127,15 @@ public class ArticleRepositoryImpl implements ArticleRepository {
             Long articles = mongoOperations.count(null, status.getCollection());
             articlesNumbers.put(status.getStatus(), articles);
         }
-
+        // get distict values for dataUsage
+        String collection = ArticleStatus.POSITIVE.getCollection();
+        List<String> valueList = mongoOperations.getCollection(collection).distinct("dataUsage");
+        for (String  value: valueList) {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("dataUsage").is(value));
+            Long articles = mongoOperations.count(query, collection);
+            articlesNumbers.put(value, articles);
+        }
         return articlesNumbers;
     }
 
@@ -147,11 +155,12 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         ArticleCollection articleOld = findById(id);
         log.debug("Updating collection article title: " + articleOld.getArticle().getTitle());
         if (newCollection != articleOld.getArticleStatus()) {
-
             if (articleOld.getArticleStatus().equals(ArticleStatus.TO_EVALUATE)) {
                 articleOld.getArticle().setEvaluatedDate(new Date());
             }
+            log.debug("Saving article in new collection: " + newCollection.getCollection());
             mongoOperations.save(articleOld.getArticle(), newCollection.getCollection());
+            log.debug("Removing article from old collection: " + articleOld.getArticleStatus().getCollection());
             mongoOperations.remove(articleOld.getArticle(), articleOld.getArticleStatus().getCollection());
         }
     }
@@ -193,16 +202,13 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     }
 
     @Override
-    public void update(String id, SearchPortal searchPortal, String keyWord) {
+    public void update(String id, String portalName, String keyWord) {
         ArticleCollection articleOld = this.findById(id);
         Query query = new Query(Criteria.where("_id").is(id));
         Update update = new Update();
-        if (articleOld.getArticle().getSearchPortal() == null) {//no search
-            update.set("searchPortal", searchPortal);
-        } else {
-            articleOld.getArticle().updateSearchPortal(searchPortal, keyWord);
-            update.set("searchPortal", articleOld.getArticle().getSearchPortal());
-        }
+
+        articleOld.getArticle().updateSearchPortal(portalName, keyWord);
+        update.set("searchPortal", articleOld.getArticle().getSearchPortal());
         mongoOperations.updateFirst(query, update, articleOld.getArticleStatus().getCollection());
 
     }

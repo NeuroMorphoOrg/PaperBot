@@ -5,8 +5,13 @@
  */
 package org.neuromorpho.literature.model.article;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -34,7 +39,7 @@ public class Article {
 
     private List<Author> authorList;
 
-    private SearchPortal searchPortal;
+    private List<Portal> searchPortal;
 
     private Date evaluatedDate;
     private String status;
@@ -108,24 +113,14 @@ public class Article {
         this.authorList = authorList;
     }
 
-    public SearchPortal getSearchPortal() {
+    public List<Portal> getSearchPortal() {
         return searchPortal;
     }
 
-    public void setSearchPortal(SearchPortal searchPortal) {
+    public void setSearchPortal(List<Portal> searchPortal) {
         this.searchPortal = searchPortal;
     }
 
-    public void createSearchPortal(SearchPortal searchPortal) {
-        this.searchPortal = searchPortal;
-    }
-
-//    public void updateSearchPortal(String portalName, String keyWord) {
-//        if (this.searchPortal == null) {
-//            this.searchPortal = new SearchPortal();
-//        }
-//        this.searchPortal.updateSearchPortal(portalName, keyWord);
-//    }
     public Article getArticle() {
         return this;
     }
@@ -195,13 +190,6 @@ public class Article {
         return (this.authorList == null || this.authorList.isEmpty());
     }
 
-    public void updateSearchPortal(SearchPortal searchPortal, String keyWord) {
-        if (this.searchPortal == null) {
-            this.searchPortal = new SearchPortal();
-        }
-        this.searchPortal.updateSearchPortal(searchPortal, keyWord);
-    }
-
     public Boolean hasContactEmail(List<Author> authorList) {
         for (Author author : this.authorList) {
             if (author.hasContactEmail()) {
@@ -209,6 +197,29 @@ public class Article {
             }
         }
         return Boolean.FALSE;
+    }
+
+    public void updateSearchPortal(String portalName, String keyWord) {
+        //Create a structure to deal with duplicated
+        Map<String, Set<String>> map = new HashMap<>();
+        if (this.searchPortal != null) {
+            for (Portal portal : this.searchPortal) {
+                map.put(portal.getName(), portal.getKeyWordSet());
+            }
+            Set<String> keyWordSet = new HashSet<>();
+            keyWordSet.add(keyWord);
+            map.put(portalName, keyWordSet);
+
+            this.searchPortal = new ArrayList();
+            for (String key : map.keySet()) {
+                List<String> KeyWordList = new ArrayList<>(map.get(key));
+                this.searchPortal.add(new Portal(key, KeyWordList));
+            }
+        } else {
+            this.searchPortal = new ArrayList();
+            this.searchPortal.add(new Portal(portalName, keyWord));
+        }
+
     }
 
 }

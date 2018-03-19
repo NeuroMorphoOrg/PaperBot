@@ -5,21 +5,17 @@
  */
 package org.neuromorpho.literature.controller.search;
 
-import java.util.List;
+public class Search implements java.io.Serializable {
 
-public class SearchDto implements java.io.Serializable {
-
-    private String link;
     private String source;
     private String keyWord;
-    private List<String> supplementaryLink;
 
-    public String getLink() {
-        return link;
+    public Search() {
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public Search(String source, String keyWord) {
+        this.source = source;
+        this.keyWord = keyWord;
     }
 
     public String getSource() {
@@ -38,12 +34,11 @@ public class SearchDto implements java.io.Serializable {
         this.keyWord = keyWord;
     }
 
-    public List<String> getSupplementaryLink() {
-        return supplementaryLink;
+    @Override
+    public String toString() {
+        return "Search{" + "source=" + source + ", keyWord=" + keyWord + '}';
     }
+    
+    
 
-    public void setSupplementaryLink(List<String> supplementaryLink) {
-        this.supplementaryLink = supplementaryLink;
-    }
- 
 }

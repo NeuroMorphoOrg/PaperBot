@@ -10,7 +10,6 @@ import java.util.Map;
 import org.neuromorpho.literature.model.article.Article;
 import org.neuromorpho.literature.model.article.ArticleCollection;
 import org.neuromorpho.literature.model.article.ArticleCollection.ArticleStatus;
-import org.neuromorpho.literature.model.article.SearchPortal;
 import org.springframework.data.domain.Page;
 
 public interface ArticleRepository {
@@ -33,7 +32,7 @@ public interface ArticleRepository {
 
     public void replace(String id, Article article);
     
-    public void update(String id, SearchPortal searchPortal, String keyWord);
+    public void update(String id, String portalName, String keyWord);
 
     public Page<Article> findByFieldQuery(String collection, Map<String, String> fieldQuery, Integer pageStart);
 
