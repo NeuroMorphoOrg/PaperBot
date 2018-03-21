@@ -1,7 +1,16 @@
 package org.neuromorpho.literature.search.model.portal;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "portal")
 public class Portal {
 
+    @Id
+    private String id;
+
+    @Indexed(unique = true)
     private String name;
     private String url;
     private String base;
@@ -10,13 +19,23 @@ public class Portal {
     private String db;
     private String apiUrl;
     private String token;
-    
+
     public Portal(String name) {
         this.name = name;
     }
 
     public Portal() {
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+   
 
     public String getName() {
         return name;
@@ -32,14 +51,6 @@ public class Portal {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getBase() {
-        return base;
-    }
-
-    public void setBase(String base) {
-        this.base = base;
     }
 
     public Integer getSearchPeriod() {
@@ -70,12 +81,20 @@ public class Portal {
         return apiUrl;
     }
 
+    public Boolean hasAPI() {
+        return apiUrl != null;
+    }
+
     public void setApiUrl(String apiUrl) {
         this.apiUrl = apiUrl;
     }
 
-    public Boolean hasAPI() {
-        return apiUrl != null;
+    public String getBase() {
+        return base;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
     }
 
     public String getToken() {

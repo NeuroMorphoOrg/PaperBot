@@ -1,30 +1,36 @@
 package org.neuromorpho.literature.search.service;
 
 import java.util.List;
-import org.neuromorpho.literature.search.communication.PortalConnection;
 import org.neuromorpho.literature.search.model.portal.KeyWord;
+import org.neuromorpho.literature.search.model.portal.Log;
 import org.neuromorpho.literature.search.model.portal.Portal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.neuromorpho.literature.search.repository.portal.KeyWordRepository;
+import org.neuromorpho.literature.search.repository.portal.LogRepository;
+import org.neuromorpho.literature.search.repository.portal.PortalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SearchService {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private PortalSearchFactory portalSearchFactory;
 
     @Autowired
-    private PortalConnection portalConnection;
+    private PortalRepository portalRepository;
+    @Autowired
+    private KeyWordRepository keyWordRepository;
+    @Autowired
+    private LogRepository logRepository;
 
     public void launchSearch() throws Exception {
-        List<Portal> portalList = portalConnection.findActivePortals();
-        List<KeyWord> keyWordList = portalConnection.findAllKeyWords();
-
+        List<Portal> portalList = portalRepository.findByActive(Boolean.TRUE);
+        List<KeyWord> keyWordList = keyWordRepository.findAll();
+        Log portalLog = new Log();
         for (Portal portal : portalList) {
+
+            portalLog.statLogging();
+            logRepository.save(portalLog);
             IPortalSearch portalSearch = portalSearchFactory.launchPortalSearch(portal.getName());
 
             for (KeyWord keyWord : keyWordList) {
@@ -35,6 +41,8 @@ public class SearchService {
             }
 
         }
+        portalLog.endLogging();
+        logRepository.save(portalLog);
     }
 
 }
