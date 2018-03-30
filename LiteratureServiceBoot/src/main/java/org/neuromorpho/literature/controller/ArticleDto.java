@@ -13,6 +13,7 @@ public class ArticleDto implements java.io.Serializable {
     private String journal;
     private String doi;
     private Date publishedDate;
+    private Date ocDate;
     private List<AuthorDto> authorList;
     private String link;
     private List<Portal> searchPortal;
@@ -129,6 +130,14 @@ public class ArticleDto implements java.io.Serializable {
 
     public void setAbstact(String abstact) {
         this.abstact = abstact;
+    }
+
+    public Date getOcDate() {
+        return ocDate;
+    }
+
+    public void setOcDate(Date ocDate) {
+        this.ocDate = ocDate;
     }
 
     @Override

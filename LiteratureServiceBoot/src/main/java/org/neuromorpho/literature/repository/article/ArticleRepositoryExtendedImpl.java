@@ -31,7 +31,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.mongodb.core.query.Update;
 
 @Repository
-public class ArticleRepositoryImpl implements ArticleRepository {
+public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended {
 
     private final String toEvaluateCollection = ArticleStatus.TO_EVALUATE.getCollection();
 

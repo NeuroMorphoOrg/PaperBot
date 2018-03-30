@@ -70,7 +70,7 @@ public class LiteratureController {
         log.debug("Replacing article: " + article.toString());
         literatureService.replaceArticle(id, articleDtoAssembler.createArticle(article));
     }
-    
+
     @CrossOrigin
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -178,6 +178,19 @@ public class LiteratureController {
             @PathVariable String id,
             @RequestParam String articleStatus) {
         literatureService.updateCollection(id, ArticleCollection.ArticleStatus.getArticleStatus(articleStatus));
+    }
+
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.DELETE)
+    public void deleteArticleList(@RequestParam List<String> ids) {
+        literatureService.deleteArticleList(ids);
+
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/removeAll", method = RequestMethod.DELETE)
+    public void deleteArticleList() {
+        literatureService.deleteArticleList();
     }
 
 }

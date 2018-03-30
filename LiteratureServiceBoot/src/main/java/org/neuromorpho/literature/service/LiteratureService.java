@@ -6,12 +6,13 @@ import java.util.Map;
 import org.neuromorpho.literature.model.article.Article;
 import org.neuromorpho.literature.model.article.ArticleCollection;
 import org.neuromorpho.literature.model.article.ArticleCollection.ArticleStatus;
-import org.neuromorpho.literature.repository.article.ArticleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.neuromorpho.literature.repository.article.ArticleRepositoryExtended;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 @Service
 public class LiteratureService {
@@ -19,9 +20,11 @@ public class LiteratureService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ArticleRepository articleRepository;
+    private ArticleRepositoryExtended articleRepository;
 
-   
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
     public Map<String, Long> getSummary(Date date) {
         return articleRepository.getSummary(date);
     }
@@ -34,7 +37,7 @@ public class LiteratureService {
         return articleRepository.findByText(text, articleStatus, page);
     }
 
-    public String  saveArticle(ArticleCollection article) {
+    public String saveArticle(ArticleCollection article) {
         return articleRepository.save(article);
 
     }
@@ -47,8 +50,8 @@ public class LiteratureService {
         log.debug("Reading article id: " + id);
         return articleRepository.findById(id);
     }
-    
-     public ArticleCollection findArticleByPmid(String pmid) {
+
+    public ArticleCollection findArticleByPmid(String pmid) {
         log.debug("Reading article id: " + pmid);
         return articleRepository.findByPMID(pmid);
     }
@@ -57,16 +60,30 @@ public class LiteratureService {
         log.debug("Updating fields for : " + id);
         articleRepository.replace(id, article);
     }
-    
+
     public void updateArticle(String id, Map<String, Object> article) {
         log.debug("Updating fields for : " + id);
         articleRepository.update(id, article);
     }
-    
+
     public void updateCollection(String id, ArticleStatus newCollection) {
         log.debug("Updating collection for : " + id + " to: " + newCollection);
         articleRepository.update(id, newCollection);
     }
 
+    public void deleteArticleList(List<String> ids) {
+        log.debug("Removing articles from DB:" + ids);
+        for (String id : ids) {
+            articleRepository.delete(id);
+        }
+    }
+
+    public void deleteArticleList() {
+        log.debug("Removing all articles from DB");
+        for (ArticleStatus status : ArticleStatus.values()) {
+            mongoTemplate.remove(null, status.getCollection());
+        }
+
+    }
 
 }

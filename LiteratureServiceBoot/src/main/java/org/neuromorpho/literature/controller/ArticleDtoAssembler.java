@@ -31,6 +31,7 @@ public class ArticleDtoAssembler {
         articleDto.setJournal(article.getJournal());
         articleDto.setPmid(article.getPmid());
         articleDto.setPublishedDate(article.getPublishedDate());
+        articleDto.setOcDate(article.getOcDate());
         articleDto.setTitle(article.getTitle());
         articleDto.setLink(article.getLink());
         articleDto.setEvaluatedDate(article.getEvaluatedDate());
@@ -59,6 +60,7 @@ public class ArticleDtoAssembler {
             articleDto.setJournal(article.getJournal());
             articleDto.setPmid(article.getPmid());
             articleDto.setPublishedDate(article.getPublishedDate());
+            articleDto.setOcDate(article.getOcDate());
             articleDto.setTitle(article.getTitle());
             articleDto.setLink(article.getLink());
             articleDto.setEvaluatedDate(article.getEvaluatedDate());

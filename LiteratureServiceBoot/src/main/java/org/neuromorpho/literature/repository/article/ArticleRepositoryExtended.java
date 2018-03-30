@@ -12,7 +12,7 @@ import org.neuromorpho.literature.model.article.ArticleCollection;
 import org.neuromorpho.literature.model.article.ArticleCollection.ArticleStatus;
 import org.springframework.data.domain.Page;
 
-public interface ArticleRepository {
+public interface ArticleRepositoryExtended {
 
     public Map<String, Long> getSummary(Date date);
 
