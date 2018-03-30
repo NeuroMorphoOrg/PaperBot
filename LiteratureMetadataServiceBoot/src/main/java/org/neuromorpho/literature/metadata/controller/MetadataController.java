@@ -51,13 +51,12 @@ public class MetadataController {
             @RequestParam(required = true) String key) throws ParseException {
         List<String> result = new ArrayList();
         List<MetadataValues> metadataValuesList = metadataService.getByKey(key);
-        for (MetadataValues metadata: metadataValuesList){
+        for (MetadataValues metadata : metadataValuesList) {
             result.add(metadata.getName());
         }
-        return result;    
+        return result;
     }
 
-    
     @CrossOrigin
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
@@ -80,12 +79,18 @@ public class MetadataController {
         return attributes;
 
     }
-    
+
     @CrossOrigin
     @RequestMapping(method = RequestMethod.DELETE)
     public void deleteMetadataList(@RequestParam List<String> ids) {
         metadataService.deleteMetadataList(ids);
 
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/removeAll", method = RequestMethod.DELETE)
+    public void deleteMetadataList() {
+        metadataService.deleteMetadataList();
     }
 
 }

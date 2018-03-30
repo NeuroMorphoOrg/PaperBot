@@ -61,4 +61,9 @@ public class MetadataService {
             metadataRepository.delete(new ObjectId(id));
         }
     }
+
+    public void deleteMetadataList() {
+        log.debug("Removing all metadata from DB");
+        metadataRepository.deleteAll();
+    }
 }
