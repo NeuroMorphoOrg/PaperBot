@@ -21,15 +21,15 @@ import org.springframework.stereotype.Service;
 public class MetadataService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    
+
     private final String collection = "metadata";
 
     @Autowired
     private MetadataRepository metadataRepository;
-    
+
     @Autowired
     private MetadataValuesRepository metadataValuesRepository;
-         
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -39,20 +39,26 @@ public class MetadataService {
         List<String> valueList = mongoTemplate.getCollection(collection).distinct(key);
         return valueList;
     }
-    
+
     public List<MetadataValues> getByKey(String key) {
         log.debug("Geting metadata values for field" + key);
         return metadataValuesRepository.findByType(key);
     }
-    
+
     public MetadataFirstStage find(ObjectId id) {
         log.debug("Metadata for article id: " + id);
         return metadataRepository.findOne(id);
     }
-     
+
     public void save(MetadataFirstStage metadata) {
         log.debug("Saving or updating metadata: " + metadata.toString());
         metadataRepository.save(metadata);
     }
 
+    public void deleteMetadataList(List<String> ids) {
+        log.debug("Removing metadata from DB:" + ids);
+        for (String id : ids) {
+            metadataRepository.delete(new ObjectId(id));
+        }
+    }
 }

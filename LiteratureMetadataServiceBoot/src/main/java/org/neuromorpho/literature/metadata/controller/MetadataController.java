@@ -80,5 +80,12 @@ public class MetadataController {
         return attributes;
 
     }
+    
+    @CrossOrigin
+    @RequestMapping(method = RequestMethod.DELETE)
+    public void deleteMetadataList(@RequestParam List<String> ids) {
+        metadataService.deleteMetadataList(ids);
+
+    }
 
 }
