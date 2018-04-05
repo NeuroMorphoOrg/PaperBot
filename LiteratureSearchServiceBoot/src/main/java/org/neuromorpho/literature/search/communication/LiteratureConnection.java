@@ -21,7 +21,7 @@ public class LiteratureConnection {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public ArticleResponse saveArticle(Article article, Boolean inaccessible, String collection) {
-        if (inaccessible && collection.equals("To evaluate")){
+        if (inaccessible && collection.equals("Pending evaluation")){
             collection = "Inaccessible";
         } 
         String url = uri + "/search/" + collection;

@@ -12,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.neuromorpho.literature.search.communication.ArticleResponse;
-import org.neuromorpho.literature.search.model.article.Search;
 import org.neuromorpho.literature.search.model.portal.KeyWord;
 import org.neuromorpho.literature.search.model.portal.Portal;
 import org.neuromorpho.literature.search.communication.LiteratureConnection;
@@ -35,7 +34,6 @@ public abstract class PortalSearch implements IPortalSearch {
     protected String collection;
     protected Date startDate;
     protected Date endDate;
-    protected Integer searchPeriod;
     protected Boolean inaccessible;
     protected Article article;
 
@@ -49,8 +47,7 @@ public abstract class PortalSearch implements IPortalSearch {
         try {
             this.portal = portal;
             this.keyWord = keyWord.getName();
-            this.searchPeriod = portal.getSearchPeriod();
-            this.startDate = this.getSearchStartDate();
+            this.startDate = portal.getStartSearchDate();
             this.endDate = this.getSearchEndDate();
             this.collection = keyWord.getCollection();
 
@@ -161,12 +158,6 @@ public abstract class PortalSearch implements IPortalSearch {
         }
     }
 
-    protected Date getSearchStartDate() {
-        Calendar date = Calendar.getInstance();   //current date
-        date.add(Calendar.MONTH, -(this.searchPeriod));
-        date.set(Calendar.DAY_OF_MONTH, 1);
-        return date.getTime();
-    }
 
     protected Date getSearchEndDate() {
         Calendar date = Calendar.getInstance();   //current date

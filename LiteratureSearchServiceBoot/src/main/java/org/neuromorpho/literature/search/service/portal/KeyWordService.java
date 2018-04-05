@@ -6,6 +6,7 @@
 package org.neuromorpho.literature.search.service.portal;
 
 import java.util.List;
+import org.bson.types.ObjectId;
 import org.neuromorpho.literature.search.model.portal.KeyWord;
 import org.neuromorpho.literature.search.repository.portal.KeyWordRepository;
 import org.slf4j.Logger;
@@ -29,5 +30,12 @@ public class KeyWordService {
     public void updateKeyWordList(List<KeyWord> keyWordList) {
         log.debug("Updating keywords into DB");
         keyWordRepository.save(keyWordList);
+    }
+    
+    public void deleteKeyWordList(List<String> ids) {
+        log.debug("Removing keywords from DB");
+        for (String id: ids){
+            keyWordRepository.delete(new ObjectId(id));
+        }
     }
 }

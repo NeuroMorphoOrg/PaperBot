@@ -1,5 +1,6 @@
 package org.neuromorpho.literature.search.model.portal;
 
+import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,7 +15,7 @@ public class Portal {
     private String name;
     private String url;
     private String base;
-    private Integer searchPeriod;
+    private Date startSearchDate;
     private Boolean active;
     private String db;
     private String apiUrl;
@@ -35,8 +36,6 @@ public class Portal {
         this.id = id;
     }
 
-   
-
     public String getName() {
         return name;
     }
@@ -53,12 +52,15 @@ public class Portal {
         this.url = url;
     }
 
-    public Integer getSearchPeriod() {
-        return searchPeriod;
+    public Date getStartSearchDate() {
+        if (this.startSearchDate == null) {
+            startSearchDate = new Date();
+        }
+        return startSearchDate;
     }
 
-    public void setSearchPeriod(Integer searchPeriod) {
-        this.searchPeriod = searchPeriod;
+    public void setStartSearchDate(Date startSearchDate) {
+        this.startSearchDate = startSearchDate;
     }
 
     public Boolean getActive() {
