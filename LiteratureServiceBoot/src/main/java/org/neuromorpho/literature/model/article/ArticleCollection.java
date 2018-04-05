@@ -3,7 +3,7 @@ package org.neuromorpho.literature.model.article;
 public class ArticleCollection {
 
     public enum ArticleStatus {
-        TO_EVALUATE("article", "To evaluate"),
+        TO_EVALUATE("article", "Pending evaluation"),
         POSITIVE("article.positives", "Positive"),
         NEGATIVE("article.negatives", "Negative"),
         EVALUATED("article.evaluated", "Evaluated"),

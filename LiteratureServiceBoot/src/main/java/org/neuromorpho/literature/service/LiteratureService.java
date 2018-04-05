@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.neuromorpho.literature.repository.article.ArticleRepositoryExtended;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 
 @Service
 public class LiteratureService {
@@ -81,7 +82,7 @@ public class LiteratureService {
     public void deleteArticleList() {
         log.debug("Removing all articles from DB");
         for (ArticleStatus status : ArticleStatus.values()) {
-            mongoTemplate.remove(null, status.getCollection());
+            mongoTemplate.remove(new Query(), status.getCollection());
         }
 
     }

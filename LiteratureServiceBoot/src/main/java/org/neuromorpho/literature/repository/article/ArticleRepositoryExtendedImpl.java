@@ -144,7 +144,8 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
         for (ArticleStatus status : ArticleStatus.values()) {
             Article article = mongoOperations.findById(id, Article.class, status.getCollection());
             if (article != null) {
-                mongoOperations.remove(article);
+                log.debug("Removing article: " + id + " from collection: " + status.getCollection());
+                mongoOperations.remove(article, status.getCollection());
             }
         }
 

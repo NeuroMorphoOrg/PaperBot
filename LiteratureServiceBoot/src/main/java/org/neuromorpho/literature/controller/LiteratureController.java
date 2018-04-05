@@ -118,15 +118,6 @@ public class LiteratureController {
     }
 
     @CrossOrigin
-    @RequestMapping(method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteArticle(
-            @RequestBody String id) {
-        throw new UnsupportedOperationException("Operation not permited");
-//        literatureService.deleteArticle(id);
-    }
-
-    @CrossOrigin
     @RequestMapping(value = "status/{status}", method = RequestMethod.GET)
     public Page<ArticleDto> getArticles(
             @PathVariable String status,
