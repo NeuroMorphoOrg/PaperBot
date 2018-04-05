@@ -33,13 +33,13 @@
         </thead>
         <tbody>
             <tr ng-repeat="article in articlePage.content| filter:search"
-                 ng-class="{'text-negative': article.metadata.articleStatus ==='Negative', 'text-positive': article.metadata.articleStatus ==='Positive', 'text-inaccessible': article.metadata.articleStatus ==='Inaccessible', 'text-reevaluate': article.metadata.articleStatus ==='To evaluate' }">
+                 ng-class="{'text-negative': article.metadata.articleStatus ==='Negative', 'text-positive': article.metadata.articleStatus ==='Positive', 'text-inaccessible': article.metadata.articleStatus ==='Inaccessible', 'text-reevaluate': article.metadata.articleStatus ==='Pending evaluation' }">
                 <td>{{article.publishedDate| date:'yyyy-MM-dd'}}</td>
                 <td ng-if="article.pmid">{{article.pmid}}</td>
                 <td ng-if="!article.pmid">-</td>
                 <td>
                     <span class="title"><a href='#/view/{{article.id}}/1' target="_blank">{{article.title}}</a></span>  <br/>
-                    <span class="keyWordList" ng-repeat="keyWord in getKeyWordSet(article.searchPortal.portalList)">{{keyWord}}
+                    <span class="keyWordList" ng-repeat="keyWord in getKeyWordSet(article.searchPortal)">{{keyWord}}
                         <span ng-show=" !$last">,</span>
                     </span>
                 </td>
@@ -57,7 +57,7 @@
                     <span class="glyphicon glyphicon-minus-sign"></span>Negative</td>
                 <td class="radio-inline-inaccessible" ng-if="article.metadata.articleStatus ==='Inaccessible'">
                     <span class="glyphicon glyphicon-question-sign"></span>Inaccessible</td>
-                <td class="radio-inline-reevaluate" ng-if="article.metadata.articleStatus ==='To evaluate'">
+                <td class="radio-inline-reevaluate" ng-if="article.metadata.articleStatus ==='Pending evaluation'">
                     <span class="glyphicon glyphicon-remove-sign"></span>Re-Evaluate</td>
                 
                 <td><button type="button" ng-click="acceptEvaluatedArticle(article.id, article.metadata, $index)" class="btn btn-xlarge btn-default" >

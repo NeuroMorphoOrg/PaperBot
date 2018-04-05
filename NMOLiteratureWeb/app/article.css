@@ -118,6 +118,14 @@ th.tipo3{
     color: #519548;
     font-weight: bold;
 }
+.radio-inline-active {
+    font-size: 14px;
+    color: black;
+}
+.radio-inline-unactive {
+    font-size: 14px;
+    color: lightgray;
+}
 
 .radio-inline-negative {
     font-size: 18px;

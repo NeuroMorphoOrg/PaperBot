@@ -19,25 +19,25 @@
         <thead>
             <tr>
                 <th class="PublishedDate">Published Date</th>
+                <th class="OcDate">Found by the Search on</th>
                 <th class="PMID">PMID</th>
                 <th>Title</th>
-                <th>Note</th>
 
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="article in articlePage.content| filter:search">
                 <td>{{article.publishedDate| date:'yyyy-MM-dd'}}</td>
+                <td>{{article.ocDate| date:'yyyy-MM-dd'}}</td>
                 <td ng-if="article.pmid">{{article.pmid}}</td>
                 <td ng-if="!article.pmid">-</td>
                 <td>
                     <span class="title"><a href='#/view/{{article.id}}/{{review}}'>{{article.title}}</a></span>  <br/>
-                    <span class="keyWordList" ng-repeat="keyWord in getKeyWordSet(article.searchPortal.portalList)">{{keyWord}}
+                    <span class="keyWordList" ng-repeat="keyWord in getKeyWordSet(article.searchPortal)">{{keyWord}}
                         <span ng-show=" !$last">,</span>
                     </span>
 
                 </td>
-                <td>{{metadata.comment}}</td>
                 <!--
                   <td><button type="button" ng-click="submitNegative(article.id, $index)" class="radio-inline-negative" >
                         <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"> Negative</span>

@@ -1,0 +1,214 @@
+
+    <div class="errors">
+        {{error}}
+    </div>
+    <div class="portals">
+
+            <!-- buttons -->
+            <h2>Portals Configuration</h2>
+            <p>You can update the portal configuration by clicking the button Edit. </p>
+            <ul>
+                <li>Update the start date for the given search, the search will be for the period between start date search and today. 
+                    For example, return the papers published between January 2018 until today.</li>
+                <li>The portals <a href="https://dev.elsevier.com/user/registration"><b>ScienceDiect</b></a> and <a href="https://dev.springer.com/signup"><b>SpringerLink</b></a> require the user 
+                to register and obtain a token to use their APIs. You can find the registration page for each of the portals by clicking in the previous names and copy the obtained token in the following table. 
+                If you decide not to register and add the token these portals won't return any data. </li>
+                <li>Activate and deactivate the search. Activate the scrapper portals if you are not concern with the privacy policy.</li>
+                </ul>
+            <div>
+                <h3>Portals with API</h3>  
+
+
+                <!-- table -->
+                <table class="table table-bordered table-hover table-condensed">
+                    <tr style="font-weight: bold">
+                        <td style="width:15%">Name</td>
+                        <td style="width:20%">Start Date Search Period</td>
+                        <td style="width:25%">Token</td>
+                        <td style="width:10%">Active</td>
+                        <td style="width:10%">Edit</td>
+
+                    </tr>
+                    <tr ng-repeat="portal in portalList| filter:filterPortalList1" ng-class="{true: 'radio-inline-active', false: 'radio-inline-unactive'}[portal.active]">
+                        <td>
+                            <span>
+                                {{ portal.name}}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span editable-bsdate="portal.startSearchDate" e-is-open="opened.$data" e-ng-click="open($event,'$data', $index)" e-datepicker-popup="yyyy/MM/dd" e-form="tableportal">{{portal.startSearchDate| date:'yyyy-MM-dd'}}</span>
+                        </td>
+
+                        <td>
+                            <span ng-if="portal.name === 'SpringerLink' || portal.name === 'ScienceDirect'" editable-text="portal.token" e-form="tableportal">
+                                {{ portal.token || '' }}
+                            </span>
+                        </td>
+                        <td class="radio-inline-active" ng-if="portal.active">
+                            <span editable-checkbox="portal.active" e-form="tableportal">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </span>
+                        </td>
+                        <td class="radio-inline-unactive" ng-if="!portal.active">
+                            <span editable-checkbox="portal.active" e-form="tableportal">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </span>
+                        </td>
+                        <td style="white-space: nowrap">
+                             <!-- form -->
+                             <form editable-form name="tableportal" onbeforesave="savePortal(portal, portal.id)" ng-show="tableportal.$visible" class="form-buttons form-inline">
+                                 <button type="submit" ng-disabled="tableportal.$waiting" class="btn btn-primary">
+                                     save
+                                 </button>
+                                 <button type="button" ng-disabled="tableportal.$waiting" ng-click="tableportal.$cancel()" class="btn btn-default">
+                                     cancel
+                                 </button>
+                             </form>
+                             <div class="buttons" ng-show="!tableportal.$visible">
+                                 <button type="button" class="btn btn-primary" ng-click="tableportal.$show();editable=true">edit</button>
+                             </div>  
+                         </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div>
+                <h3>Portals without API</h3>  
+                <!-- table -->
+                <table class="table table-bordered table-hover table-condensed">
+                    <tr style="font-weight: bold">
+                        <td style="width:15%">Name</td>
+                        <td style="width:20%">Start Date Search Period</td>
+                        <td style="width:10%">Active</td>
+                        <td style="width:10%">Edit</td>
+
+                    </tr>
+                    <tr ng-repeat="portal in portalList| filter:filterPortalList2" ng-class="{true: 'radio-inline-active', false: 'radio-inline-unactive'}[portal.active]">
+                        <td>
+                            <span>
+                                {{ portal.name}}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span editable-bsdate="portal.startSearchDate" e-is-open="opened.$data" e-ng-click="open($event,'$data', $index)" e-datepicker-popup="yyyy/MM/dd" e-form="tableportal">{{portal.startSearchDate| date:'yyyy-MM-dd'}}</span>
+                        
+                        </td>
+                        <td class="radio-inline-active" ng-if="portal.active">
+                            <span editable-checkbox="portal.active" e-form="tableportal">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </span>
+                        </td>
+                        <td class="radio-inline-unactive" ng-if="!portal.active">
+                            <span editable-checkbox="portal.active" e-form="tableportal">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </span>
+                        </td>
+                        <td style="white-space: nowrap">
+                             <!-- form -->
+                             <form editable-form name="tableportal" onbeforesave="savePortal(portal, portal.id)" ng-show="tableportal.$visible" class="form-buttons form-inline">
+                                 <button type="submit" ng-disabled="tableportal.$waiting" class="btn btn-primary">
+                                     save
+                                 </button>
+                                 <button type="button" ng-disabled="tableportal.$waiting" ng-click="tableportal.$cancel()" class="btn btn-default">
+                                     cancel
+                                 </button>
+                             </form>
+                             <div class="buttons" ng-show="!tableportal.$visible">
+                                 <button type="button" class="btn btn-primary" ng-click="tableportal.$show();editable=true">edit</button>
+                             </div>  
+                         </td>
+                    </tr>
+                </table>
+
+            </div>
+    </div>
+    <hr>
+    <div class="keywords">
+
+        <form editable-form name="tablekeyword" onaftersave="saveKeyWordList()" oncancel="cancelKeyWordList()">
+            <!-- buttons -->
+            <h2>KeyWords Configuration</h2>
+            <p>Add a query with keywords, valid connectors are the logic operands AND and OR, use parenthesis for adding priority. Exact matching case insensitive is done by adding ".
+                For example: ("neuromorpho.org" OR "neuromorph.org") AND "neuronal reconstruction" </p>
+
+
+            <!-- table -->
+            <table class="table table-bordered table-hover table-condensed">
+                <tr style="font-weight: bold">
+                    <td>KeyWord</td>
+                    <td style="width:20%"><span ng-show="tablekeyword.$visible">Action</span></td>
+
+                </tr>
+                <tr ng-repeat="keyword in keyWordList| filter:filterKeyWord">
+
+                    <td>
+                        <span editable-text="keyword.name" e-form="tablekeyword">
+                            {{ keyword.name}}
+                        </span>
+                    </td>
+
+                    <td>
+                        <button type="button" ng-show="tablekeyword.$visible" ng-click="deleteKeyWord(keyword.i)" class="btn btn-danger pull-right">Del</button>
+                    </td>
+
+                </tr>
+            </table>
+
+
+            <div class="btn-edit">
+                <button type="button" class="btn btn-default" ng-show="!tablekeyword.$visible" ng-click="tablekeyword.$show()">
+                    edit
+                </button>
+            </div>
+            <div class="btn-form" ng-show="tablekeyword.$visible">
+                <button type="button" ng-disabled="tablekeyword.$waiting" ng-click="addkeyWord()" class="btn btn-default pull-right">add row</button>
+                <button type="submit" ng-disabled="tablekeyword.$waiting" class="btn btn-primary">save</button>
+                <button type="button" ng-disabled="tablekeyword.$waiting" ng-click="tablekeyword.$cancel()" class="btn btn-default">cancel</button>
+            </div> 
+        </form>
+    </div>
+        <hr>
+
+    <div class="launch">
+    <h2>Launch the Search</h2>
+    <p>Before launching the search add some keywords and read carefully the Portals Configuration to make sure everything is correctly set, then click the button Start Search and enjoy.    </p>
+    <div>
+        <button ng-if="!executing" type="button" class="btn btn-success btn-lg btn-block" ng-click="startSearch()" ng-disabled="false">Start Search</button>
+        <button ng-if="executing" type="button" class="btn btn-light btn-lg btn-block" ng-disabled="true">Search Executing ... </button>
+
+        <hr>
+    </div>
+        <h4>Previous Executions: Top 10 ordered By date
+        <button ng-click="getLogList()" ng-disabled="false"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+</h4>
+    <table class="table table-striped">
+        
+  <thead>
+    <tr>
+      <th scope="col">Start</th>
+      <th scope="col">Stop</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="log in portalLogList">
+      <td>{{log.start| date:'yyyy-MM-dd h:mm:ss'}}</td>
+      <td ng-if="log.stop == null">Executing</td>
+      <td ng-if="log.stop != null">{{log.stop| date:'yyyy-MM-dd h:mm:ss'}}</td>
+
+    </tr>
+    
+  </tbody>
+</table>
+    </div>
+        
+         <div class="reset">
+    <h2>Remove the Article DataBase</h2>
+     <div>
+        <button ng-if="!cleaning" type="button" class="btn btn-danger btn-lg btn-block" ng-click="removeArticleDB()" ng-disabled="false">Clean Article DB</button>
+        <button ng-if="cleaning" type="button" class="btn btn-light btn-lg btn-block" ng-disabled="true">Cleaning DB ... </button>
+
+        <hr>
+    </div>
+         </div>

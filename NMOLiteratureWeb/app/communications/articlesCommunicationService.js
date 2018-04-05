@@ -1,8 +1,8 @@
 var url_literature = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8188/literature';
-var url_reconstructions_status = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8182/literature/reconstructions/status';
 var url_metadata = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8180/literature/metadata';
 var url_pubmed = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8186/literature/pubmed';
 var url_crosref = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8184/literature/crossref';
+var url_search = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8187/literature';
 
 angular.module('articles.communication', []).
         factory('articlesCommunicationService', function ($http) {
@@ -97,7 +97,57 @@ angular.module('articles.communication', []).
                     return response.data;
                 });
             };
-
+            var getPortalList = function () {
+                return $http.get(url_search + "/portals").then(function (response) {
+                    return response.data;
+                });
+            };
+            var updatePortalList = function (portalList) {
+                return $http.put(url_search + "/portals", portalList).then(function (response) {
+                    return response.data;
+                });
+            };
+            var getLogList = function () {
+                return $http.get(url_search + "/portals/log").then(function (response) {
+                    return response.data;
+                });
+            };
+            var launchSearch = function () {
+                return $http.get(url_search + "/search").then(function (response) {
+                    return response.data;
+                });
+            };
+            var getKeyWordList = function () {
+                return $http.get(url_search+ "/keywords").then(function (response) {
+                    return response.data;
+                });
+            };
+            var updateKeyWordList = function (keyWordList) {
+                return $http.put(url_search+ "/keywords", keyWordList).then(function (response) {
+                    return response.data;
+                });
+            };
+            var deleteKeyWordList = function (keyWordIdList) {
+                return $http.delete(url_search+ "/keywords?ids=" + keyWordIdList).then(function (response) {
+                    return response.data;
+                });
+            };
+            var removeArticle = function (idList) {
+                return $http.delete(url_literature+ "?ids=" + idList).then(function (response) {
+                    return response.data;
+                });
+                return $http.delete(url_metadata+ "?ids="+ idList).then(function (response) {
+                    return response.data;
+                });
+            };
+            var removeAllArticles = function () {
+                return $http.delete(url_literature+ "/removeAll").then(function (response) {
+                    return response.data;
+                });
+                return $http.delete(url_metadata+ "/removeAll").then(function (response) {
+                    return response.data;
+                });
+            };
             return {
                 getResumeNumbers: getResumeNumbers,
                 getArticleList: getArticleList,
@@ -113,7 +163,16 @@ angular.module('articles.communication', []).
                 getPMIDFromTitle: getPMIDFromTitle,
                 getCrosRef: getCrosRef,
                 getArticleListByText: getArticleListByText,
-                getObjectId: getObjectId
+                getObjectId: getObjectId,
+                getPortalList: getPortalList,
+                updatePortalList: updatePortalList,
+                getLogList: getLogList,
+                launchSearch: launchSearch,
+                getKeyWordList: getKeyWordList,
+                updateKeyWordList: updateKeyWordList,
+                deleteKeyWordList: deleteKeyWordList,
+                removeArticle: removeArticle,
+                removeAllArticles: removeAllArticles
 
             };
 

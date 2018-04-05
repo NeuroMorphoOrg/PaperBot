@@ -7,33 +7,52 @@
         <script src="articlesResumeController.js"></script>
         <script src="/NMOLiteratureWeb/communications/articlesCommunicationService.js"></script>
         <script src="/NMOLiteratureWeb/services/articlesService.js"></script>
-
         <link rel="stylesheet" href="/NMOLiteratureWeb/bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="navigate.css">
     </head>
     <body ng-controller='articles.controller'>
-        
-        
-       <!-- <div class="search">
-            <!-- <a href="portalSearch/search.html"  style="text-decoration: none"> -->
-          <!-- <div class="portal_search">
-                <p>Portal Search<br><span class="badge">{{articlesNumbers.lastLaunchedDate| date:'yyyy-MM-dd'}}</span></p>
-            </div>
-            <!-- </a> -->
-           
-      <!--  </div>-->
+        <div class="literMate">
+            <h1>LiterMate Tool</h1>
+            <hr>
+            <p class="literMate">LiterMate is a configurable, modular, open-source web-based solution to automatically 
+                find and efficiently annotate peer-reviewed publications based on periodic full-text 
+                searches across publisher portals. Without user interactions, LiterMate retrieves and 
+                stores article information (full reference, corresponding email contact, and full-text keyword hits) 
+                based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, 
+                PubMed/PubMedCentral, and GoogleScholar. Although different portals require different search configurations, 
+                the common interface of LiterMate unifies the process from the user perspective. 
+                Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance 
+                to the project goals and seamless annotation of suitable metadata dimensions.
+            </p>
+
+        </div>
+        <hr>
+        <div class="search">
+            <a href="portalSearch/searchMenu.html"  style="text-decoration: none"> 
+                <div class="portal_search">
+                    <p>Portal Search<br><span class="badge">{{articlesNumbers.lastLaunchedDate| date:'yyyy-MM-dd'}}</span></p>
+                </div>
+            </a>
+            <ul>
+                <li>The Portal Search button gives access to configure the portals, keywords and launch the search for a given period. </li>
+            </ul>
+        </div>
         <div class="litSearch">
             <div class="articles">
-                <a href="articleList/preEvaluateArticlesMenu.html#articles/To%20evaluate/1"  style="text-decoration: none">
+                <a href="articleList/preEvaluateArticlesMenu.html#articles/Pending%20evaluation/1"  style="text-decoration: none">
                     <div class="pre_evaluate_articles">
                         <p>Pre-Evaluate Articles<br><span class="badge">{{count.toEvaluate}}</span></p>
                     </div>
                 </a>
-                
+                <ul>
+                    <li>The Pre-evaluate articles is meant for training purposes. When an article is decided if it is relevant or not and the metadata added from this category, the article goes to 
+                        an intermediate collection where it can be reviewed and accepted. The pre-evaluated articles can be found in the next button Evaluate Articles/Pre-Evaluate Articles</li>
+                </ul>
+
             </div>
 
             <div class="articles">
-                <a href="articleList/evaluateArticlesMenu.html#articles/To%20evaluate/0"  style="text-decoration: none">
+                <a href="articleList/evaluateArticlesMenu.html#articles/Pending%20evaluation/0"  style="text-decoration: none">
                     <div class="evaluate_articles">
                         <p>Evaluate Articles
                             <span class="badge">{{count.toEvaluate}}</span>
@@ -42,7 +61,12 @@
                             <span class="badge">{{count.evaluated}}</span></p>
                     </div>
                 </a>
-               
+                <ul>
+                    <li>The Evaluate Articles/Pre-Evaluate Articles button has 3 options in its menu: The user can evaluate an article and decide if its relevant or not and add metadata,
+                        these articles are directly moved to its designed category (Positive, Negative or Inaccessible). The user can review pre-evaluate articles, update its data and accept or reject the
+                        evaluation done by a student. The user can add articles manually typing all its data or if either the PMID or DOI is known adding them and clicking in the correspondent button
+                        that will retrieve the data from the portals.</li>
+                </ul>
 
             </div>
             <div class="evaluated">
@@ -62,12 +86,18 @@
                         <p>Positive Articles<br><span class="badge">{{count.positive}}</span></p> 
                     </div>
                 </a>
+                <ul>
+                    <li> In the Positive Articles button we find the articles that were evaluated as relevant with its metadata and annotations</li>
+                    <li> In the Negative Articles button we find the articles that were evaluated as non-relevant with its metadata and annotations</li>
+                    <li> In the Inaccessible Articles button we find the articles that the PDF was found non-accessible by the search or moved here by the user when evaluating</li>
 
+                </ul>
             </div>
 
 
         </div>
-        
+
+
     </body>
 
 </html>

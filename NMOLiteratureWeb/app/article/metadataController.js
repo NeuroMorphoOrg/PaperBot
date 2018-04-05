@@ -10,7 +10,7 @@ angular.module('Articles').
 //                $scope.error = 'Error updating metadata';
 //            });
             $scope.statuses = [
-                {value: 1, text: 'To evaluate'},
+                {value: 1, text: 'Pending evaluation'},
                 {value: 2, text: 'Positive'},
                 {value: 3, text: 'Negative'},
                 {value: 4, text: 'Inaccessible'}

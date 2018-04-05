@@ -62,6 +62,8 @@ angular.module('Articles').
                         }
                     });
                 });
+                $scope.article.searchPortal = [];
+
                 articlesCommunicationService.updateArticle($rootScope.id, $scope.article).then(function () {
                 }).catch(function (response) {
                     if (response.status === 409) {
@@ -89,7 +91,7 @@ angular.module('Articles').
             $scope.getPubMed = function () {
                 $scope.article.searchPortal = {};
                 if ($rootScope.id == null) {
-                    $rootScope.articleStatus = 'To evaluate';
+                    $rootScope.articleStatus = 'Pending evaluation';
                     $scope.article.searchPortal.source = 'manual';
 
                     articlesCommunicationService.getObjectId().then(function (data) {
@@ -116,7 +118,7 @@ angular.module('Articles').
                 $scope.article.searchPortal = {};
 
                 if ($rootScope.id == null) {
-                    $rootScope.articleStatus = 'To evaluate';
+                    $rootScope.articleStatus = 'Pending evaluation';
                     $scope.article.searchPortal.source = 'manual';
 
                     articlesCommunicationService.getObjectId().then(function (data) {
@@ -169,6 +171,17 @@ angular.module('Articles').
                 $event.stopPropagation();
 
                 $scope.opened[elementOpened] = !$scope.opened[elementOpened];
+            };
+
+            $scope.removeArticle = function () {
+                var idList = [];
+                idList.push($rootScope.id);
+                articlesCommunicationService.removeArticle(idList).then(function () {
+                    $window.history.back();
+                    $scope.$emit('child'); // going up!
+                }).catch(function (response) {
+                    $scope.error = 'Error removing article';
+                });
             };
         });
 

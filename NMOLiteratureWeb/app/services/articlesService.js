@@ -4,7 +4,7 @@ angular.module('articles.service', []).
                 articlesCommunicationService.getResumeNumbers().then(function (data) {
                     scope.count.negative = data.Negative;
                     scope.count.inaccessible = data.Inaccessible;
-                    scope.count.toEvaluate = data['To evaluate'];
+                    scope.count.toEvaluate = data['Pending evaluation'];
                     scope.count.evaluated = data.Evaluated;
                     scope.count.positive = data.Positive;
                 }).catch(function () {
