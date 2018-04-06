@@ -21,9 +21,6 @@ public class LiteratureConnection {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public ArticleResponse saveArticle(Article article, Boolean inaccessible, String collection) {
-        if (inaccessible && collection.equals("Pending evaluation")){
-            collection = "Inaccessible";
-        } 
         String url = uri + "/search/" + collection;
         log.debug("Creating rest connection for URI: " + url);
         RestTemplate restTemplate = new RestTemplate();
