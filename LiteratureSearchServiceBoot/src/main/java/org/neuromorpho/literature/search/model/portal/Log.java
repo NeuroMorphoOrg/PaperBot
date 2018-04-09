@@ -12,6 +12,7 @@ public class Log {
 
     private Date start;
     private Date stop;
+    private Long threadId;
 
     public Log() {
     }
@@ -39,13 +40,21 @@ public class Log {
     public void setStop(Date stop) {
         this.stop = stop;
     }
-    
-    public void statLogging() {
+
+    public Long getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(Long threadId) {
+        this.threadId = threadId;
+    }
+
+    public void setStartDate() {
         this.start = new Date();
     }
-    
-    public void endLogging() {
+
+    public void setStopDate() {
         this.stop = new Date();
     }
-   
+
 }

@@ -43,7 +43,7 @@ public abstract class PortalSearch implements IPortalSearch {
     protected PubMedConnection pubMedConnection;
 
     @Override
-    public void findArticleList(KeyWord keyWord, Portal portal) {
+    public void findArticleList(KeyWord keyWord, Portal portal) throws InterruptedException {
         try {
             this.portal = portal;
             this.keyWord = keyWord.getName();
@@ -61,6 +61,8 @@ public abstract class PortalSearch implements IPortalSearch {
 
         } catch (IOException ex) { // if jsour returns this exception, the page was empty
             log.debug("Aticles found 0 ");
+        } catch (InterruptedException ex){
+            throw ex;
         } catch (Exception ex) {
             log.error("Exception " + this.portal.getName(), ex);
         }
@@ -70,9 +72,9 @@ public abstract class PortalSearch implements IPortalSearch {
     //to be override by the sons
     protected abstract Elements findArticleList();
 
-    protected abstract void searchPage() throws IOException;
+    protected abstract void searchPage() throws Exception;
 
-    protected abstract Boolean loadNextPage();
+    protected abstract Boolean loadNextPage() throws InterruptedException;
 
     protected abstract String fillTitle(Element articleData);
 
@@ -105,7 +107,7 @@ public abstract class PortalSearch implements IPortalSearch {
         }
     }
 
-    protected void createArticle(Element articleData) {
+    protected void createArticle(Element articleData) throws InterruptedException {
         this.inaccessible = Boolean.FALSE;
         this.article = new Article();
         Integer i = 0;
@@ -146,7 +148,9 @@ public abstract class PortalSearch implements IPortalSearch {
                     ArticleResponse response = literatureConnection.saveArticle(this.article, this.inaccessible, this.collection);
 
                     literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
-
+                    if (Thread.currentThread().isInterrupted()) {
+                        throw new InterruptedException();
+                    }
                 }
                 read = Boolean.TRUE;
             }
@@ -157,7 +161,6 @@ public abstract class PortalSearch implements IPortalSearch {
             log.error("Exception for article: " + this.article.getTitle(), ex);
         }
     }
-
 
     protected Date getSearchEndDate() {
         Calendar date = Calendar.getInstance();   //current date
@@ -189,6 +192,6 @@ public abstract class PortalSearch implements IPortalSearch {
         return Boolean.FALSE;
     }
 
-    protected abstract void searchForTitlesApi();
+    protected abstract void searchForTitlesApi() throws InterruptedException;
 
 }

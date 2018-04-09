@@ -27,8 +27,9 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
     private final Integer minMin = 5;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+
     @Override
-    protected void searchPage() {
+    protected void searchPage() throws Exception{
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
         List<String> queryParameterList = new ArrayList<>();
         queryParameterList.add("q=" + this.keyWord);
@@ -55,12 +56,10 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
                     .followRedirects(true)
                     .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
                     .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36").get();
-
+            
         } catch (IOException ex) {
             log.error("Exception trying to load the url:" + urlFinal, ex);
-        } catch (InterruptedException ex) {
-            log.error("Exception with random sleep process ", ex);
-        }
+        } 
 
     }
 
@@ -141,7 +140,7 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
     }
 
     @Override
-    protected Boolean loadNextPage() {
+    protected Boolean loadNextPage() throws InterruptedException{
         Boolean nextPage = Boolean.FALSE;
         try {
             Elements linkList = this.searchDoc.select("div[id=gs_n] td[align=left] > a");
@@ -166,9 +165,7 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
             }
         } catch (IOException ex) {
             log.error("Exception loading next page", ex);
-        } catch (InterruptedException ex) {
-            log.error("Exception with random sleep process ", ex);
-        }
+        } 
         return nextPage;
     }
 

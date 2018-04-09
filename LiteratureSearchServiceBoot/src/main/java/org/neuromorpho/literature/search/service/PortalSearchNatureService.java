@@ -28,7 +28,7 @@ public class PortalSearchNatureService extends PortalSearch {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void searchForTitlesApi() {
+    public void searchForTitlesApi() throws InterruptedException {
 
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
         String keyWordTreated = this.keyWord.replace(" ", "+");
@@ -81,7 +81,9 @@ public class PortalSearchNatureService extends PortalSearch {
                     ArticleResponse response = literatureConnection.saveArticle(article, Boolean.FALSE, this.collection);
 
                     literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
-
+                    if (Thread.currentThread().isInterrupted()) {
+                        throw new InterruptedException();
+                    }
                 }
 
             } catch (IOException ex) {

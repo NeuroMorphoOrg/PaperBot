@@ -18,6 +18,7 @@ import org.neuromorpho.literature.search.model.article.Author;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -26,7 +27,7 @@ public class PortalSearchPubMedService extends PortalSearch {
     private final static Logger log = LoggerFactory.getLogger(PortalSearchPubMedService.class);
 
     @Override
-    public void searchForTitlesApi() {
+    public void searchForTitlesApi() throws InterruptedException {
 
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
 
@@ -67,13 +68,14 @@ public class PortalSearchPubMedService extends PortalSearch {
                 ArticleResponse response = literatureConnection.saveArticle(
                         article, this.inaccessible, this.collection);
                 literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
-
-            } catch (Exception ex) {
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new InterruptedException();
+                }
+            } catch (HttpServerErrorException ex) {
                 log.error("Exception: ", ex);
-
             }
-        }
 
+        }
     }
 
     public String getPMIDFromPMC(String uid) {

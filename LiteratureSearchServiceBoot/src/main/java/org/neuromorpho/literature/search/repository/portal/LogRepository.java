@@ -17,4 +17,6 @@ import org.springframework.stereotype.Repository;
 public interface LogRepository extends MongoRepository<Log, ObjectId> {
  
     public List<Log> findFirst10ByOrderByStartDesc();
+    public Log findFirstByOrderByStartDesc();
+
 }

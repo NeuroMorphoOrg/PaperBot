@@ -1,5 +1,6 @@
 package org.neuromorpho.literature.search.controller;
 
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,17 @@ public class SearchController {
     private SearchService searchService;
 
     @CrossOrigin
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/start", method = RequestMethod.GET)
     public void launchSearch() throws Exception {
         log.debug("Launching full search");
         searchService.launchSearch();
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/stop", method = RequestMethod.GET)
+    public void stopSearch() throws Exception {
+        log.debug("Stopping thead");
+        searchService.stopSearch();
     }
 
 }

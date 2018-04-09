@@ -15,7 +15,6 @@ import org.jsoup.select.Elements;
 import org.neuromorpho.literature.search.communication.ArticleResponse;
 import org.neuromorpho.literature.search.model.article.Article;
 import org.neuromorpho.literature.search.model.article.Author;
-import org.neuromorpho.literature.search.model.article.Search;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -30,7 +29,7 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void searchForTitlesApi() {
+    public void searchForTitlesApi() throws InterruptedException {
         Integer page = 1;
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
         RestTemplate restTemplate = new RestTemplate();
@@ -107,6 +106,9 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
                 ArticleResponse response = literatureConnection.saveArticle(article, Boolean.FALSE, this.collection);
 
                 literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new InterruptedException();
+                }
             }
         } while (iterations > 0 && iterations >= page - 1);
 
