@@ -119,11 +119,16 @@ public class CrossRefService {
                         String path = completePath + id + ".pdf";
                         Files.write(Paths.get(path), response.getBody());
                         return path; // if downloaded no need to read more links
+                    } else{
+                        log.warn("Error in call" + response.getStatusCode());
                     }
                 } catch (Exception ex) {
-                    log.debug("CrosRef link not working, trying other links");
+                    log.debug("CrossRef link not working, trying other links");
                 }
 
+            }
+            else{
+                log.warn("Article in CrossRef but no pdf associated");
             }
         }
         return null;

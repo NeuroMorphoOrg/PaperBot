@@ -22,16 +22,16 @@ public class CrossRefController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public String home() {
-        return "CrosRef up & running!";
+        return "CrossRef up & running!";
     }
 
     @CrossOrigin
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Article retrieveCrossRefArticleData(
             @RequestParam(required = true) String doi) throws Exception {
-        log.debug("Calling crosref with doi: " + doi);
+        log.debug("Calling crossref with doi: " + doi);
         Article article = crossRefService.retrieveArticleData(doi);
-        log.debug("Data from crosef: " + article.toString());
+        log.debug("Data from crossef: " + article.toString());
         return article;
 
     }
@@ -41,7 +41,7 @@ public class CrossRefController {
     public String downloadPDFFromDOI(
             @RequestParam(required = true) String doi,
             @RequestParam(required = true) String id) throws Exception {
-        log.debug("Calling crosRef with DOI: " + doi);
+        log.debug("Calling crossRef with DOI: " + doi);
         String folder = crossRefService.downloadPDFFromDOI(doi, id);
         log.debug("Folder where the PDF is downloaded: " + folder);
         return folder;

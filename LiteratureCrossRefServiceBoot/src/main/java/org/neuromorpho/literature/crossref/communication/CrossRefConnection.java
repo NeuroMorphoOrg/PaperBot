@@ -22,14 +22,14 @@ public class CrossRefConnection {
         RestTemplate restTemplate = new RestTemplate();
         String url = uri
                 + "works/" + doi;
-        log.debug("Accesing crosef using url: " + url);
+        log.debug("Accesing crossRef using url: " + url);
 
         ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class);
         if (HttpStatus.OK.equals(response.getStatusCode())) {
             Map<String, Object> articleMap = response.getBody();
             return (HashMap) articleMap.get("message");
         } else {
-            return null;
+             throw new Exception("Error reading metadata from crossRef");
         }
     }
 
