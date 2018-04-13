@@ -45,17 +45,19 @@ public class CrossRefService {
         Article article = new Article();
 
         Map message = crossRefConnection.findMetadataFromDOI(doi);
+        log.debug("Message from CrossRef: " + message);
         List<String> titles = (ArrayList) message.get("title");
         article.setTitle(titles.get(0));
 
         ArrayList<Map> authors = (ArrayList) message.get("author");
         List<Author> authorList = new ArrayList();
-
-        for (Map a : authors) {
-            String given = (String) a.get("given");
-            String family = (String) a.get("family");
-            Author author = new Author(given + " " + family, null);
-            authorList.add(author);
+        if (authors != null) {
+            for (Map a : authors) {
+                String given = (String) a.get("given");
+                String family = (String) a.get("family");
+                Author author = new Author(given + " " + family, null);
+                authorList.add(author);
+            }
         }
         article.setAuthorList(authorList);
         List<String> journalList = (List) message.get("container-title");
@@ -119,15 +121,14 @@ public class CrossRefService {
                         String path = completePath + id + ".pdf";
                         Files.write(Paths.get(path), response.getBody());
                         return path; // if downloaded no need to read more links
-                    } else{
+                    } else {
                         log.warn("Error in call" + response.getStatusCode());
                     }
                 } catch (Exception ex) {
                     log.debug("CrossRef link not working, trying other links");
                 }
 
-            }
-            else{
+            } else {
                 log.warn("Article in CrossRef but no pdf associated");
             }
         }
