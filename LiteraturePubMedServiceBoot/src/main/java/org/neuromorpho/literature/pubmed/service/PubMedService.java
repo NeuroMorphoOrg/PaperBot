@@ -35,11 +35,11 @@ public class PubMedService {
 
     public Article retrievePubMedArticleData(String pmid) throws Exception {
         String db = "pubmed";
-        if (pmid.startsWith("PMC")){
+        if (pmid.startsWith("PMC")) {
             db = "pmc";
         }
         Article article = this.fillArticleData(pmid, db);
-        
+
         this.fillAuthorList(pmid, article, db);
         return article;
 
@@ -165,7 +165,11 @@ public class PubMedService {
             String email = null;
             if (e != null && e.text().contains("@")) {
                 email = e.text().substring(e.text().lastIndexOf(" ") + 1, e.text().length());
-                email = email.replaceAll(".$", "");
+                if (email.endsWith(".")) {
+                    email = email.substring(0, email.length() - 1);
+                    log.debug("Email fo author: " + email);
+                }
+
             }
             Element fn = a.select("ForeName").first();
             Element ln = a.select("LastName").first();
