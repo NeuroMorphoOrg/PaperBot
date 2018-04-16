@@ -174,9 +174,11 @@
     <div class="launch">
     <h2>Launch the Search</h2>
     <p>Before launching the search add some keywords and read carefully the Portals Configuration to make sure everything is correctly set, then click the button Start Search and enjoy.    </p>
+    <button ng-if="executing" type="button" class="btn btn-light btn-lg btn-block" ng-disabled="true">Search Executing ... </button>
+
     <div>
         <button ng-if="!executing" type="button" class="btn btn-success btn-lg btn-block" ng-click="startSearch()" ng-disabled="false">Start Search</button>
-        <button ng-if="executing" type="button" class="btn btn-light btn-lg btn-block" ng-disabled="true">Search Executing ... </button>
+        <button ng-if="executing" type="button" class="btn btn-danger btn-lg btn-block" ng-click="stopSearch()" ng-disabled="false">Stop Search</button>
 
         <hr>
     </div>

@@ -26,33 +26,26 @@
                                 <strong>{{pdfURL}}</strong></a> </td>
                     </tr>-->
 
-                    <tr>
-                        <td><strong>Data Usage:</strong></td>
-                        <td>
-                            <span href="#" editable-checklist="radio.usage" e-ng-options="r.value as r.text for r in usages">
-                                {{showUsage()}}
-                            </span></td>
-                        <td>
-                        <td></td>
-
-                    </tr>
+                    
                     <tr>
                         <td><strong>PMID:</strong></td>
                         <td><a ng-href="https://www.ncbi.nlm.nih.gov/pubmed/{{article.pmid}}" target="_blank">
-                                   <input type="text" ng-model="article.pmid"></a></td>
+                            <span editable-text="article.pmid">{{article.pmid}}</span></a></td>
                         
-                        <td>Add a PMID and click PubMed button to retrieve the data, then click SAVE the article</td>
-                        <td>   <button type="button" ng-click="tableform.$show();getPubMed()" class="btn btn-default" ng-disabled="false">
+                        <td>Add a PMID and click PubMed button to retrieve the data, then click SAVE</td>
+                        <td><input type="text" ng-model="article.pmid">
+                            <button type="button" ng-click="tableform.$show();getPubMed()" class="btn btn-default" ng-disabled="false">
                                 <img src="/NMOLiteratureWeb/images/pubmed.jpg" width="70" /> 
                             </button></td>
                     </tr>
                     <tr>
                         <td><strong>DOI:</strong> </td>
                         <td><p>http://dx.doi.org/<a ng-href="http://dx.doi.org/{{article.doi}}" target="_blank">
-                                    <input type="text" ng-model="article.doi"></a></p>
+                                    <span editable-text="article.doi">{{article.doi}}</span></p></a></td>
                         </td>
-                        <td>Add a DOI and click CrossRef button to retrieve the data, then click SAVE the article</td>
-                        <td> <button type="button" ng-click="tableform.$show(); getCrosRef()"  class="btn btn-default" ng-disabled="false">
+                        <td>Add a DOI and click CrossRef button to retrieve the data, then click SAVE</td>
+                        <td><input type="text" ng-model="article.doi">
+                            <button type="button" ng-click="tableform.$show(); getCrosRef()"  class="btn btn-default" ng-disabled="false">
                                 <img src="/NMOLiteratureWeb/images/doi.gif" width="70" /> 
                             </button></td>
                     </tr>
@@ -102,7 +95,7 @@
                         <td><strong>Portal & KeyWords:</strong></td>
                         <td colspan="3"><span class="portalList" ng-repeat="portal in article.searchPortal">{{portal.name}} : 
                                 <span ng-repeat="keyWord in portal.keyWordList">{{keyWord}}</span>
-                                <span ng-show=" !$last">,<br></span>
+                                <span ng-show=" !$last"><br></span>
 
                             </span>
                         </td>

@@ -2,7 +2,7 @@ var url_literature = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8
 var url_metadata = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8180/literature/metadata';
 var url_pubmed = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8186/literature/pubmed';
 var url_crosref = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8184/literature/crossref';
-var url_search = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8187/literature';
+var url_search = 'http://localhost:8187/literature';
 
 angular.module('articles.communication', []).
         factory('articlesCommunicationService', function ($http) {
@@ -112,41 +112,46 @@ angular.module('articles.communication', []).
                     return response.data;
                 });
             };
-            var launchSearch = function () {
-                return $http.get(url_search + "/search").then(function (response) {
+            var launchSearch = function (canceller) {
+                return $http.get(url_search + "/search/start", { timeout: canceller.promise }).then(function (response) {
+                    return response.data;
+                });
+            };
+            var stopSearch = function (canceller) {
+                return $http.get(url_search + "/search/stop").then(function (response) {
                     return response.data;
                 });
             };
             var getKeyWordList = function () {
-                return $http.get(url_search+ "/keywords").then(function (response) {
+                return $http.get(url_search + "/keywords").then(function (response) {
                     return response.data;
                 });
             };
             var updateKeyWordList = function (keyWordList) {
-                return $http.put(url_search+ "/keywords", keyWordList).then(function (response) {
+                return $http.put(url_search + "/keywords", keyWordList).then(function (response) {
                     return response.data;
                 });
             };
             var deleteKeyWordList = function (keyWordIdList) {
-                return $http.delete(url_search+ "/keywords?ids=" + keyWordIdList).then(function (response) {
+                return $http.delete(url_search + "/keywords?ids=" + keyWordIdList).then(function (response) {
                     return response.data;
                 });
             };
             var removeArticle = function (idList) {
-                return $http.delete(url_literature+ "?ids=" + idList).then(function (response) {
-                    return response.data;
+                return $http.delete(url_literature + "?ids=" + idList).then(function (response) {
+                    return $http.delete(url_metadata + "?ids=" + idList).then(function (response) {
+                        return response.data;
+                    });
                 });
-                return $http.delete(url_metadata+ "?ids="+ idList).then(function (response) {
-                    return response.data;
-                });
+
             };
             var removeAllArticles = function () {
-                return $http.delete(url_literature+ "/removeAll").then(function (response) {
-                    return response.data;
+                return $http.delete(url_literature + "/removeAll").then(function (response) {
+                    return $http.delete(url_metadata + "/removeAll").then(function (response) {
+                        return response.data;
+                    });
                 });
-                return $http.delete(url_metadata+ "/removeAll").then(function (response) {
-                    return response.data;
-                });
+
             };
             return {
                 getResumeNumbers: getResumeNumbers,
@@ -168,6 +173,7 @@ angular.module('articles.communication', []).
                 updatePortalList: updatePortalList,
                 getLogList: getLogList,
                 launchSearch: launchSearch,
+                stopSearch: stopSearch,
                 getKeyWordList: getKeyWordList,
                 updateKeyWordList: updateKeyWordList,
                 deleteKeyWordList: deleteKeyWordList,

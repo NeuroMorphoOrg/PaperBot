@@ -65,15 +65,25 @@ function LaunchController($scope, articlesCommunicationService, $filter, $q) {
         });
     };
 
-
+    var canceller = $q.defer();
     $scope.startSearch = function () {
         $scope.executing = true;
-        articlesCommunicationService.launchSearch().then(function (data) {
+        articlesCommunicationService.launchSearch(canceller).then(function (data) {
             $scope.executing = false;
 
         }).catch(function () {
             $scope.executing = false;
             $scope.error = 'Error launching the search';
+        });
+    };
+
+    $scope.stopSearch = function () {
+        canceller.resolve("user cancelled");
+        canceller = $q.defer();
+        articlesCommunicationService.stopSearch(canceller).then(function (data) {
+            $scope.executing = false;
+        }).catch(function () {
+            $scope.error = 'Error stopping the search';
         });
     };
 
@@ -178,7 +188,7 @@ function LaunchController($scope, articlesCommunicationService, $filter, $q) {
 
     $scope.removeArticleDB = function () {
         $scope.cleaning = true;
-        articlesCommunicationService.removeArticleDB().then(function (data) {
+        articlesCommunicationService.removeAllArticles().then(function (data) {
             $scope.cleaning = false;
         }).catch(function () {
             $scope.cleaning = false;

@@ -2,39 +2,21 @@ angular.module('Articles').
         controller('ArticleDataController', function ($rootScope, $scope, $routeParams, $window, $filter, articlesCommunicationService) {
             $scope.error = '';
             $scope.radio = {
-                status: 1,
-                usage: [1]
+                status: 1
             };
+           
+            $scope.articleSaved = false;
+            $rootScope.articlePositive = false;
 
-            $scope.usages = [
-                {value: 1, text: 'Describing'}
-            ];
 
             $rootScope.id = $routeParams.id;
-            $rootScope.usage = [];
             $scope.article = {};
             $scope.article.authorList = [];
             if ($rootScope.id !== undefined) {
                 articlesCommunicationService.findArticle($rootScope.id).then(function (data) {
+                    $scope.articleSaved = true;
                     $scope.article = data;
-                    $rootScope.usage = $scope.article.usage;
                     $rootScope.articleStatus = $scope.article.articleStatus;
-                    var usage = [];
-                    $scope.usages.forEach(function (a) {
-                        if ($scope.article.usage == null) {
-                            $scope.article.usage = [];
-                            $scope.article.usage.push("Describing");
-                        }
-                        $scope.article.usage.forEach(function (b) {
-                            if (a.text === b) {
-                                usage.push(a.value);
-                            }
-                        });
-
-                    });
-                    $scope.radio = {
-                        usage: usage
-                    };
 
                 }).catch(function () {
                     $scope.error = 'Error getting article details';
@@ -52,19 +34,10 @@ angular.module('Articles').
 
 
             $scope.updateArticle = function () {
-                $scope.article.usage = [];
-                $rootScope.usage = [];
-                $scope.usages.forEach(function (a) {
-                    $scope.radio.usage.forEach(function (b) {
-                        if (a.value === b) {
-                            $scope.article.usage.push(a.text);
-                            $rootScope.usage.push(a.text);
-                        }
-                    });
-                });
-                $scope.article.searchPortal = [];
 
                 articlesCommunicationService.updateArticle($rootScope.id, $scope.article).then(function () {
+                    $scope.articleSaved = true;
+
                 }).catch(function (response) {
                     if (response.status === 409) {
                         $scope.error = response.data.errorMessage;
@@ -72,27 +45,14 @@ angular.module('Articles').
                         $scope.error = 'Error updating article';
                     }
                 });
-                var describingNeurons = false;
-                $scope.article.usage.forEach(function (element) {
-                    if (element === "Describing") {
-                        describingNeurons = true;
-                    }
-                });
-                if (!describingNeurons) {
-                    articlesCommunicationService.removeStatusReconstructions($rootScope.id).then(function (data) {
-                    }).catch(function () {
-                        $scope.error = 'Unable to save the status reconstructions ';
-                    });
-                }
-
             };
 
 
             $scope.getPubMed = function () {
-                $scope.article.searchPortal = {};
                 if ($rootScope.id == null) {
                     $rootScope.articleStatus = 'Pending evaluation';
-                    $scope.article.searchPortal.source = 'manual';
+                    $scope.article.searchPortal = [];
+                    $scope.article.searchPortal.push({'name': 'manual', 'keyWordList': ['article added manually']});
 
                     articlesCommunicationService.getObjectId().then(function (data) {
                         $rootScope.id = data.id;
@@ -102,24 +62,17 @@ angular.module('Articles').
                 }
                 $scope.error = '';
                 articlesCommunicationService.getPubMed($scope.article.pmid).then(function (data) {
-                    $scope.article.title = data.title;
-                    $scope.article.pmid = data.pmid;
-                    $scope.article.doi = data.doi;
-                    $scope.article.journal = data.journal;
-                    $scope.article.authorList = data.authorList;
-                    $scope.article.publishedDate = new Date(data.publishedDate);
-                    $scope.article.link = null;
-
+                    replaceData($scope, data);
                 }).catch(function () {
                     $scope.error = 'Unable to get pubMed data';
                 });
             };
             $scope.getCrosRef = function () {
-                $scope.article.searchPortal = {};
 
                 if ($rootScope.id == null) {
                     $rootScope.articleStatus = 'Pending evaluation';
-                    $scope.article.searchPortal.source = 'manual';
+                    $scope.article.searchPortal = [];
+                    $scope.article.searchPortal.push({'name': 'manual', 'keyWordList': ['article added manually']});
 
                     articlesCommunicationService.getObjectId().then(function (data) {
                         $rootScope.id = data.id;
@@ -129,17 +82,13 @@ angular.module('Articles').
                 }
                 $scope.error = '';
                 articlesCommunicationService.getCrosRef($scope.article.doi).then(function (data) {
-                    $scope.article.title = data.title;
-
-                    $scope.article.doi = data.doi;
-                    $scope.article.journal = data.journal;
-                    $scope.article.authorList = data.authorList;
-                    $scope.article.publishedDate = new Date(data.publishedDate);
-                    $scope.article.link = null;
-                    //getPmid from title
-                    articlesCommunicationService.getPMIDFromTitle(data.title).then(function (pmid) {
-                        $scope.article.pmid = pmid;
-                    });
+                    replaceData($scope, data);
+                    if ($scope.article.pmid == null) {
+                        //getPmid from title
+                        articlesCommunicationService.getPMIDFromTitle(data.title).then(function (pmid) {
+                            $scope.article.pmid = pmid;
+                        });
+                    }
                 }).catch(function () {
                     $scope.error = 'DOI not found in Crosef';
                 });
@@ -153,17 +102,7 @@ angular.module('Articles').
                 var author = {name: '', email: ''};
                 $scope.article.authorList.push(author);
             };
-            $scope.showUsage = function () {
-                var selected = [];
-                angular.forEach($scope.usages, function (s) {
-                    if ($scope.radio.usage.indexOf(s.value) >= 0) {
-                        selected.push(s.text);
-                    }
-                });
-                return selected.length ? selected.join(', ') : 'Not set';
-            };
-
-
+            
             $scope.opened = {};
 
             $scope.open = function ($event, elementOpened) {
@@ -186,6 +125,30 @@ angular.module('Articles').
         });
 
 
+var replaceData = function (scope, data) {
+    if (scope.article.title == null || scope.article.title != data.title) {
+        scope.article.title = data.title;
+    }
+    if (scope.article.pmid == null) {
+        scope.article.pmid = data.pmid;
+    }
+    if (scope.article.doi == null || scope.article.title != data.doi) {
+        scope.article.doi = data.doi;
+    }
+    if (scope.article.journal == null || scope.article.title != data.journal) {
+        scope.article.journal = data.journal;
+    }
+    if (scope.article.authorList.length != data.authorList.length){
+        scope.article.authorList = data.authorList;
+    }
+    for (i=0; i< scope.article.authorList.length; i++) {
+        if (scope.article.authorList[i].email == null){
+            scope.article.authorList[i].email = data.authorList[i].email;
+        }
+    }
+    if (scope.article.publishedDate == null || scope.article.title != data.publishedDate) {
+        scope.article.publishedDate = new Date(data.publishedDate);
+    }
 
-
+};
 
