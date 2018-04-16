@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -43,7 +44,7 @@ public abstract class PortalSearch implements IPortalSearch {
     protected PubMedConnection pubMedConnection;
 
     @Override
-    public void findArticleList(KeyWord keyWord, Portal portal) throws InterruptedException {
+    public void findArticleList(KeyWord keyWord, Portal portal) throws InterruptedException, HttpStatusException {
         try {
             this.portal = portal;
             this.keyWord = keyWord.getName();
@@ -58,13 +59,11 @@ public abstract class PortalSearch implements IPortalSearch {
                 this.searchPage();
                 this.searchForTitles();
             }
+        } catch (HttpStatusException ex) { // if jsour returns this exception, the page was empty
+            throw ex;
 
         } catch (IOException ex) { // if jsour returns this exception, the page was empty
             log.debug("Aticles found 0 ");
-        } catch (InterruptedException ex){
-            throw ex;
-        } catch (Exception ex) {
-            log.error("Exception " + this.portal.getName(), ex);
         }
 
     }
@@ -72,7 +71,7 @@ public abstract class PortalSearch implements IPortalSearch {
     //to be override by the sons
     protected abstract Elements findArticleList();
 
-    protected abstract void searchPage() throws Exception;
+    protected abstract void searchPage() throws IOException;
 
     protected abstract Boolean loadNextPage() throws InterruptedException;
 
@@ -90,21 +89,17 @@ public abstract class PortalSearch implements IPortalSearch {
 
     protected abstract void fillIsAccessible(Element articleData, Element articlePage);
 
-    protected void searchForTitles() throws Exception {
-        try {
+    protected void searchForTitles() throws HttpStatusException, InterruptedException {
 
-            Elements articleList = this.findArticleList();
-            for (Element articleElement : articleList) {
-                this.createArticle(articleElement);
-            }
-            Boolean existsNextPage = this.loadNextPage();
-            if (existsNextPage) {
-                searchForTitles();
-            }
-
-        } catch (Exception ex) {
-            log.error("Exception: ", ex);
+        Elements articleList = this.findArticleList();
+        for (Element articleElement : articleList) {
+            this.createArticle(articleElement);
         }
+        Boolean existsNextPage = this.loadNextPage();
+        if (existsNextPage) {
+            searchForTitles();
+        }
+
     }
 
     protected void createArticle(Element articleData) throws InterruptedException {
@@ -143,14 +138,7 @@ public abstract class PortalSearch implements IPortalSearch {
                         this.article = pubMedConnection.findArticleFromPMID(pmid);
                     }
 
-                    log.debug(this.article.toString());
-                    // calling rest to save the article & updating the portal search values
-                    ArticleResponse response = literatureConnection.saveArticle(this.article, this.inaccessible, this.collection);
-
-                    literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
-                    if (Thread.currentThread().isInterrupted()) {
-                        throw new InterruptedException();
-                    }
+                    this.saveArticle();
                 }
                 read = Boolean.TRUE;
             }
@@ -193,5 +181,17 @@ public abstract class PortalSearch implements IPortalSearch {
     }
 
     protected abstract void searchForTitlesApi() throws InterruptedException;
+
+    protected void saveArticle() throws InterruptedException {
+        if (this.article.getPublishedDate().after(this.portal.getStartSearchDate())) {
+            log.debug(this.article.toString());
+            ArticleResponse response = literatureConnection.saveArticle(
+                    this.article, this.inaccessible, this.collection);
+            literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
+            if (Thread.currentThread().isInterrupted()) {
+                throw new InterruptedException();
+            }
+        }
+    }
 
 }

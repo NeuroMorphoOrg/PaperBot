@@ -27,9 +27,8 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
     private final Integer minMin = 5;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-
     @Override
-    protected void searchPage() throws Exception{
+    protected void searchPage() throws IOException {
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
         List<String> queryParameterList = new ArrayList<>();
         queryParameterList.add("q=" + this.keyWord);
@@ -43,23 +42,18 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
         }
         String urlFinal = this.portal.getUrl() + "?" + queyParamsStr;
         log.debug("Accessing portal url: " + urlFinal);
-        try {
-            Random rand = new Random();
-            // nextInt is normally exclusive of the top value,
-            // so add 1 to make it inclusive
-            Integer randomNum = rand.nextInt((maxMin - minMin) + 1) + minMin;
-            log.debug("Random minutes to sleep: " + randomNum);
-            log.debug("......................................");
-            Thread.sleep(randomNum * 60 * 1000);
-            this.searchDoc = Jsoup.connect(urlFinal)
-                    .timeout(30 * 1000)
-                    .followRedirects(true)
-                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-                    .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36").get();
-            
-        } catch (IOException ex) {
-            log.error("Exception trying to load the url:" + urlFinal, ex);
-        } 
+        Random rand = new Random();
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        Integer randomNum = rand.nextInt((maxMin - minMin) + 1) + minMin;
+        log.debug("Random minutes to sleep: " + randomNum);
+        log.debug("......................................");
+//            Thread.sleep(randomNum * 60 * 1000);
+        this.searchDoc = Jsoup.connect(urlFinal)
+                .timeout(30 * 1000)
+                .followRedirects(true)
+                .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+                .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36").get();
 
     }
 
@@ -140,11 +134,11 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
     }
 
     @Override
-    protected Boolean loadNextPage() throws InterruptedException{
+    protected Boolean loadNextPage() throws InterruptedException {
         Boolean nextPage = Boolean.FALSE;
         try {
-            Elements linkList = this.searchDoc.select("div[id=gs_n] td[align=left] > a");
-            if (linkList != null && !linkList.isEmpty()) {
+            Element linkList = this.searchDoc.select("div[id=gs_n] td[align=left] > a").first();
+            if (linkList != null) {
                 //simulate human behaviour sleep randome minutes between labor hours
                 Random rand = new Random();
                 // nextInt is normally exclusive of the top value,
@@ -152,8 +146,8 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
                 Integer randomNum = rand.nextInt((maxMin - minMin) + 1) + minMin;
                 log.debug("Random minutes to sleep: " + randomNum);
                 log.debug("......................................");
-                Thread.sleep(randomNum * 60 * 1000);
-                String link = linkList.get(linkList.size() - 1).attr("href");
+//                Thread.sleep(randomNum * 60 * 1000);
+                String link = linkList.attr("href");
                 log.debug("Loading next page: " + this.portal.getBase() + link);
 
                 this.searchDoc = Jsoup.connect(this.portal.getBase() + link)
@@ -165,7 +159,7 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
             }
         } catch (IOException ex) {
             log.error("Exception loading next page", ex);
-        } 
+        }
         return nextPage;
     }
 

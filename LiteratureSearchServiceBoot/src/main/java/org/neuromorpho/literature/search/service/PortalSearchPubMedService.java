@@ -51,8 +51,10 @@ public class PortalSearchPubMedService extends PortalSearch {
             try {
                 this.inaccessible = Boolean.FALSE;
                 article = new Article();
+                if (this.portal.getDb().equals("pmc")){
+                    uid = "PMC" + uid;
+                }
                 log.debug("PMID: " + uid);
-
                 article = pubMedConnection.findArticleFromPMID(uid);
 
                 // update pmid for pmc
@@ -64,13 +66,8 @@ public class PortalSearchPubMedService extends PortalSearch {
                         this.article.setPmid("PMC" + uid);
                     }
                 }
-                log.debug(article.toString());
-                ArticleResponse response = literatureConnection.saveArticle(
-                        article, this.inaccessible, this.collection);
-                literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
-                if (Thread.currentThread().isInterrupted()) {
-                    throw new InterruptedException();
-                }
+                this.saveArticle();
+                
             } catch (HttpServerErrorException ex) {
                 log.error("Exception: ", ex);
             }

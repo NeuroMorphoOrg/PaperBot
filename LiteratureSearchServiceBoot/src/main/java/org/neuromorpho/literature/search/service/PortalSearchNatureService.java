@@ -15,7 +15,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
-import org.neuromorpho.literature.search.communication.ArticleResponse;
 import org.neuromorpho.literature.search.model.article.Article;
 import org.neuromorpho.literature.search.model.article.Author;
 import org.slf4j.Logger;
@@ -55,8 +54,7 @@ public class PortalSearchNatureService extends PortalSearch {
                 for (Element record : result.select("recordData")) {
                     article = new Article();
                     String title1 = record.select("dc|title").text();
-                    String title2 = title1.replace("<spam>", "");
-                    String title = title2.replace("</spam>", "");
+                    String title = Jsoup.parse(title1).text();
                     article.setTitle(title);
                     article.setDoi(record.select("prism|doi").text());
                     article.setJournal(record.select("prism|publicationName").text());
@@ -76,14 +74,8 @@ public class PortalSearchNatureService extends PortalSearch {
 
                     //call pubmed to retrieve pubmedID 
                     article.setPmid(pubMedConnection.findPMIDFromTitle(title));
-                    log.debug(article.toString());
-                    // calling rest to save the article & updating the portal search values
-                    ArticleResponse response = literatureConnection.saveArticle(article, Boolean.FALSE, this.collection);
+                    this.saveArticle();
 
-                    literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
-                    if (Thread.currentThread().isInterrupted()) {
-                        throw new InterruptedException();
-                    }
                 }
 
             } catch (IOException ex) {

@@ -2,6 +2,7 @@ package org.neuromorpho.literature.search.service;
 
 import java.util.List;
 import java.util.Set;
+import org.jsoup.HttpStatusException;
 import org.neuromorpho.literature.search.model.portal.KeyWord;
 import org.neuromorpho.literature.search.model.portal.Log;
 import org.neuromorpho.literature.search.model.portal.Portal;
@@ -34,23 +35,32 @@ public class SearchService {
         portalLog.setThreadId(Thread.currentThread().getId());
         log.debug("Thread id: " + Thread.currentThread().getId());
         logRepository.save(portalLog);
+        portalLog.setCause("Search ends");
         try {
             List<Portal> portalList = portalRepository.findByActive(Boolean.TRUE);
             List<KeyWord> keyWordList = keyWordRepository.findAll();
             for (Portal portal : portalList) {
-                IPortalSearch portalSearch = portalSearchFactory.launchPortalSearch(portal.getName());
-                for (KeyWord keyWord : keyWordList) {
-                    List<KeyWord> wordList = keyWord.extractORs();
-                    for (KeyWord word : wordList) {
-                        portalSearch.findArticleList(word, portal);
+                try {
+                    IPortalSearch portalSearch = portalSearchFactory.launchPortalSearch(portal.getName());
+                    for (KeyWord keyWord : keyWordList) {
+                        List<KeyWord> wordList = keyWord.extractORs();
+                        for (KeyWord word : wordList) {
+                            portalSearch.findArticleList(word, portal);
+                        }
                     }
+                } catch (HttpStatusException ex) {
+                    portalLog.setCause("HTTP Connection Error for portal " + portal.getName());
                 }
-
             }
-
         } catch (InterruptedException ex) {
-            log.debug("Thead Search interrupted");
-        } 
+            portalLog.setCause("Interrupted by user");
+        } catch (Exception ex) {
+            log.error("Unknown error", ex);
+            portalLog.setCause("Unknown Error");
+        } finally {
+            portalLog.setStopDate();
+            logRepository.save(portalLog);
+        }
     }
 
     public void stopSearch() throws Exception {
@@ -62,8 +72,6 @@ public class SearchService {
         for (Thread thread : setOfThread) {
             if (thread.getId() == portalLog.getThreadId()) {
                 thread.interrupt();
-                portalLog.setStopDate();
-                logRepository.save(portalLog);
             }
 
         }

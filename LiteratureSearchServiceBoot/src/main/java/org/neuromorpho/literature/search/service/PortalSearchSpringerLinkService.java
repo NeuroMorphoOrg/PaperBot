@@ -100,15 +100,8 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
 
                 //call pubmed to retrieve pubmedID
                 article.setPmid(pubMedConnection.findPMIDFromTitle(title));
-                log.debug(article.toString());
+                this.saveArticle();
 
-                // calling rest to save the article & updating the portal search values
-                ArticleResponse response = literatureConnection.saveArticle(article, Boolean.FALSE, this.collection);
-
-                literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
-                if (Thread.currentThread().isInterrupted()) {
-                    throw new InterruptedException();
-                }
             }
         } while (iterations > 0 && iterations >= page - 1);
 

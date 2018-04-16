@@ -13,6 +13,7 @@ public class Log {
     private Date start;
     private Date stop;
     private Long threadId;
+    private String cause;
 
     public Log() {
     }
@@ -55,6 +56,14 @@ public class Log {
 
     public void setStopDate() {
         this.stop = new Date();
+    }
+
+    public String getCause() {
+        return cause;
+    }
+
+    public void setCause(String cause) {
+        this.cause = cause;
     }
 
 }
