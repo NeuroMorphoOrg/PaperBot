@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.neuromorpho.literature.search.communication.ArticleResponse;
 import org.neuromorpho.literature.search.model.article.Article;
 import org.neuromorpho.literature.search.model.article.Author;
 import org.slf4j.Logger;
@@ -99,8 +98,8 @@ public class PortalSearchSpringerLinkService extends PortalSearch {
                 article.setAuthorList(authorList);
 
                 //call pubmed to retrieve pubmedID
-                article.setPmid(pubMedConnection.findPMIDFromTitle(title));
-                this.saveArticle();
+                String pmid = pubMedConnection.findPMIDFromTitle(title);
+                this.saveArticle(pmid);
 
             }
         } while (iterations > 0 && iterations >= page - 1);

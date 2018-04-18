@@ -132,13 +132,8 @@ public abstract class PortalSearch implements IPortalSearch {
                     if (!this.inaccessible) {
                         this.fillLinks(articleData, articlePage);
                     }
-                    //call pubmed to retrieve pubmedID
                     String pmid = pubMedConnection.findPMIDFromTitle(this.article.getTitle());
-                    if (pmid != null) {
-                        this.article = pubMedConnection.findArticleFromPMID(pmid);
-                    }
-
-                    this.saveArticle();
+                    this.saveArticle(pmid);
                 }
                 read = Boolean.TRUE;
             }
@@ -182,7 +177,12 @@ public abstract class PortalSearch implements IPortalSearch {
 
     protected abstract void searchForTitlesApi() throws InterruptedException;
 
-    protected void saveArticle() throws InterruptedException {
+    protected void saveArticle(String pmid) throws InterruptedException {
+        if (pmid != null) {
+            this.article = pubMedConnection.findArticleFromPMID(pmid);
+        }
+        Article articlePubMed = pubMedConnection.findArticleFromPMID(article.getPmid());
+        article.setAuthorList(articlePubMed.getAuthorList());
         if (this.article.getPublishedDate().after(this.portal.getStartSearchDate())) {
             log.debug(this.article.toString());
             ArticleResponse response = literatureConnection.saveArticle(

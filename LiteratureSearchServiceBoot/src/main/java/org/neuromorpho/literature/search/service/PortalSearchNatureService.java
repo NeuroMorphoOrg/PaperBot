@@ -71,10 +71,9 @@ public class PortalSearchNatureService extends PortalSearch {
 
                     }
                     article.setAuthorList(authorList);
+                    String pmid = pubMedConnection.findPMIDFromTitle(title);
 
-                    //call pubmed to retrieve pubmedID 
-                    article.setPmid(pubMedConnection.findPMIDFromTitle(title));
-                    this.saveArticle();
+                    this.saveArticle(pmid);
 
                 }
 

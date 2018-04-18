@@ -51,9 +51,10 @@ public class SearchService {
                 } catch (HttpStatusException ex) {
                     portalLog.setCause("HTTP Connection Error for portal " + portal.getName());
                 }
+                portalLog.setCause("Finished");
             }
-        } catch (InterruptedException ex) {
-            portalLog.setCause("Interrupted by user");
+        } catch (InterruptedException ex) { //Interrupted exception is not able to write in mongo
+            log.warn("The user has interrupted the search");
         } catch (Exception ex) {
             log.error("Unknown error", ex);
             portalLog.setCause("Unknown Error");
@@ -71,6 +72,9 @@ public class SearchService {
 
         for (Thread thread : setOfThread) {
             if (thread.getId() == portalLog.getThreadId()) {
+                portalLog.setStopDate();
+                portalLog.setCause("Interrupted by user");
+                logRepository.save(portalLog);
                 thread.interrupt();
             }
 

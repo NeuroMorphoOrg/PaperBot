@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.neuromorpho.literature.search.communication.ArticleResponse;
 import org.neuromorpho.literature.search.model.article.Article;
-import org.neuromorpho.literature.search.model.article.Author;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,45 +53,13 @@ public class PortalSearchPubMedService extends PortalSearch {
                     uid = "PMC" + uid;
                 }
                 log.debug("PMID: " + uid);
-                article = pubMedConnection.findArticleFromPMID(uid);
-
-                // update pmid for pmc
-                if (this.portal.getDb().equals("pmc")) {
-                    String pmid = this.getPMIDFromPMC(uid);
-                    if (pmid != null) {
-                        this.article.setPmid(pmid);
-                    } else {
-                        this.article.setPmid("PMC" + uid);
-                    }
-                }
-                this.saveArticle();
+                this.saveArticle(uid);
                 
             } catch (HttpServerErrorException ex) {
                 log.error("Exception: ", ex);
             }
 
         }
-    }
-
-    public String getPMIDFromPMC(String uid) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        Map<String, Object> pmidFromPMCMap = restTemplate.getForObject(
-                "https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=PMC" + uid
-                + "&format=json",
-                Map.class);
-        ArrayList<Map<String, Object>> recordsList = (ArrayList) pmidFromPMCMap.get("records");
-        return (String) recordsList.get(0).get("pmid");
-    }
-
-    public static Author fromMapAuthor(HashMap authorMap) {
-        String[] completeName = ((String) authorMap.get("name")).split(" ");
-        String name = completeName[1];
-        if (completeName[1].length() == 2) {
-            name = completeName[1].charAt(0) + ". " + completeName[1].charAt(1);
-        }
-        Author author = new Author(name + ". " + completeName[0], null);
-        return author;
     }
 
     @Override
