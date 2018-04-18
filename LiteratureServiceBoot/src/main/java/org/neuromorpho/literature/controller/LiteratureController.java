@@ -180,8 +180,8 @@ public class LiteratureController {
 
     @CrossOrigin
     @RequestMapping(value = "/removeAll", method = RequestMethod.DELETE)
-    public void deleteArticleList() {
-        literatureService.deleteArticleList();
+    public void deleteArticleList(@RequestParam(required = false) String collection) {
+        literatureService.deleteArticleList(collection);
     }
 
 }
