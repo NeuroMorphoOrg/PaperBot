@@ -80,14 +80,15 @@ public class LiteratureService {
     }
 
     public void deleteArticleList(String collection) {
-        log.debug("Removing all articles from DB");
         if (collection == null) {
+            log.debug("Removing all articles from DB");
+
             for (ArticleStatus status : ArticleStatus.values()) {
                 mongoTemplate.remove(new Query(), status.getCollection());
             }
         } else {
-            mongoTemplate.remove(new Query(), collection);
-
+            log.debug("Removing all articles from DB for collection: " + collection);
+            mongoTemplate.remove(new Query(), ArticleStatus.getArticleStatus(collection).getCollection());
         }
 
     }
