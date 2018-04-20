@@ -5,8 +5,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
@@ -35,14 +37,77 @@ public class PubMedService {
 
     public Article retrievePubMedArticleData(String pmid) throws Exception {
         String db = "pubmed";
+        String uid = pmid;
         if (pmid.startsWith("PMC")) {
             db = "pmc";
+            uid = pmid.replace("PMC", "");
         }
-        Article article = this.fillArticleData(pmid, db);
+        RestTemplate restTemplate = new RestTemplate();
+        String url = uri
+                + "/esummary.fcgi?"
+                + "db=" + db
+                + "&retmode=json"
+                + "&id=" + uid;
+        log.debug("Accesing pubmed using url: " + url);
+        Map<String, Object> articleMap = restTemplate.getForObject(url, Map.class);
+        Article article = new Article();
+        Map result = (HashMap) articleMap.get("result");
+        if (result == null) {
+            List<String> error = (List) articleMap.get("esummaryresult");
+            throw new PubMedException(error.get(0));
+        }
+        ArrayList<String> uids = (ArrayList) result.get("uids");
+        if (uids.isEmpty()) {
+            throw new Exception("Unknown pmid not found in " + db + " id: " + uid);
+        }
+        article.setPmid(pmid);
+        Map articleValues = (HashMap) result.get(uids.get(0));
+        article.setTitle(getCorrectedName((String) articleValues.get("title")));
+        article.setJournal(getCorrectedName((String) articleValues.get("fulljournalname")));
+        String sortDateStr = (String) articleValues.get("pubdate");
+        Date publishedDate = this.tryParseDate(sortDateStr);
+        article.setPublishedDate(publishedDate);
 
-        this.fillAuthorList(pmid, article, db);
+        ArrayList<Map> articleIds = (ArrayList) articleValues.get("articleids");
+        for (Map articleId : articleIds) {
+            if (articleId.get("idtype").equals("doi")) {
+                article.setDoi((String) articleId.get("value"));
+                break;
+            }
+        }
+
+        String xml = restTemplate.getForObject(
+                uri
+                + "/efetch.fcgi?"
+                + "db=" + db
+                + "&id=" + uid
+                + "&retmode=xml",
+                String.class);
+
+        Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
+        List<Author> authorList = new ArrayList();
+
+        for (Element a : doc.select("Author")) {
+            Element e = a.select("Affiliation").first();
+            String email = null;
+            if (e != null && e.text().contains("@")) {
+                email = e.text().substring(e.text().lastIndexOf(" ") + 1, e.text().length());
+                if (email.endsWith(".")) {
+                    email = email.substring(0, email.length() - 1);
+                    log.debug("Email fo author: " + email);
+                }
+
+            }
+            Element fn = a.select("ForeName").first();
+            Element ln = a.select("LastName").first();
+            if (fn != null && ln != null) {
+                Author author = new Author(fn.text() + " " + ln.text(), email);
+                authorList.add(author);
+            }
+        }
+
+        article.setAuthorList(authorList);
         return article;
-
     }
 
     public String retrievePMIDFromTitle(String title) throws Exception {
@@ -104,84 +169,6 @@ public class PubMedService {
         return xpath.evaluate("//Title", source);
     }
 
-    private Article fillArticleData(String pmid, String db) throws Exception {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = uri
-                + "/esummary.fcgi?"
-                + "db=" + db
-                + "&retmode=json"
-                + "&id=" + pmid;
-        log.debug("Accesing pubmed using url: " + url);
-        Map<String, Object> articleMap = restTemplate.getForObject(url, Map.class);
-        Article article = new Article();
-        Map result = (HashMap) articleMap.get("result");
-        if (result == null) {
-            List<String> error = (List) articleMap.get("esummaryresult");
-            throw new PubMedException(error.get(0));
-        }
-        ArrayList<String> uids = (ArrayList) result.get("uids");
-        if (uids.isEmpty()) {
-            throw new Exception("Unknown pmid not found in PubMed: " + pmid);
-        }
-        article.setPmid(uids.get(0));
-        Map articleValues = (HashMap) result.get(uids.get(0));
-        article.setTitle(getCorrectedName((String) articleValues.get("title")));
-        article.setJournal(getCorrectedName((String) articleValues.get("fulljournalname")));
-        String sortDateStr = (String) articleValues.get("sortpubdate");
-        if (sortDateStr != null && !sortDateStr.isEmpty()) {
-            try {
-                DateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-
-                article.setPublishedDate(format.parse(sortDateStr));
-            } catch (ParseException ex) {
-            }
-        }
-        ArrayList<Map> articleIds = (ArrayList) articleValues.get("articleids");
-        for (Map articleId : articleIds) {
-            if (articleId.get("idtype").equals("doi")) {
-                article.setDoi((String) articleId.get("value"));
-                break;
-            }
-        }
-        return article;
-    }
-
-    private void fillAuthorList(String pmid, Article article, String db) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        String xml = restTemplate.getForObject(
-                uri
-                + "/efetch.fcgi?"
-                + "db=" + db
-                + "&id=" + pmid
-                + "&retmode=xml",
-                String.class);
-
-        Document doc = Jsoup.parse(xml, "", Parser.xmlParser());
-        List<Author> authorList = new ArrayList();
-
-        for (Element a : doc.select("Author")) {
-            Element e = a.select("Affiliation").first();
-            String email = null;
-            if (e != null && e.text().contains("@")) {
-                email = e.text().substring(e.text().lastIndexOf(" ") + 1, e.text().length());
-                if (email.endsWith(".")) {
-                    email = email.substring(0, email.length() - 1);
-                    log.debug("Email fo author: " + email);
-                }
-
-            }
-            Element fn = a.select("ForeName").first();
-            Element ln = a.select("LastName").first();
-            if (fn != null && ln != null) {
-                Author author = new Author(fn.text() + " " + ln.text(), email);
-                authorList.add(author);
-            }
-        }
-
-        article.setAuthorList(authorList);
-    }
-
     private String getCorrectedName(String name) {
         if (name.endsWith(".")) {
             name = name.substring(0, name.length() - 1);
@@ -189,4 +176,14 @@ public class PubMedService {
         return name.replace("&amp;", "&");
     }
 
+    protected Date tryParseDate(String dateStr) {
+        String[] formatStrings = {"yyyy MMM dd", "yyyy MMM"};
+        for (String formatString : formatStrings) {
+            try {
+                return new SimpleDateFormat(formatString, Locale.US).parse(dateStr.toLowerCase());
+            } catch (ParseException e) {
+            }
+        }
+        return null;
+    }
 }
