@@ -5,15 +5,15 @@
     <div class="portals">
 
             <!-- buttons -->
-            <h2>Portals Configuration</h2>
-            <p>You can update the portal configuration by clicking the button Edit. </p>
+            <h2>Search Portals Configuration</h2>
+            <p>You can setup each portal configuration by clicking on the Edit button: </p>
             <ul>
-                <li>Update the start date for the given search, the search will be for the period between start date search and today. 
-                    For example, return the papers published between January 2018 until today.</li>
-                <li>The portals <a href="https://dev.elsevier.com/user/registration"><b>ScienceDiect</b></a> and <a href="https://dev.springer.com/signup"><b>SpringerLink</b></a> require the user 
-                to register and obtain a token to use their APIs. You can find the registration page for each of the portals by clicking in the previous names and copy the obtained token in the following table. 
-                If you decide not to register and add the token these portals won't return any data. </li>
-                <li>Activate and deactivate the search. Activate the scrapper portals if you are not concern with the privacy policy.</li>
+                <li>Update the start date for a search period. The search will span papers published between the start date search and today, e.g. fetch papers published from January 2018 until today.</li>
+                <li>The portals <a href="https://dev.elsevier.com/user/registration"><b>ScienceDiect</b></a> and <a href="https://dev.springer.com/signup"><b>SpringerLink</b></a> require a registered user 
+                with a valid token to use their APIs. You can browse to the registration page by clicking on their names and copy the obtained token in the corresponding field. Tokens have been initialized 
+                in here with our own test tokens.</li>
+                <li>Activate or deactivate a portal. Depending on your search needs each portal can be (de)activated through the check box. Scrapping data from portals without public APIs, namely Wiley and GoogleScholar,
+                is done under your responsability. Please refer to your institution's privacy policy.</li>
                 </ul>
             <div>
                 <h3>Portals with API</h3>  
@@ -129,15 +129,14 @@
 
         <form editable-form name="tablekeyword" onaftersave="saveKeyWordList()" oncancel="cancelKeyWordList()">
             <!-- buttons -->
-            <h2>KeyWords Configuration</h2>
-            <p>Add a query with keywords, valid connectors are the logic operands AND and OR, use parenthesis for adding priority. Exact matching case insensitive is done by adding ".
-                For example: ("neuromorpho.org" OR "neuromorph.org") AND "neuronal reconstruction" </p>
-
+            <h2>Keywords Configuration</h2>
+            <p>Add the keywords for the query(s). The search is <u>case insensitive</u>, valid connectors are the logic operands uppercase AND and OR, use parenthesis for adding priority. 
+               Exact matching is configured by adding quotation marks " ". For example: (morphology OR "neuromorpho.org") AND "neuronal reconstruction". </p>
 
             <!-- table -->
             <table class="table table-bordered table-hover table-condensed">
                 <tr style="font-weight: bold">
-                    <td>KeyWord</td>
+                    <td>Keyword</td>
                     <td style="width:20%"><span ng-show="tablekeyword.$visible">Action</span></td>
 
                 </tr>
@@ -172,9 +171,9 @@
         <hr>
 
     <div class="launch">
-    <h2>Launch the Search</h2>
-    <p>Before launching the search add some keywords and read carefully the Portals Configuration to make sure everything is correctly set, then click the button Start Search and enjoy.    </p>
-    <button ng-if="executing" type="button" class="btn btn-light btn-lg btn-block" ng-disabled="true">Search Executing ... </button>
+    <h2>Run the Search</h2>
+    <p>Before running the search, please remember to add keywords and read carefully the Portals Configuration to make sure everything is correctly set, then click on Start Search. </p>
+    <button ng-if="executing" type="button" class="btn btn-light btn-lg btn-block" ng-disabled="true">Executing Search ... </button>
 
     <div>
         <button ng-if="!executing" type="button" class="btn btn-success btn-lg btn-block" ng-click="startSearch()" ng-disabled="false">Start Search</button>
@@ -182,7 +181,7 @@
 
         <hr>
     </div>
-        <h4>Previous Executions: Top 10 ordered By date
+        <h4>Recent searches ordered by running date &nbsp;
         <button ng-click="getLogList()" ng-disabled="false"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 </h4>
     <table class="table table-striped">
@@ -191,6 +190,8 @@
     <tr>
       <th scope="col">Start</th>
       <th scope="col">Stop</th>
+      <th scope="col">Output</th>
+
     </tr>
   </thead>
   <tbody>
@@ -198,6 +199,7 @@
       <td>{{log.start| date:'yyyy-MM-dd h:mm:ss'}}</td>
       <td ng-if="log.stop == null">Executing</td>
       <td ng-if="log.stop != null">{{log.stop| date:'yyyy-MM-dd h:mm:ss'}}</td>
+      <td>{{log.cause}}</td>
 
     </tr>
     
@@ -205,12 +207,13 @@
 </table>
     </div>
         
-         <div class="reset">
-    <h2>Remove the Article DataBase</h2>
+   <div>
+    <h2>Erase Database</h2>
+     <p><u>Warning:</u> This functionality will wipe out all the article-related content stored in the system, including evaluated and not evaluated records.</p>
      <div>
         <button ng-if="!cleaning" type="button" class="btn btn-danger btn-lg btn-block" ng-click="removeArticleDB()" ng-disabled="false">Clean Article DB</button>
         <button ng-if="cleaning" type="button" class="btn btn-light btn-lg btn-block" ng-disabled="true">Cleaning DB ... </button>
 
-        <hr>
     </div>
          </div>
+        

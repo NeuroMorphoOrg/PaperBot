@@ -39,6 +39,8 @@ function LaunchController($scope, articlesCommunicationService, $filter, $q) {
             $scope.portalList.push(data[i]);
         }
     }).catch(function () {
+        console.log('Error1')
+
         $scope.error = 'Error getting portal details';
     });
 
@@ -71,20 +73,25 @@ function LaunchController($scope, articlesCommunicationService, $filter, $q) {
         articlesCommunicationService.launchSearch(canceller).then(function (data) {
             $scope.executing = false;
 
-        }).catch(function () {
+        }).catch(function (response) {
             $scope.executing = false;
-            $scope.error = 'Error launching the search';
         });
+        setTimeout(function () {
+            $scope.getLogList();
+        }, 1000);
     };
 
     $scope.stopSearch = function () {
         canceller.resolve("user cancelled");
         canceller = $q.defer();
-        articlesCommunicationService.stopSearch(canceller).then(function (data) {
+        articlesCommunicationService.stopSearch().then(function (data) {
             $scope.executing = false;
         }).catch(function () {
             $scope.error = 'Error stopping the search';
         });
+        setTimeout(function () {
+            $scope.getLogList();
+        }, 1000);
     };
 
     articlesCommunicationService.getKeyWordList().then(function (data) {
@@ -94,6 +101,8 @@ function LaunchController($scope, articlesCommunicationService, $filter, $q) {
             $scope.keyWordList.push(data[i]);
         }
     }).catch(function () {
+        console.log('Error5')
+
         $scope.error = 'Error getting keywords details';
     });
     $scope.saveKeyWordList = function () {
@@ -112,11 +121,14 @@ function LaunchController($scope, articlesCommunicationService, $filter, $q) {
         }
         articlesCommunicationService.updateKeyWordList($scope.keyWordList).then(function (data) {
         }).catch(function () {
+            console.log('Error6')
+
             $scope.error = 'Error updating keywords';
         });
         if (idListDelete.length > 0) {
             articlesCommunicationService.deleteKeyWordList(idListDelete).then(function (data) {
             }).catch(function () {
+                console.log('Error7')
                 $scope.error = 'Error removing keywords';
             });
         }
@@ -155,20 +167,6 @@ function LaunchController($scope, articlesCommunicationService, $filter, $q) {
         }
         ;
     };
-
-    articlesCommunicationService.getLogList().then(function (data) {
-        $scope.portalLogList = data;
-        if ($scope.portalLogList.length > 0 && $scope.portalLogList[0].stop == null) {
-            $scope.executing = true;
-        } else {
-            $scope.executing = false;
-        }
-
-    }).catch(function () {
-        $scope.error = 'Error getting keywords details';
-    });
-
-
     $scope.getLogList = function () {
         articlesCommunicationService.getLogList().then(function (data) {
             $scope.portalLogList = data;
@@ -183,16 +181,21 @@ function LaunchController($scope, articlesCommunicationService, $filter, $q) {
             $scope.error = 'Error getting log details';
         });
     };
+    $scope.getLogList();
+
 
 
 
     $scope.removeArticleDB = function () {
-        $scope.cleaning = true;
-        articlesCommunicationService.removeAllArticles().then(function (data) {
-            $scope.cleaning = false;
-        }).catch(function () {
-            $scope.cleaning = false;
-            $scope.error = 'Error cleaning the article DB';
-        });
+        if (confirm("You are about to erase the database, press OK to confirm otherwise press Cancel")) {
+            $scope.cleaning = true;
+            articlesCommunicationService.removeAllArticles().then(function (data) {
+                $scope.cleaning = false;
+            }).catch(function () {
+                $scope.cleaning = false;
+                $scope.error = 'Error erasing the article DB';
+            });
+        } else {
+        }
     };
 }

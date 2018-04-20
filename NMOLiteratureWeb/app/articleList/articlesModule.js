@@ -7,17 +7,17 @@ function articlesRouteConfig($routeProvider) {
                 controller: 'ArticlesController',
                 templateUrl: 'articles.html'
             }).
-             when('/addArticle', {
+            when('/addArticle', {
                 controller: 'ArticleDataController',
-                templateUrl: '/NMOLiteratureWeb/article/article.html'
+                templateUrl: '../article/article.html'
             }).
-             when('/review/:usage/:review', {
+            when('/review/:usage/:review', {
                 controller: 'ArticlesController',
                 templateUrl: 'reviewEvaluatedArticles.html'
             }).
             when('/view/:id/:review', {
                 controller: 'ArticleDataController',
-                templateUrl: '/NMOLiteratureWeb/article/article.html'
+                templateUrl: '../article/article.html'
             }).
             when('/positiveArticles/:usage', {
                 controller: 'PositiveArticlesController',
@@ -30,11 +30,12 @@ function articlesRouteConfig($routeProvider) {
 articles.config(articlesRouteConfig);
 
 articles.controller('Controller', function ($scope, articlesCommunicationService, articlesService) {
-    $scope.count={};
+    $scope.count = {};
     articlesService.getCountArticles($scope, articlesCommunicationService);
     $scope.$on('child', function (event, data) {
         articlesService.getCountArticles($scope, articlesCommunicationService);
     });
+    
 
 });
 

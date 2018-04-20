@@ -10,27 +10,14 @@ angular.module('articles.service', []).
                 }).catch(function () {
                     scope.error = 'unable to get the articles resume numbers';
                 });
-
-            };
-            
-            var findByText = function (scope, usage, articlesCommunicationService, status) {
-                articlesCommunicationService.getArticleListByText(usage, scope.text, scope.currentPage - 1).then(function (data) {
-                    scope.articlePage = data;
-                    data.content.forEach(function (a) {
-                        articlesCommunicationService.findMetadata(a.id).then(function (data2) {
-                            a.metadata = data2;
-                        });
-                    });
-                    calculatePages(scope);
+                articlesCommunicationService.getLogList().then(function (data) {
+                    scope.count.log = data[0];
                 }).catch(function () {
-                    scope.error = 'unable to get the article list';
+                    scope.error = 'unable to get the articles resume numbers';
                 });
 
-                return {
-                    findByText: findByText
-                };
-
             };
+
             var calculatePages = function (scope) {
                 scope.firstElement = (scope.currentPage - 1) * (scope.articlePage.size) + 1;
                 if (scope.articlePage.last) {
@@ -39,23 +26,38 @@ angular.module('articles.service', []).
                     scope.lastElement = scope.currentPage * scope.articlePage.numberOfElements;
                 }
             };
-            var findArticles = function (scope, collection, query, articlesCommunicationService) {
-                articlesCommunicationService.getArticleList(collection, query, scope.currentPage - 1).then(function (data) {
-                    scope.articlePage = data;
-                    data.content.forEach(function (a) {
-                        articlesCommunicationService.findMetadata(a.id).then(function (data2) {
-                            a.metadata = data2;
+            var findArticles = function (scope, collection, articlesCommunicationService) {
+                if (scope.text == null) {
+                    console.log("Nunca entra por awui: getArticleList");
+                    articlesCommunicationService.getArticleList(collection, scope.currentPage - 1).then(function (data) {
+                        scope.articlePage = data;
+                        data.content.forEach(function (a) {
+                            articlesCommunicationService.findMetadata(a.id).then(function (data2) {
+                                a.metadata = data2;
+                            });
                         });
+                        calculatePages(scope);
+                    }).catch(function () {
+                        scope.error = 'unable to get the article list';
                     });
-                    calculatePages(scope);
-                }).catch(function () {
-                    scope.error = 'unable to get the article list';
-                });
+                } else {
+                    articlesCommunicationService.getArticleListByText(collection, scope.text, scope.currentPage - 1).then(function (data) {
+                        scope.articlePage = data;
+                        data.content.forEach(function (a) {
+                            articlesCommunicationService.findMetadata(a.id).then(function (data2) {
+                                a.metadata = data2;
+                            });
+                        });
+                        calculatePages(scope);
+                    }).catch(function () {
+                        scope.error = 'unable to get the article list';
+                    });
+
+                }
             };
-           
+
             return {
                 getCountArticles: getCountArticles,
-                findByText: findByText,
                 findArticles: findArticles,
                 calculatePages: calculatePages
             };

@@ -1,12 +1,12 @@
 body {
     font-size: 20px;
-     margin-top: 50px;
+    margin-top: 50px;
     margin-bottom: 100px;
     margin-right: 100px;
     margin-left: 150px;
 }
 .literMate{
-    text-align: center;
+    text-align: left;
     color: black;
     font-size: 16px;
 
@@ -39,12 +39,6 @@ body {
     display: flex;
 }
 
-.pre_evaluate_articles {
-    background:#7788AA;
-    width: 450px; 
-    height: 100%; 
-    display: table; 
-}
 
 .emails_articles{
     margin-left: 1px;
@@ -101,8 +95,7 @@ body {
     color:  #4E648E;
     background-color: white;
 }
-
-p{
+.box-text{
     display: table-cell; 
     color: white;
     font-style: normal;
@@ -216,6 +209,20 @@ p{
     background-color: white;
 }
 
- ul { list-style: "\2192";
- font-size: 15px;
- }
+ul { list-style: "\2192";
+     font-size: 15px;
+}
+
+.reference{
+    text-align: center;
+    color: black;
+    font-size: 16px;
+    display: flex;
+}
+
+footer {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    clear: both;
+}

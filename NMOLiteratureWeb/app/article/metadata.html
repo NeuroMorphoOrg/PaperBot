@@ -4,7 +4,56 @@
         <div class="panel-group">
             <div class="panel panel-success">
                 <div class="panel-heading"><strong>Metadata</strong><span class='errors' ng-if="!articleSaved"> - Save article first to activate the Metadata</span></div> 
-                <div>
+                <table class="table">
+                    <tr>
+                        <td><strong>Comment:</strong></td>
+                        <td><span e-style="width:600px;" editable-textarea="metadata.comment">{{metadata.comment}}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Article Status: </strong></td>
+                        <td>
+                            <span e-style="width:600px;" editable-radiolist="radio.status" e-ng-options="s.value as s.text for s in statuses">
+                                {{showStatus()}}</span>
+                        </td>
+
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td><strong>Category 1:</strong></td>
+                        <td><span e-style="width:600px;" editable-text="metadata.category1">{{metadata.category1}}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Category 2:</strong></td>
+                        <!--<td><span editable-select="article.metadata.species"  e-ng-options="g for g in species">{{article.metadata.species}}</span></td>-->
+                        <td><span e-style="width:600px;" editable-text="metadata.category2">{{metadata.category2}}</span></td>
+
+                    </tr>
+                    <tr>
+                        <td><strong>Category 3:</strong></td>
+                        <td><span e-style="width:600px;" editable-text="metadata.category3">{{metadata.category3}}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Category 4:</strong></td>
+                        <td><span e-style="width:600px;" editable-text="metadata.category4">{{metadata.category4}}</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Category 5:</strong></td>
+                        <!-- To be used if an API with values is provided
+                        <td><span editable-select="metadata.tracingSystem[0]" e-ng-options="option for option in tracingOptionList">
+                                {{metadata.tracingSystem[0]}}</span></td>-->
+                        <td><span e-style="width:600px;" editable-text="metadata.category5">{{metadata.category5}}</span></td>
+
+                    </tr>
+
+                   <tr>
+                        <td><strong>Is metadata finished?:</strong></td>
+                        <td> 
+                            <span e-style="width:600px;" editable-checkbox="metadata.finished">{{metadata.finished && "Metadata finished"|| "Metadata not finished"  }}</span>
+                        </td>
+                    </tr>
+                </table>
+                <div align="right">
                     <div class="btn-edit">
                         <button type="button" class="btn btn-info" ng-show="!tableform.$visible" ng-click="tableform.$show()">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"><strong>EDIT</strong></span>
@@ -16,52 +65,6 @@
                     </div>
 
                 </div>
-                <table class="table">
-                    <tr>
-                        <td><strong>Comment:</strong></td>
-                        <td><span editable-textarea="metadata.comment">{{metadata.comment}}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Article Status: </strong></td>
-                        <td>
-                            <span editable-radiolist="radio.status" e-ng-options="s.value as s.text for s in statuses">
-                                {{showStatus()}}</span>
-                        </td>
-
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td><strong>Category 1:</strong></td>
-                        <td><span editable-text="metadata.category1">{{metadata.category1}}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Category 2:</strong></td>
-                        <!--<td><span editable-select="article.metadata.species"  e-ng-options="g for g in species">{{article.metadata.species}}</span></td>-->
-                        <td><span editable-text="metadata.category2">{{metadata.category2}}</span></td>
-
-                    </tr>
-                    <tr>
-                        <td><strong>Category 3:</strong></td>
-                        <td><span editable-text="metadata.category3">{{metadata.category3}}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Category 4:</strong></td>
-                        <td><span editable-text="metadata.category4">{{metadata.category4}}</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Category 5:</strong></td>
-                        <!-- To be used if an API with values is provided
-                        <td><span editable-select="metadata.tracingSystem[0]" e-ng-options="option for option in tracingOptionList">
-                                {{metadata.tracingSystem[0]}}</span></td>-->
-                        <td><span editable-text="metadata.category5">{{metadata.category5}}</span></td>
-
-                    </tr>
-
-                    <div class="checkbox">
-                        <label><span editable-checkbox="metadata.finished" e-title="Is metadata finished?">{{metadata.finished && "Metadata finished"|| "Metadata not finished"  }}</span>
-                    </div>
-                </table>
 
             </div>
         </div>

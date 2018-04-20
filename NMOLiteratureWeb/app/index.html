@@ -2,27 +2,25 @@
 <html ng-app="ArticlesResume">
 
     <head>
-        <title>Literature Search</title>
-        <script type="text/javascript" src="/NMOLiteratureWeb/bower_components/angular/angular.min.js"></script>
+        <title>PaperBot.io - Find Your Science</title>
+        <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
         <script src="articlesResumeController.js"></script>
-        <script src="/NMOLiteratureWeb/communications/articlesCommunicationService.js"></script>
-        <script src="/NMOLiteratureWeb/services/articlesService.js"></script>
-        <link rel="stylesheet" href="/NMOLiteratureWeb/bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <script src="communications/articlesCommunicationService.js"></script>
+        <script src="services/articlesService.js"></script>
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="navigate.css">
     </head>
     <body ng-controller='articles.controller'>
         <div class="literMate">
-            <h1>LiterMate Tool</h1>
+            <h1>&#8212; PaperBot v1.0 RC &#8212;</h1>
             <hr>
-            <p class="literMate">LiterMate is a configurable, modular, open-source web-based solution to automatically 
-                find and efficiently annotate peer-reviewed publications based on periodic full-text 
-                searches across publisher portals. Without user interactions, LiterMate retrieves and 
+            <p class="literMate">PaperBot is a configurable, modular, open-source web-based solution to automatically 
+                find and efficiently annotate peer-reviewed publications based on full-text 
+                searches across publisher portals. Without user interactions, PaperBot retrieves and 
                 stores article information (full reference, corresponding email contact, and full-text keyword hits) 
-                based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, 
-                PubMed/PubMedCentral, and GoogleScholar. Although different portals require different search configurations, 
-                the common interface of LiterMate unifies the process from the user perspective. 
-                Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance 
-                to the project goals and seamless annotation of suitable metadata dimensions.
+                based on pre-set search logic from scientific literature sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, 
+                PubMed/PubMedCentral, and GoogleScholar. Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance for the user 
+                and seamless annotation of suitable metadata dimensions.
             </p>
 
         </div>
@@ -30,31 +28,18 @@
         <div class="search">
             <a href="portalSearch/searchMenu.html"  style="text-decoration: none"> 
                 <div class="portal_search">
-                    <p>Portal Search<br><span class="badge">{{articlesNumbers.lastLaunchedDate| date:'yyyy-MM-dd'}}</span></p>
+                    <p class='box-text'>Portal Search<br><span class="badge">{{count.log.start| date:'yyyy-MM-dd'}}</span></p>
                 </div>
             </a>
             <ul>
-                <li>The Portal Search button gives access to configure the portals, keywords and launch the search for a given period. </li>
+                <li>Portal Search gives access to the search setup, including portals, keywords, and search time spans.</li>
             </ul>
         </div>
         <div class="litSearch">
             <div class="articles">
-                <a href="articleList/preEvaluateArticlesMenu.html#articles/Pending%20evaluation/1"  style="text-decoration: none">
-                    <div class="pre_evaluate_articles">
-                        <p>Pre-Evaluate Articles<br><span class="badge">{{count.toEvaluate}}</span></p>
-                    </div>
-                </a>
-                <ul>
-                    <li>The Pre-evaluate articles is meant for training purposes. When an article is decided if it is relevant or not and the metadata added from this category, the article goes to 
-                        an intermediate collection where it can be reviewed and accepted. The pre-evaluated articles can be found in the next button Evaluate Articles/Pre-Evaluate Articles</li>
-                </ul>
-
-            </div>
-
-            <div class="articles">
                 <a href="articleList/evaluateArticlesMenu.html#articles/Pending%20evaluation/0"  style="text-decoration: none">
                     <div class="evaluate_articles">
-                        <p>Evaluate Articles
+                        <p class='box-text'>Evaluate/Pre-evaluate Articles
                             <span class="badge">{{count.toEvaluate}}</span>
                             <br>
                             Pre-Evaluated Articles
@@ -62,34 +47,35 @@
                     </div>
                 </a>
                 <ul>
-                    <li>The Evaluate Articles/Pre-Evaluate Articles button has 3 options in its menu: The user can evaluate an article and decide if its relevant or not and add metadata,
-                        these articles are directly moved to its designed category (Positive, Negative or Inaccessible). The user can review pre-evaluate articles, update its data and accept or reject the
-                        evaluation done by a student. The user can add articles manually typing all its data or if either the PMID or DOI is known adding them and clicking in the correspondent button
-                        that will retrieve the data from the portals.</li>
+                    <li>Evaluate Articles/Pre-Evaluated Articles has 4 possible modes: The user can evaluate articles and decide on their relevance, and file the associated metadata if needed.
+                        The Pre-evaluate articles category is meant for training purposes. If an article is prescreened as relevant, the article goes to 
+                        an intermediate collection where it can be later reviewed in detail.
+                        These evaluated articles are directly moved to the designed category (Positive, Negative or Inaccessible). The user can also review pre-evaluate articles, update its data and accept or reject the initial pre-evaluation. 
+                        It is also possible to add articles manually by typing the full reference, or retrieving the information through the associated PMID or DOI.</li>
                 </ul>
 
             </div>
             <div class="evaluated">
-                <a href="articleList/negativeArticlesMenu.html#articles/Inaccessible/0"  style="text-decoration: none">
+                <a href="articleList/positiveArticlesMenu.html#articles/Inaccessible/0"  style="text-decoration: none">
                     <div class="inaccessible_articles">
-                        <p>Inaccessible Articles<br><span class="badge">{{count.inaccessible}}</span></p> 
+                        <p class='box-text'>Inaccessible Articles<br><span class="badge">{{count.inaccessible}}</span></p> 
                     </div>
                 </a>
-                <a href="articleList/negativeArticlesMenu.html#articles/Negative/0"  style="text-decoration: none">
+                <a href="articleList/positiveArticlesMenu.html#articles/Negative/0"  style="text-decoration: none">
                     <div class="negative_articles">
-                        <p>Negative Articles<br><span class="badge">{{count.negative}}</span></p> 
+                        <p class='box-text'>Negative Articles<br><span class="badge">{{count.negative}}</span></p> 
                     </div>
                 </a>
 
-                <a href="articleList/positiveArticlesMenu.html#positiveArticles/Describing" style="text-decoration: none">
+                <a href="articleList/positiveArticlesMenu.html#articles/Positive/0" style="text-decoration: none">
                     <div class="positive_articles">
-                        <p>Positive Articles<br><span class="badge">{{count.positive}}</span></p> 
+                        <p class='box-text'>Positive Articles<br><span class="badge">{{count.positive}}</span></p> 
                     </div>
                 </a>
                 <ul>
-                    <li> In the Positive Articles button we find the articles that were evaluated as relevant with its metadata and annotations</li>
-                    <li> In the Negative Articles button we find the articles that were evaluated as non-relevant with its metadata and annotations</li>
-                    <li> In the Inaccessible Articles button we find the articles that the PDF was found non-accessible by the search or moved here by the user when evaluating</li>
+                    <li> Positive Articles shows the number of articles evaluated as relevant and gives access to their full metadata annotations.</li>
+                    <li> Negative Articles shows the number of articles evaluated as irrelevant and also gives access to their full information.</li>
+                    <li> Inaccessible Articles displays how many articles could not be assessed because their full manuscript, usually PDF files, were non-accessible by the user.	</li>
 
                 </ul>
             </div>
@@ -97,7 +83,12 @@
 
         </div>
         <hr>
-        <p>LiterMate: Web crawler and metadata indexer of peer-reviewed publications</p>
+        <div class="reference">
+            <p>Maraver, P., Arma&ntilde;anzas, R., Gillette T.A., Ascoli, G.A. (2018). PaperBot: Web crawler and metadata indexer of peer-reviewed publications. In preparation. <a href="https://github.com/NeuroMorphoOrg" target="_blank">GitHub code</a></p>
+        </div>
+        <div class="reference">
+        </div>
+              <div ng-include="'footer.html'"></div>
 
     </body>
 

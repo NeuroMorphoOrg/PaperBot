@@ -1,23 +1,17 @@
 angular.module('Articles').
-        controller('ArticlesController', function ($scope, $routeParams, articlesCommunicationService, articlesService) {
+        controller('ArticlesController', function ($rootScope, $scope, $routeParams, articlesCommunicationService, articlesService) {
+            $rootScope.show = true;
             $scope.currentPage = 1;
             $scope.text = '';
             $scope.review = $routeParams.review;
-
-            articlesService.findArticles($scope, $routeParams.usage, null, articlesCommunicationService);
-
-
+            $scope.collection = $routeParams.usage;
+            articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
             $scope.findArticlesByText = function (text) {
                 $scope.text = text;
-                articlesService.findByText($scope, $routeParams.usage, articlesCommunicationService);
+                articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
             };
             $scope.setPage = function () {
-                if ($scope.text !== null && $scope.text !== '') {
-                    articlesService.findByText($scope, $routeParams.usage, articlesCommunicationService);
-                } else {
-                    articlesService.findArticles($scope, $routeParams.usage, null, articlesCommunicationService);
-
-                }
+                articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
             };
 
             $scope.getKeyWordSet = function (portalList) {
@@ -49,27 +43,23 @@ angular.module('Articles').
                 }).catch(function () {
                     $scope.error = 'Error accepting article';
                 });
-                if (articleStatus === 'Positive') {
-                    articlesCommunicationService.getStatusReconstructions(id).then(function (data) {
-                        var reconstructions = data;
-                        if (reconstructions.reconstructionsStatusList=== null ||
-                                reconstructions.reconstructionsStatusList.length === 0) {
-                            var reconstructionsStatusList = [];
-                            reconstructionsStatusList.push({
-                                id: 1,
-                                statusDetails: 'To be requested',
-                                nReconstructions: metadata.nReconstructions
+            };
 
-                            });
-
-                            articlesCommunicationService.updateStatusReconstructions(id, reconstructionsStatusList).then(function (data) {
-                            }).catch(function () {
-                                $scope.error = 'Unable to save the status reconstructions ';
-                            });
-                        }
+            $scope.removeArticleDB = function () {
+                if (confirm("You are about to erase the " + $scope.collection + " colletion from the database, press OK to confirm otherwise press Cancel")) {
+                    $scope.cleaning = true;
+                    articlesCommunicationService.removeAllArticles($scope.collection).then(function (data) {
+                        $scope.cleaning = false;
+                         window.location.reload();
+                    }).catch(function () {
+                        $scope.cleaning = false;
+                        $scope.error = 'Error erasing the collection';
                     });
-
+                } else {
                 }
+            };
+            $scope.navigationUrl = function (id, review) {
+                window.open('#/view/' +id + '/' +review, '_blank');
             };
 
         });

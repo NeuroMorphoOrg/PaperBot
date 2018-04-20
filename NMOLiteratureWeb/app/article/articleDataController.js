@@ -1,17 +1,18 @@
 angular.module('Articles').
         controller('ArticleDataController', function ($rootScope, $scope, $routeParams, $window, $filter, articlesCommunicationService) {
+            $rootScope.show = false;
             $scope.error = '';
             $scope.radio = {
                 status: 1
             };
-           
+
             $scope.articleSaved = false;
             $rootScope.articlePositive = false;
-
 
             $rootScope.id = $routeParams.id;
             $scope.article = {};
             $scope.article.authorList = [];
+
             if ($rootScope.id !== undefined) {
                 articlesCommunicationService.findArticle($rootScope.id).then(function (data) {
                     $scope.articleSaved = true;
@@ -102,7 +103,7 @@ angular.module('Articles').
                 var author = {name: '', email: ''};
                 $scope.article.authorList.push(author);
             };
-            
+
             $scope.opened = {};
 
             $scope.open = function ($event, elementOpened) {
@@ -112,16 +113,23 @@ angular.module('Articles').
                 $scope.opened[elementOpened] = !$scope.opened[elementOpened];
             };
 
+
             $scope.removeArticle = function () {
-                var idList = [];
-                idList.push($rootScope.id);
-                articlesCommunicationService.removeArticle(idList).then(function () {
-                    $window.history.back();
-                    $scope.$emit('child'); // going up!
-                }).catch(function (response) {
-                    $scope.error = 'Error removing article';
-                });
+                if (confirm("You re about to remove the article, press OK to confirm otherwise press Cancel")) {
+                    var idList = [];
+                    idList.push($rootScope.id);
+                    articlesCommunicationService.removeArticle(idList).then(function () {
+                        $window.history.back();
+                        $scope.$emit('child'); // going up!
+                    }).catch(function (response) {
+                        $scope.error = 'Error removing article';
+                    });
+                    window.close();
+                    window.onunload = window.opener.location.reload();
+                } else {
+                }
             };
+
         });
 
 
@@ -138,11 +146,11 @@ var replaceData = function (scope, data) {
     if (scope.article.journal == null || scope.article.title != data.journal) {
         scope.article.journal = data.journal;
     }
-    if (scope.article.authorList.length != data.authorList.length){
+    if (scope.article.authorList.length != data.authorList.length) {
         scope.article.authorList = data.authorList;
     }
-    for (i=0; i< scope.article.authorList.length; i++) {
-        if (scope.article.authorList[i].email == null){
+    for (i = 0; i < scope.article.authorList.length; i++) {
+        if (scope.article.authorList[i].email == null) {
             scope.article.authorList[i].email = data.authorList[i].email;
         }
     }

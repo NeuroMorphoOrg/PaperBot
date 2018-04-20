@@ -2,7 +2,7 @@ var url_literature = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8
 var url_metadata = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8180/literature/metadata';
 var url_pubmed = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8186/literature/pubmed';
 var url_crosref = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8184/literature/crossref';
-var url_search = 'http://localhost:8187/literature';
+var url_search = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8187/literature';
 
 angular.module('articles.communication', []).
         factory('articlesCommunicationService', function ($http) {
@@ -113,11 +113,11 @@ angular.module('articles.communication', []).
                 });
             };
             var launchSearch = function (canceller) {
-                return $http.get(url_search + "/search/start", { timeout: canceller.promise }).then(function (response) {
+                return $http.get(url_search + "/search/start", {timeout: canceller.promise}).then(function (response) {
                     return response.data;
                 });
             };
-            var stopSearch = function (canceller) {
+            var stopSearch = function () {
                 return $http.get(url_search + "/search/stop").then(function (response) {
                     return response.data;
                 });
@@ -145,12 +145,17 @@ angular.module('articles.communication', []).
                 });
 
             };
-            var removeAllArticles = function () {
-                return $http.delete(url_literature + "/removeAll").then(function (response) {
-                    return $http.delete(url_metadata + "/removeAll").then(function (response) {
-                        return response.data;
+            var removeAllArticles = function (collection) {
+                if (collection != null) {
+                    return $http.delete(url_literature + "/removeAll?collection=" + collection).then(function (response) {
                     });
-                });
+                } else {
+                    return $http.delete(url_literature + "/removeAll").then(function (response) {
+                        return $http.delete(url_metadata + "/removeAll").then(function (response) {
+                            return response.data;
+                        });
+                    });
+                }
 
             };
             return {

@@ -1,32 +1,14 @@
 <form editable-form name="tableform" onaftersave="updateArticle()" oncancel="cancel()">
     <div class="panel-group">
         <div class="panel  panel-info">
-            <div class="panel-heading"><span editable-text="article.title">{{article.title}}</span></div>
+            <div class="panel-heading"><span e-style="width:800px;" editable-text="article.title">{{article.title}}</span></div>
             <div class="errors">
                 {{error}}
             </div>
 
             <div class="panel-body">
                 <table class="table">
-                    <div>
-                        <div class="btn-edit">
-                            <button type="button" class="btn btn-info" ng-show="!tableform.$visible" ng-click="tableform.$show()">
-                                <span class="glyphicon glyphicon-edit" aria-hidden="true"><strong>EDIT</strong></span>
-                            </button>
-                        </div>
-                        <div class="btn-form" ng-show="tableform.$visible">
-                            <button type="submit" class="btn btn-primary" ng-disabled="uiSelectForm.$waiting">SAVE</button>                    
-                            <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn btn-default">CANCEL</button>
-                        </div>
-                    </div>
-                    <!--<tr>
-                        <td><span class="glyphicon glyphicon-folder-open" aria-hidden="true"><strong> PDF:</strong></span></td>
-                        <td><a href='{{pdfURL}}' onclick="window.open(this.href, 'mywin', 'left=200,top=20,width=1000,height=1000,toolbar=1,resizable=0');
-                                                    return false;">
-                                <strong>{{pdfURL}}</strong></a> </td>
-                    </tr>-->
-
-                    
+                   
                     <tr>
                         <td><strong>PMID:</strong></td>
                         <td><a ng-href="https://www.ncbi.nlm.nih.gov/pubmed/{{article.pmid}}" target="_blank">
@@ -35,31 +17,33 @@
                         <td>Add a PMID and click PubMed button to retrieve the data, then click SAVE</td>
                         <td><input type="text" ng-model="article.pmid">
                             <button type="button" ng-click="tableform.$show();getPubMed()" class="btn btn-default" ng-disabled="false">
-                                <img src="/NMOLiteratureWeb/images/pubmed.jpg" width="70" /> 
+                                <img src="../images/pubmed.jpg" width="70" /> 
                             </button></td>
                     </tr>
                     <tr>
                         <td><strong>DOI:</strong> </td>
                         <td><p>http://dx.doi.org/<a ng-href="http://dx.doi.org/{{article.doi}}" target="_blank">
-                                    <span editable-text="article.doi">{{article.doi}}</span></p></a></td>
+                                    <span e-style="width:250px;" editable-text="article.doi">{{article.doi}}</span></p></a></td>
                         </td>
                         <td>Add a DOI and click CrossRef button to retrieve the data, then click SAVE</td>
                         <td><input type="text" ng-model="article.doi">
                             <button type="button" ng-click="tableform.$show(); getCrosRef()"  class="btn btn-default" ng-disabled="false">
-                                <img src="/NMOLiteratureWeb/images/doi.gif" width="70" /> 
+                                <img src="../images/doi.gif" width="70" /> 
                             </button></td>
                     </tr>
                     <tr>
                         <td><strong>Link:</strong> </td>
-                        <td><a ng-href="{{article.link}}" target="_blank">
-                                <span editable-text="article.link">{{article.link}}</span></a></td>
+                        <td ng-if="article.link !== null"><a ng-href="{{article.link}}" target="_blank">
+                                <span e-style="width:250px;" editable-text="article.link">{{article.link}}</span></a></td>
+                        <td ng-if="article.link === null"><a ng-href="http://dx.doi.org/{{article.doi}}" target="_blank">
+                                    <span e-style="width:250px;" editable-text="article.doi">{{article.doi}}</span></p></a></td>
                         <td></td>
                         <td></td>
 
                     </tr>
                     <tr>
                         <td><strong>Journal:</strong></td>
-                        <td><span editable-text="article.journal">{{article.journal}}</span></td>
+                        <td><span e-style="width:250px;" editable-text="article.journal">{{article.journal}}</span></td>
                         <td></td>
                         <td></td>
 
@@ -78,8 +62,8 @@
                                 <span><button type="button" ng-click="removeAuthor($index)" ng-show="tableform.$visible">
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                     </button></span>
-                                <span editable-text="author.name">{{author.name}}</span>&nbsp; - &nbsp;
-                                <span editable-text="author.email">{{author.email}}</span>
+                                <span e-style="width:250px;" editable-text="author.name">{{author.name}}</span>&nbsp; - &nbsp;
+                                <span e-style="width:250px;" editable-text="author.email">{{author.email}}</span>
                                 <span ng-show=" !$last"></br></span>
 
                             </span>
@@ -103,6 +87,17 @@
                     </tr>
 
                 </table>
+                 <div align="right">
+                        <div class="btn-edit">
+                            <button type="button" class="btn btn-info" ng-show="!tableform.$visible" ng-click="tableform.$show()">
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"><strong>EDIT</strong></span>
+                            </button>
+                        </div>
+                        <div class="btn-form" ng-show="tableform.$visible">
+                            <button type="submit" class="btn btn-primary" ng-disabled="uiSelectForm.$waiting">SAVE</button>                    
+                            <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn btn-default">CANCEL</button>
+                        </div>
+                    </div>
             </div>
         </div>
 
