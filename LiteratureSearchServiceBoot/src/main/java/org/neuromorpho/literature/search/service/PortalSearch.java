@@ -60,6 +60,7 @@ public abstract class PortalSearch implements IPortalSearch {
                 this.searchForTitles();
             }
         } catch (HttpStatusException ex) { // if jsour returns this exception, the page was empty
+            log.error("Error", ex);
             throw ex;
 
         } catch (IOException ex) { // if jsour returns this exception, the page was empty
@@ -140,7 +141,7 @@ public abstract class PortalSearch implements IPortalSearch {
         } catch (SocketTimeoutException ex) {
             i++;
             log.warn("Timeout exception number: " + i + " for article: " + this.article.getTitle());
-        } catch (IOException ex) {
+        } catch (IOException|NullPointerException ex) {
             log.error("Exception for article: " + this.article.getTitle(), ex);
         }
     }
@@ -181,9 +182,7 @@ public abstract class PortalSearch implements IPortalSearch {
         if (pmid != null) {
             this.article = pubMedConnection.findArticleFromPMID(pmid);
         }
-        Article articlePubMed = pubMedConnection.findArticleFromPMID(article.getPmid());
-        article.setAuthorList(articlePubMed.getAuthorList());
-        if (this.article.getPublishedDate().after(this.portal.getStartSearchDate())) {
+        if (this.article.getPublishedDate() != null && this.article.getPublishedDate().after(this.portal.getStartSearchDate())) {
             log.debug(this.article.toString());
             ArticleResponse response = literatureConnection.saveArticle(
                     this.article, this.inaccessible, this.collection);
@@ -192,6 +191,7 @@ public abstract class PortalSearch implements IPortalSearch {
                 throw new InterruptedException();
             }
         }
+
     }
 
 }

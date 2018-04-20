@@ -35,7 +35,7 @@ public class SearchService {
         portalLog.setThreadId(Thread.currentThread().getId());
         log.debug("Thread id: " + Thread.currentThread().getId());
         logRepository.save(portalLog);
-        portalLog.setCause("Search ends");
+        String endLog = "Search finished";
         try {
             List<Portal> portalList = portalRepository.findByActive(Boolean.TRUE);
             List<KeyWord> keyWordList = keyWordRepository.findAll();
@@ -49,9 +49,9 @@ public class SearchService {
                         }
                     }
                 } catch (HttpStatusException ex) {
-                    portalLog.setCause("HTTP Connection Error for portal " + portal.getName());
+                    endLog = endLog + " HTTP Connection Error for portal " + portal.getName();
                 }
-                portalLog.setCause("Finished");
+                portalLog.setCause(endLog);
             }
         } catch (InterruptedException ex) { //Interrupted exception is not able to write in mongo
             log.warn("The user has interrupted the search");

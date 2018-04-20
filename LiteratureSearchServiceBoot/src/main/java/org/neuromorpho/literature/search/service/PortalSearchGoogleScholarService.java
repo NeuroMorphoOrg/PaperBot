@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -31,35 +32,28 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
     protected void searchPage() throws IOException {
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
         List<String> queryParameterList = new ArrayList<>();
-        queryParameterList.add("q=" + this.keyWord);
+        queryParameterList.add("q=" + this.keyWord.replace(" ", "+"));
         queryParameterList.add("hl=en");
-        queryParameterList.add("&as_sdt=0,47");
+        queryParameterList.add("as_sdt=0%2C21");
         queryParameterList.add("as_ylo=" + yearFormat.format(this.startDate.getTime()));
-
         String queyParamsStr = "";
         for (String queryParameter : queryParameterList) {
             queyParamsStr = queyParamsStr + "&" + queryParameter;
         }
         String urlFinal = this.portal.getUrl() + "?" + queyParamsStr;
         log.debug("Accessing portal url: " + urlFinal);
-        Random rand = new Random();
-        // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
-        Integer randomNum = rand.nextInt((maxMin - minMin) + 1) + minMin;
-        log.debug("Random minutes to sleep: " + randomNum);
-        log.debug("......................................");
-//            Thread.sleep(randomNum * 60 * 1000);
         this.searchDoc = Jsoup.connect(urlFinal)
                 .timeout(30 * 1000)
                 .followRedirects(true)
                 .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-                .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36").get();
+                .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36").get();
 
     }
 
     @Override
     protected Elements findArticleList() {
-        Elements articleList = this.searchDoc.select("div[class=gs_ri]");
+        Elements articleList = this.searchDoc.select("div[id=gs_res_ccl_mid] > div[class=gs_r gs_or gs_scl]");
         return articleList;
     }
 
@@ -146,7 +140,7 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
                 Integer randomNum = rand.nextInt((maxMin - minMin) + 1) + minMin;
                 log.debug("Random minutes to sleep: " + randomNum);
                 log.debug("......................................");
-//                Thread.sleep(randomNum * 60 * 1000);
+                Thread.sleep(randomNum * 60 * 1000);
                 String link = linkList.attr("href");
                 log.debug("Loading next page: " + this.portal.getBase() + link);
 
