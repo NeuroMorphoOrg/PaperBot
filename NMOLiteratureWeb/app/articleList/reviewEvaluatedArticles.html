@@ -23,9 +23,11 @@
     <table class="table" >
         <thead>
             <tr>
-                <th class="PublishedDate">Published Date</th>
-                <th class="PMID">PMID</th>
-                <th>Title</th>
+                 <tr>
+                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('publishedDate')">Published Date <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('EvaluatedDate')">Evaluated on <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('pmid')">PMID <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('title')">Title <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
                 <th class="Metadata">Metadata</th>
                 <th>Comment</th>
                 <th>Evaluation</th>

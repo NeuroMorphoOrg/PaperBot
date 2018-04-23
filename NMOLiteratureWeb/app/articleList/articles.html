@@ -14,16 +14,15 @@
     </div>
     <div class ="content-numbers">
         <p>Showing <strong>{{firstElement}} - {{lastElement}} of {{articlePage.totalElements}}</strong> results</p>
-    </div>
+    </div>  
     <table class="table table-striped">
         <thead>
             <tr>
-                <th class="date">Published Date</th>
-                <th class="date">Found by the Search on</th>
-                <th class="PMID">PMID</th>
-                <th>Title</th>
+                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('publishedDate')">Published Date <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('OCDate')">Found by the Search on <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('pmid')">PMID <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('title')">Title <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
                 <th ng-if="collection==='Positive'">Metadata</th>
-
             </tr>
         </thead>
         <tbody>
@@ -49,9 +48,10 @@
 
     <div class="reset" ng-if="collection!=='Positive'">
         <div>
-            <button ng-if="!cleaning" type="button" class="btn btn-danger btn-lg" ng-click="removeArticleDB()" ng-disabled="false">Clean Article DB</button>
+            <button ng-if="!cleaning" type="button" class="btn btn-danger btn-lg" ng-click="removeArticleDB()" ng-disabled="false">Clean {{collection}} Article Database</button>
             <button ng-if="cleaning" type="button" class="btn btn-light btn-lg" ng-disabled="true">Cleaning DB ... </button>
         </div>
         <p><u>Warning:</u> This functionality will wipe out all the article-related content stored in {{collection}} collection.</p>
+
     </div>
 </div>

@@ -41,13 +41,15 @@ angular.module('articles.service', []).
                         scope.error = 'unable to get the article list';
                     });
                 } else {
-                    articlesCommunicationService.getArticleListByText(collection, scope.text, scope.currentPage - 1).then(function (data) {
+                    articlesCommunicationService.getArticleListByText(collection, scope.text, scope.currentPage - 1, scope.sortDirection, scope.sortProperty).then(function (data) {
                         scope.articlePage = data;
-                        data.content.forEach(function (a) {
-                            articlesCommunicationService.findMetadata(a.id).then(function (data2) {
-                                a.metadata = data2;
+                        if (collection === 'Positive' || collection === 'Evaluated') {
+                            data.content.forEach(function (a) {
+                                articlesCommunicationService.findMetadata(a.id).then(function (data2) {
+                                    a.metadata = data2;
+                                });
                             });
-                        });
+                        }
                         calculatePages(scope);
                     }).catch(function () {
                         scope.error = 'unable to get the article list';

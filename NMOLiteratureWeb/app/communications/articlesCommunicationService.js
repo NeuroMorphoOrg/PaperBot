@@ -21,8 +21,9 @@ angular.module('articles.communication', []).
                     return response.data;
                 });
             };
-            var getArticleListByText = function (status, text, page) {
-                return $http.get(url_literature + "/status/" + status + "?text=" + text + "&page=" + page).then(function (response) {
+            var getArticleListByText = function (status, text, page, sortDirection, sortProperty) {
+                return $http.get(url_literature + "/status/" + status + "?text=" + text 
+                        + "&page=" + page + "&sortDirection=" + sortDirection + "&sortProperty=" + sortProperty).then(function (response) {
                     return response.data;
                 });
             };

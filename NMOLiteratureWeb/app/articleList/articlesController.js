@@ -2,6 +2,7 @@ angular.module('Articles').
         controller('ArticlesController', function ($rootScope, $scope, $routeParams, articlesCommunicationService, articlesService) {
             $rootScope.show = true;
             $scope.currentPage = 1;
+            $scope.sortDirection = 'ASC';
             $scope.text = '';
             $scope.review = $routeParams.review;
             $scope.collection = $routeParams.usage;
@@ -62,5 +63,14 @@ angular.module('Articles').
                 window.open('#/view/' +id + '/' +review, '_blank');
             };
 
+            $scope.getArticlesBy = function (sortProperty) {
+                if ($scope.sortDirection === 'ASC'){
+                    $scope.sortDirection = 'DESC';
+                }else{
+                    $scope.sortDirection = 'ASC';
+                }
+                $scope.sortProperty = sortProperty;
+                articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
+            };
         });
 
