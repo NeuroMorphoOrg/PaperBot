@@ -122,11 +122,13 @@ public class LiteratureController {
     public Page<ArticleDto> getArticles(
             @PathVariable String status,
             @RequestParam(required = false) String text,
-            @RequestParam(required = true) Integer page) {
+            @RequestParam(required = true) Integer page,
+            @RequestParam(required = false) String sortDirection,
+            @RequestParam(required = false) String sortProperty) {
         log.debug("Find articles by text collection : " + status + " and page: " + page);
         ArticleStatus articleStatus = ArticleStatus.getArticleStatus(status);
         Page<Article> articlePage = literatureService.getArticles(
-                text, articleStatus, page);
+                text, articleStatus, page, sortDirection, sortProperty);
         List<ArticleDto> articleDtoList = new ArrayList();
         for (Article article : articlePage) {
             ArticleCollection articleCollection = new ArticleCollection(article, articleStatus);

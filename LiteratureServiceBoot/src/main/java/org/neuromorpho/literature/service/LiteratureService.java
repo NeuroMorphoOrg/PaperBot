@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.neuromorpho.literature.repository.article.ArticleRepositoryExtended;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -34,8 +35,12 @@ public class LiteratureService {
         return articleRepository.findByFieldQuery(collection, fieldQuery, page);
     }
 
-    public Page<Article> getArticles(String text, ArticleStatus articleStatus, Integer page) {
-        return articleRepository.findByText(text, articleStatus, page);
+    public Page<Article> getArticles(String text, ArticleStatus articleStatus, 
+            Integer page, String sortDirection, String sortProperty) {
+        log.debug("Find article list from collection: " + articleStatus.getCollection() 
+                + " by text: " + text + " sortDirection: " + sortDirection 
+                + " sortProperty: " + sortProperty);
+        return articleRepository.findByText(text, articleStatus, page, sortDirection, sortProperty);
     }
 
     public String saveArticle(ArticleCollection article) {

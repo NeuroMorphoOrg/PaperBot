@@ -170,7 +170,7 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
     public void replace(String id, Article articleNew) {
         ArticleCollection articleOld = findById(id);
         if (articleOld == null) {
-            articleNew.setId(new ObjectId(id));
+            articleNew.setId(id);
             this.save(new ArticleCollection(articleNew, ArticleStatus.TO_EVALUATE));
         } else {
             Article article = articleOld.getArticle();
@@ -294,7 +294,16 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
     }
 
     @Override
-    public Page<Article> findByText(String text, ArticleStatus status, Integer pageStart) {
+    public Page<Article> findByText(String text, 
+            ArticleStatus status, 
+            Integer pageStart,
+            String sortDirection,
+            String sortProperty) {
+        if (sortDirection == null || sortProperty == null){
+            sortDirection = "DESC";
+            sortProperty = "publishedDate";
+        }
+        Sort sort = new Sort(Sort.Direction.valueOf(sortDirection), sortProperty);
         PageRequest pageRequest = new PageRequest(pageStart, pageSize);
 
         Query query = new Query();
@@ -310,7 +319,7 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
             Criteria criteriaOr = getOrCriteriaList(pair);
             query.addCriteria(criteriaOr);
         }
-        query.with(new Sort(Sort.Direction.DESC, "publishedDate"));
+        query.with(sort);
         query.skip(pageStart * pageSize);
         query.limit(pageSize);
         List<Article> articleList = mongoOperations.find(query, Article.class, status.getCollection());
