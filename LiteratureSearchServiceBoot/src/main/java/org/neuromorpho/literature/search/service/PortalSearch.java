@@ -88,8 +88,6 @@ public abstract class PortalSearch implements IPortalSearch {
 
     protected abstract void fillLinks(Element articleData, Element articlePage);
 
-    protected abstract void fillIsAccessible(Element articleData, Element articlePage);
-
     protected void searchForTitles() throws HttpStatusException, InterruptedException {
 
         Elements articleList = this.findArticleList();
@@ -124,7 +122,6 @@ public abstract class PortalSearch implements IPortalSearch {
                                 .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36").get();
                         articlePage = articleDoc.select("html").first();
                     }
-                    this.fillIsAccessible(articleData, articlePage);
 
                     this.fillJournal(articleData, articlePage);
                     this.fillAuthorList(articleData, articlePage);

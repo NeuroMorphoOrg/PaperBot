@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -157,10 +156,6 @@ public class PortalSearchGoogleScholarService extends PortalSearch {
         return nextPage;
     }
 
-    @Override
-    protected void fillIsAccessible(Element articleData, Element articlePage) {
-        //no way to know if its accessible through google
-    }
 
     @Override
     protected void searchForTitlesApi() {

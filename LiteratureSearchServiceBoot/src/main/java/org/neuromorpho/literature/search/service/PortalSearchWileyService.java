@@ -28,13 +28,12 @@ public class PortalSearchWileyService extends PortalSearch {
     protected void searchPage() throws IOException {
         String urlFinal = null;
         DateFormat yearFormat = new SimpleDateFormat("yyyy");
+        DateFormat monthFormat = new SimpleDateFormat("MM");
         List<String> queryParameterList = new ArrayList<>();
-        queryParameterList.add("searchRowCriteria[0].queryString=" + this.keyWord);
-        queryParameterList.add("searchRowCriteria[0].fieldName=all-fields");
-        queryParameterList.add("searchRowCriteria[0].booleanConnector=and");
-        queryParameterList.add("dateRange=between");
-        queryParameterList.add("startYear=" + yearFormat.format(this.startDate.getTime()));
-        queryParameterList.add("endYear=" + yearFormat.format(this.endDate.getTime()));
+        queryParameterList.add("text1=" + this.keyWord.replace(" ", "+"));
+        queryParameterList.add("field1=AllField");
+        queryParameterList.add("AfterMonth=" + monthFormat.format(this.startDate.getTime()));
+        queryParameterList.add("AfterYear=" + yearFormat.format(this.endDate.getTime()));
         String queyParamsStr = "";
         for (String queryParameter : queryParameterList) {
             queyParamsStr = queyParamsStr + "&" + queryParameter;
@@ -43,20 +42,21 @@ public class PortalSearchWileyService extends PortalSearch {
         log.debug("Accessing portal url: " + urlFinal);
         this.searchDoc = Jsoup.connect(urlFinal)
                 .timeout(30 * 1000)
+                .followRedirects(true)
                 .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
-                .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7").post();
+                .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36").get();
 
     }
 
     @Override
     protected Elements findArticleList() {
-        Elements articleList = this.searchDoc.select(".articles > li");
+        Elements articleList = this.searchDoc.select("div[class=item__body]");
         return articleList;
     }
 
     @Override
     protected String fillTitle(Element articleData) {
-        Element elem = articleData.select("div[class^=citation] a").first();
+        Element elem = articleData.select("span[class=hlFld-Title] > a").first();
         String articleLink = elem.attr("href");
         this.article.setTitle(elem.text());
         return this.portal.getBase() + articleLink;
@@ -78,8 +78,7 @@ public class PortalSearchWileyService extends PortalSearch {
         List<Author> authorList = new ArrayList();
         Elements elemList = articlePage.select("meta[name=citation_author]");
         for (Element elem : elemList) {
-            String[] authorStr = elem.attr("content").split(", ");
-            Author author = new Author(authorStr[1] + " " + authorStr[0], null);
+            Author author = new Author(elem.attr("content"), null);
             authorList.add(author);
         }
         this.article.setAuthorList(authorList);
@@ -108,7 +107,7 @@ public class PortalSearchWileyService extends PortalSearch {
     @Override
     protected void fillLinks(Element articleData, Element articlePage) {
         Element elem = articlePage.select("meta[name=citation_fulltext_html_url]").first();
-        if (elem == null){
+        if (elem == null) {
             elem = articlePage.select("meta[name=citation_abstract_html_url]").first();
         }
         String link = elem.attr("content");
@@ -119,36 +118,24 @@ public class PortalSearchWileyService extends PortalSearch {
     protected Boolean loadNextPage() {
         Boolean nextPage = Boolean.FALSE;
         try {
-            Element selected = this.searchDoc.select("div[class=paginationFilter] > ol > li[class=selected]").first();
+            Element selected = this.searchDoc.select("div[class=pagination] a[title=Next page]").first();
             if (selected == null) {
                 return nextPage;
             }
-            Element next = selected.nextElementSibling();
-            if (next == null) {
-                return nextPage;
-            }
-            Element linkEl = next.selectFirst("a");
-            String link = linkEl.attr("href");
-            log.debug("Accessing portal url next page: " + this.portal.getBase() + link);
+            String link = selected.attr("href");
+            log.debug("Accessing portal url next page: " + link);
 
-            this.searchDoc = Jsoup.connect(this.portal.getBase() + link)
+            this.searchDoc = Jsoup.connect(link)
                     .timeout(30 * 1000)
-                    .userAgent("Chrome")
-                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8").get();
+                    .followRedirects(true)
+                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+                    .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36").get();
             nextPage = Boolean.TRUE;
 
         } catch (IOException ex) {
             log.error("Exception loading next page", ex);
         }
         return nextPage;
-    }
-
-    @Override
-    protected void fillIsAccessible(Element articleData, Element articlePage) {
-        Element link = articleData.select("div[class=access] span").first();
-        if (!link.text().equals("You have full text access to this content")) {
-            this.inaccessible = Boolean.TRUE;
-        }
     }
 
     @Override

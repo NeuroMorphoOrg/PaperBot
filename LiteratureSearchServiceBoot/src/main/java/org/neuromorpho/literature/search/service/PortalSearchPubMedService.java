@@ -108,11 +108,6 @@ public class PortalSearchPubMedService extends PortalSearch {
     }
 
     @Override
-    protected void fillIsAccessible(Element articleData, Element articlePage) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     protected void searchForTitles() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
