@@ -2,7 +2,8 @@ angular.module('Articles').
         controller('ArticlesController', function ($rootScope, $scope, $routeParams, articlesCommunicationService, articlesService) {
             $rootScope.show = true;
             $scope.currentPage = 1;
-            $scope.sortDirection = 'ASC';
+            $scope.sortDirection = 'DESC';
+            $scope.sortProperty = 'publishedDate';
             $scope.text = '';
             $scope.review = $routeParams.review;
             $scope.collection = $routeParams.usage;
@@ -70,6 +71,7 @@ angular.module('Articles').
                     $scope.sortDirection = 'ASC';
                 }
                 $scope.sortProperty = sortProperty;
+                console.log(sortProperty);
                 articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
             };
         });

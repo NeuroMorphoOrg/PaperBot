@@ -84,10 +84,12 @@ angular.module('Articles').
                 $scope.error = '';
                 articlesCommunicationService.getCrosRef($scope.article.doi).then(function (data) {
                     replaceData($scope, data);
-                    if ($scope.article.pmid == null) {
+                     if ($scope.article.pmid == null) {
                         //getPmid from title
                         articlesCommunicationService.getPMIDFromTitle(data.title).then(function (pmid) {
-                            $scope.article.pmid = pmid;
+                            if ($scope.article.pmid !== null) {
+                                $scope.article.pmid = pmid;
+                            }
                         });
                     }
                 }).catch(function () {
@@ -118,7 +120,7 @@ angular.module('Articles').
                 if (confirm("You re about to remove the article, press OK to confirm otherwise press Cancel")) {
                     var idList = [];
                     idList.push($rootScope.id);
-                    articlesCommunicationService.removeArticle(idList).then(function () {
+                    articlesCommunicationService.removeArticle(idList, $rootScope.articleStatus).then(function () {
                         $window.history.back();
                         $scope.$emit('child'); // going up!
                     }).catch(function (response) {

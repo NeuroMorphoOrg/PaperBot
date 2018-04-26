@@ -303,3 +303,11 @@ table .absorbing-column {
     border: none;
     background: none;   
 }
+
+.order-by-selected{
+    background-color: lightgray;
+}
+
+.order-by-unselected{
+    background-color: white;
+}

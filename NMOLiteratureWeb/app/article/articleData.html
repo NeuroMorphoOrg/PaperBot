@@ -32,11 +32,12 @@
                             </button></td>
                     </tr>
                     <tr>
-                        <td><strong>Link:</strong> </td>
-                        <td ng-if="article.link !== null"><a ng-href="{{article.link}}" target="_blank">
+                       <td><strong>Link:</strong> </td>
+                        <td ng-if="article.link != null"><a ng-href="{{article.link}}" target="_blank">
                                 <span e-style="width:250px;" editable-text="article.link">{{article.link}}</span></a></td>
-                        <td ng-if="article.link === null"><a ng-href="http://dx.doi.org/{{article.doi}}" target="_blank">
-                                    <span e-style="width:250px;" editable-text="article.doi">{{article.doi}}</span></p></a></td>
+                        <td></td>
+                        <td ng-if="article.link == null"><a ng-href="http://dx.doi.org/{{article.doi}}" target="_blank">
+                                <span e-style="width:250px;" editable-text="article.link">{{article.doi}}</span></a></td>
                         <td></td>
                         <td></td>
 

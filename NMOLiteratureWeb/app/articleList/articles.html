@@ -3,7 +3,7 @@
 <div class="articles">
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
-        <input type="text" ng-model="asyncSelected" placeholder="Search articles by exact pmid, exact doi, contains in last author name, or contains in title..." uib-typeahead="article as article.pmid for article in findArticlesByText($viewValue)" typeahead-loading="loadingArticles" typeahead-no-results="noResults" typeahead-wait-ms="500" class="form-control" typeahead-min-length="0">
+        <input type="text" ng-model="asyncSelected" placeholder="Search articles by exact pmid, exact doi, exact contact email, contains in author last name, or contains in title..." uib-typeahead="article as article.pmid for article in findArticlesByText($viewValue)" typeahead-loading="loadingArticles" typeahead-no-results="noResults" typeahead-wait-ms="500" class="form-control" typeahead-min-length="0">
     </div>
     <i ng-show="loadingArticles" class="glyphicon glyphicon-refresh"></i>
 
@@ -18,10 +18,10 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('publishedDate')">Published Date <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
-                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('OCDate')">Found by the Search on <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
-                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('pmid')">PMID <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
-                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('title')">Title <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'publishedDate']"><button type="button" class="sortbutton" ng-click="getArticlesBy('publishedDate')" >Published Date <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'ocDate']"><button type="button" class="sortbutton" ng-click="getArticlesBy('ocDate')">Found by the Search on <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'pmid']"><button type="button" class="sortbutton" ng-click="getArticlesBy('pmid')">PMID <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'title']"><button type="button" class="sortbutton" ng-click="getArticlesBy('title')">Title <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
                 <th ng-if="collection==='Positive'">Metadata</th>
             </tr>
         </thead>

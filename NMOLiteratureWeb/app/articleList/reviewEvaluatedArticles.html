@@ -24,11 +24,11 @@
         <thead>
             <tr>
                  <tr>
-                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('publishedDate')">Published Date <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
-                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('EvaluatedDate')">Evaluated on <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
-                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('pmid')">PMID <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
-                <th><button type="button" class="sortbutton" ng-click="getArticlesBy('title')">Title <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
-                <th class="Metadata">Metadata</th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'publishedDate']"><button type="button" class="sortbutton" ng-click="getArticlesBy('publishedDate')">Published Date <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'evaluatedDate']"><button type="button" class="sortbutton" ng-click="getArticlesBy('evaluatedDate')">Evaluated on <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'pmid']"><button type="button" class="sortbutton" ng-click="getArticlesBy('pmid')">PMID <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'title']"><button type="button" class="sortbutton" ng-click="getArticlesBy('title')">Title <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+               <th class="Metadata">Metadata</th>
                 <th>Comment</th>
                 <th>Evaluation</th>
             </tr>
@@ -37,6 +37,7 @@
             <tr ng-repeat="article in articlePage.content| filter:search"
                  ng-class="{'text-negative': article.metadata.articleStatus ==='Negative', 'text-positive': article.metadata.articleStatus ==='Positive', 'text-inaccessible': article.metadata.articleStatus ==='Inaccessible', 'text-reevaluate': article.metadata.articleStatus ==='Pending evaluation' }">
                 <td>{{article.publishedDate| date:'yyyy-MM-dd'}}</td>
+                <td>{{article.evluatedDate| date:'yyyy-MM-dd'}}</td>
                 <td ng-if="article.pmid">{{article.pmid}}</td>
                 <td ng-if="!article.pmid">-</td>
                 <td>

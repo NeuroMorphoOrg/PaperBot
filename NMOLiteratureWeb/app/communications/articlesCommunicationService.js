@@ -2,7 +2,7 @@ var url_literature = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8
 var url_metadata = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8180/literature/metadata';
 var url_pubmed = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8186/literature/pubmed';
 var url_crosref = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8184/literature/crossref';
-var url_search = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8187/literature';
+var url_search = 'http://localhost:8187/literature';
 
 angular.module('articles.communication', []).
         factory('articlesCommunicationService', function ($http) {
@@ -22,7 +22,7 @@ angular.module('articles.communication', []).
                 });
             };
             var getArticleListByText = function (status, text, page, sortDirection, sortProperty) {
-                return $http.get(url_literature + "/status/" + status + "?text=" + text 
+                return $http.get(url_literature + "/status/" + status + "?text=" + text
                         + "&page=" + page + "&sortDirection=" + sortDirection + "&sortProperty=" + sortProperty).then(function (response) {
                     return response.data;
                 });
@@ -138,11 +138,13 @@ angular.module('articles.communication', []).
                     return response.data;
                 });
             };
-            var removeArticle = function (idList) {
+            var removeArticle = function (idList, collection) {
                 return $http.delete(url_literature + "?ids=" + idList).then(function (response) {
-                    return $http.delete(url_metadata + "?ids=" + idList).then(function (response) {
-                        return response.data;
-                    });
+                    if (collection === 'Positive' || collection === 'Evaluated') {
+                        return $http.delete(url_metadata + "?ids=" + idList).then(function (response) {
+                            return response.data;
+                        });
+                    }
                 });
 
             };
@@ -152,9 +154,11 @@ angular.module('articles.communication', []).
                     });
                 } else {
                     return $http.delete(url_literature + "/removeAll").then(function (response) {
-                        return $http.delete(url_metadata + "/removeAll").then(function (response) {
-                            return response.data;
-                        });
+                        if (collection === 'Positive' || collection === 'Evaluated') {
+                            return $http.delete(url_metadata + "/removeAll").then(function (response) {
+                                return response.data;
+                            });
+                        }
                     });
                 }
 
