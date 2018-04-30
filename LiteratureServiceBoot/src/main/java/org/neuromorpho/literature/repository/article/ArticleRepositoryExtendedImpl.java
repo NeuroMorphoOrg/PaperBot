@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.apache.lucene.search.spell.JaroWinklerDistance;
-import org.bson.types.ObjectId;
 import org.neuromorpho.literature.exceptions.DuplicatedException;
 import org.neuromorpho.literature.model.article.Article;
 import org.neuromorpho.literature.model.article.ArticleCollection;

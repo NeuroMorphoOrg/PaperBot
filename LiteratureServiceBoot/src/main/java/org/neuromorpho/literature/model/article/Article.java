@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -44,9 +43,13 @@ public class Article {
     private Date evaluatedDate;
     private String status;
     private List<String> dataUsage;
-    private String abstact;
+    private String pdfPath;
 
     public Article() {
+    }
+
+    public Article(String id) {
+        this.id = id;
     }
 
     public String getId() {
@@ -178,12 +181,12 @@ public class Article {
         return this.doi == null;
     }
 
-    public String getAbstact() {
-        return abstact;
+    public String getPdfPath() {
+        return pdfPath;
     }
 
-    public void setAbstact(String abstact) {
-        this.abstact = abstact;
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
     }
 
     public Boolean isAuthorListNull() {

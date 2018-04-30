@@ -39,7 +39,6 @@ public class LiteratureController {
     @Autowired
     private LiteratureService literatureService;
 
-    private final ArticleDtoAssembler articleDtoAssembler = new ArticleDtoAssembler();
     private final FieldsAssembler fieldsAssembler = new FieldsAssembler();
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
@@ -56,20 +55,20 @@ public class LiteratureController {
 
     @CrossOrigin
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ArticleDto findArticle(@PathVariable String id) {
+    public Article findArticle(@PathVariable String id) {
         ArticleCollection article = literatureService.findArticle(id);
-        return articleDtoAssembler.createArticleDto(article);
+        return article.getArticle();
     }
-
-    @CrossOrigin
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void replaceArticle(
-            @PathVariable String id,
-            @RequestBody ArticleDto article) {
-        log.debug("Replacing article: " + article.toString());
-        literatureService.replaceArticle(id, articleDtoAssembler.createArticle(article));
-    }
+//
+//    @CrossOrigin
+//    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+//    @ResponseStatus(HttpStatus.ACCEPTED)
+//    public void replaceArticle(
+//            @PathVariable String id,
+//            @RequestBody Article article) {
+//        log.debug("Replacing article: " + article.toString());
+//        literatureService.replaceArticle(id, article);
+//    }
 
     @CrossOrigin
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT)
@@ -83,7 +82,7 @@ public class LiteratureController {
 
     @CrossOrigin
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Page<ArticleDto> getArticles(
+    public Page<Article> getArticles(
             @RequestParam(required = true) String collection,
             @RequestParam(required = false) Map<String, String> keyValueMap,
             @RequestParam(required = true) Integer page) {
@@ -94,32 +93,27 @@ public class LiteratureController {
                 collection, keyValueMap, page);
         log.debug("Found #articles : " + articlePage.getTotalElements());
 
-        List<ArticleDto> articleDtoList = new ArrayList();
-        for (Article article : articlePage) {
-            ArticleCollection articleCollection = new ArticleCollection(article, null);
-            articleDtoList.add(articleDtoAssembler.createArticleDto(articleCollection));
-        }
-        return new PageImpl<>(articleDtoList, new PageRequest(page,
-                articlePage.getSize(), articlePage.getSort()), articlePage.getTotalElements());
+        return articlePage;
     }
 
     @CrossOrigin
     @RequestMapping(value = "/{articleStatus}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public ArticleDto createArticle(
+    public Article createArticle(
             @PathVariable String articleStatus,
-            @RequestBody ArticleDto article) {
-
-        Article articleTeated = articleDtoAssembler.createArticle(article);
-
+            @RequestBody Article article,
+            @RequestParam(required = false) Boolean update) {
+        if (update == null){
+            update = Boolean.FALSE;
+        }
         String _id = literatureService.saveArticle(
-                new ArticleCollection(articleTeated, ArticleStatus.getArticleStatus(articleStatus)));
-        return new ArticleDto(_id);
+                new ArticleCollection(article, ArticleStatus.getArticleStatus(articleStatus)), update);
+        return new Article(_id);
     }
 
     @CrossOrigin
     @RequestMapping(value = "status/{status}", method = RequestMethod.GET)
-    public Page<ArticleDto> getArticles(
+    public Page<Article> getArticles(
             @PathVariable String status,
             @RequestParam(required = false) String text,
             @RequestParam(required = true) Integer page,
@@ -129,13 +123,7 @@ public class LiteratureController {
         ArticleStatus articleStatus = ArticleStatus.getArticleStatus(status);
         Page<Article> articlePage = literatureService.getArticles(
                 text, articleStatus, page, sortDirection, sortProperty);
-        List<ArticleDto> articleDtoList = new ArrayList();
-        for (Article article : articlePage) {
-            ArticleCollection articleCollection = new ArticleCollection(article, articleStatus);
-            articleDtoList.add(articleDtoAssembler.createArticleDto(articleCollection));
-        }
-        return new PageImpl<>(articleDtoList, new PageRequest(page,
-                articlePage.getSize(), articlePage.getSort()), articlePage.getTotalElements());
+        return articlePage;
     }
 
     @CrossOrigin
@@ -147,10 +135,10 @@ public class LiteratureController {
 
     @CrossOrigin
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ArticleDto findArticleByPMID(
+    public Article findArticleByPMID(
             @RequestParam(required = false) String pmid) {
         ArticleCollection article = literatureService.findArticleByPmid(pmid);
-        return articleDtoAssembler.createArticleDto(article);
+        return article.getArticle();
     }
 
     @ExceptionHandler(DuplicatedException.class)

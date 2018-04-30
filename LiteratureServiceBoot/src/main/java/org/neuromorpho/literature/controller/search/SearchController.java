@@ -1,9 +1,5 @@
 package org.neuromorpho.literature.controller.search;
 
-import org.neuromorpho.literature.controller.ArticleDto;
-import org.neuromorpho.literature.controller.ArticleDtoAssembler;
-import org.neuromorpho.literature.model.article.Article;
-import org.neuromorpho.literature.model.article.ArticleCollection;
 import org.neuromorpho.literature.service.search.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,22 +20,6 @@ public class SearchController {
 
     @Autowired
     private SearchService searchService;
-
-    private final ArticleDtoAssembler articleDtoAssembler = new ArticleDtoAssembler();
-
-    @RequestMapping(value = "/{articleStatus}", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    public ArticleDto saveOrUpdateArticle(
-            @PathVariable String articleStatus,
-            @RequestBody ArticleDto article) {
-        log.debug("Saving or updating article through search service: " + article.toString());
-
-        Article articleTreated = articleDtoAssembler.createArticle(article);
-
-        String _id = searchService.saveOrUpdateArticle(
-                new ArticleCollection(articleTreated, ArticleCollection.ArticleStatus.getArticleStatus(articleStatus)));
-        return new ArticleDto(_id);
-    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
