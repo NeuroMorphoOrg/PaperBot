@@ -1,8 +1,6 @@
 package org.neuromorpho.literature.crossref.controller;
 
 import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSFile;
-import java.io.InputStream;
 import org.neuromorpho.literature.crossref.model.Article;
 import org.neuromorpho.literature.crossref.service.CrossRefService;
 import org.slf4j.Logger;
