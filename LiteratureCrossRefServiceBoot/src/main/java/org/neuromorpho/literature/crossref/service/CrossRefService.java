@@ -1,8 +1,8 @@
 package org.neuromorpho.literature.crossref.service;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.gridfs.GridFSFile;
+import java.io.ByteArrayInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,10 +36,11 @@ public class CrossRefService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${folder}")
-    private String folder;
     @Value("${token}")
     private String token;
+
+    @Autowired
+    GridFsOperations gridOperations;
 
     @Autowired
     protected CrossRefConnection crossRefConnection;
@@ -61,7 +65,9 @@ public class CrossRefService {
         }
         article.setAuthorList(authorList);
         List<String> journalList = (List) message.get("container-title");
-        article.setJournal(journalList.get(0));
+        if (journalList != null && journalList.size() > 0) {
+            article.setJournal(journalList.get(0));
+        }
         Map created = (Map) message.get("created");
         String sortDateStr = (String) created.get("date-time");
         article.setPublishedDate(this.tryParseDate(sortDateStr));
@@ -78,20 +84,14 @@ public class CrossRefService {
         return article;
     }
 
-    public String downloadPDFFromDOI(String doi, String id) throws Exception {
+    public void downloadPDFFromDOI(String doi, String id) throws Exception {
         Map message = crossRefConnection.findMetadataFromDOI(doi);
         ArrayList<Map> links = (ArrayList) message.get("link");
-        ArrayList<String> titles = (ArrayList) message.get("title");
-        Map created = (Map) message.get("created");
-        String sortDateStr = (String) created.get("date-time");
-        String[] filePath = sortDateStr.split("-");
-        String completePath = folder + filePath[0] + File.separator + filePath[1] + File.separator;
+        GridFSFile file = null;
         for (Map link : links) {
             String contentType = (String) link.get("content-type");
             if (contentType.equals("application/pdf")
                     || contentType.equals("unspecified")) {
-                File dir = new File(completePath);
-                dir.mkdirs();
                 try {
 
                     //Download pdf
@@ -118,9 +118,11 @@ public class CrossRefService {
 
                     }
                     if (response.getStatusCode() == HttpStatus.OK) {
-                        String path = completePath + id + ".pdf";
-                        Files.write(Paths.get(path), response.getBody());
-                        return path; // if downloaded no need to read more links
+                        GridFSDBFile dbfile = this.findPDF(id); 
+                        if (dbfile == null) { // if is not already in DB download
+                            byte[] pdf = response.getBody();
+                            file = gridOperations.store(new ByteArrayInputStream(pdf), id);
+                        }
                     } else {
                         log.warn("Error in call" + response.getStatusCode());
                     }
@@ -132,7 +134,15 @@ public class CrossRefService {
                 log.warn("Article in CrossRef but no pdf associated");
             }
         }
-        return null;
+    }
+
+    public GridFSDBFile findPDF(String id) {
+        log.debug("Reading PDF filename: " + id);
+        Query query = new Query();
+        Criteria criteria = Criteria.where("filename").is(id);
+        query.addCriteria(criteria);
+        GridFSDBFile dbfile = gridOperations.findOne(query);
+        return dbfile;
     }
 
     protected Date tryParseDate(String dateStr) {
