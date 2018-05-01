@@ -1,0 +1,35 @@
+<!doctype html>
+<html ng-app ='Search'>
+    <head>
+        <title>Search</title>
+        <script src="../bower_components/angular/angular.min.js"></script>
+        <script src="../bower_components/angular-route/angular-route.min.js" type="text/javascript" ></script>
+        <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript" ></script>
+        <script src="../bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+        <script src="../bower_components/checklist-model/checklist-model.js"></script>
+        <script src="searchController.js"></script>
+        <script src="../communications/articlesCommunicationService.js"></script>
+        <link href="../bower_components/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
+        <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../article.css">
+    </head>
+
+
+    <body ng-controller='SearchController'>
+
+        <nav>
+            <ul class="nav nav-pills">
+                <li role="presentation"><a href="../index.html">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+                <li role="presentation"><a href="#launch">Portal Search</a></li>                
+
+            </ul>
+        </nav>
+
+        <hr>
+        <div class="main_search">
+            <div ng-view></div>
+        </div>
+       <div ng-include="'../footer.html'"></div>
+    </body>
+</html>

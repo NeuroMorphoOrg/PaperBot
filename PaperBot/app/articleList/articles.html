@@ -1,0 +1,57 @@
+
+
+<div class="articles">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></span>
+        <input type="text" ng-model="asyncSelected" placeholder="Search articles by exact pmid, exact doi, exact contact email, contains in author last name, or contains in title..." uib-typeahead="article as article.pmid for article in findArticlesByText($viewValue)" typeahead-loading="loadingArticles" typeahead-no-results="noResults" typeahead-wait-ms="500" class="form-control" typeahead-min-length="0">
+    </div>
+    <i ng-show="loadingArticles" class="glyphicon glyphicon-refresh"></i>
+
+    <hr>
+    <div class ="pagination">
+        <uib-pagination ng-model="currentPage" ng-click="setPage()" total-items="articlePage.totalElements" max-size="10" items-per-page="articlePage.size" previous-text="&lsaquo;" next-text="&rsaquo;" boundary-links="true" first-text="&laquo;" last-text="&raquo;">
+        </uib-pagination> 
+    </div>
+    <div class ="content-numbers">
+        <p>Showing <strong>{{firstElement}} - {{lastElement}} of {{articlePage.totalElements}}</strong> results</p>
+    </div>  
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'publishedDate']"><button type="button" class="sortbutton" ng-click="getArticlesBy('publishedDate')" >Published Date <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'ocDate']"><button type="button" class="sortbutton" ng-click="getArticlesBy('ocDate')">Found by the Search on <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'pmid']"><button type="button" class="sortbutton" ng-click="getArticlesBy('pmid')">PMID <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-class="{true: 'order-by-selected', false: 'order-by-unselected'}[sortProperty === 'title']"><button type="button" class="sortbutton" ng-click="getArticlesBy('title')">Title <span class="glyphicon glyphicon-sort" aria-hidden="true"></span></button></th>
+                <th ng-if="collection==='Positive'">Metadata</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="article in articlePage.content| filter:search">
+                <td>{{article.publishedDate| date:'yyyy-MM-dd'}}</td>
+                <td>{{article.ocDate| date:'yyyy-MM-dd'}}</td>
+                <td ng-if="article.pmid">{{article.pmid}}</td>
+                <td ng-if="!article.pmid">-</td>
+                <td>
+                    <span class="title"><a href ng-click="navigationUrl(article.id,review)" html="">{{article.title}}</a></span>  <br/>
+                    <span class="keyWordList" ng-repeat="keyWord in getKeyWordSet(article.searchPortal)">{{keyWord}}
+                        <span ng-show=" !$last">,</span>
+                    </span>
+
+                </td>
+                <td class="metadata-finished" ng-if="collection==='Positive' && article.metadata.finished"><span class="glyphicon glyphicon-check"></span></td>
+                <td class="metadata-not-finished" ng-if="collection==='Positive' && !article.metadata.finished"><span class="glyphicon glyphicon-edit"></span></td>
+
+            </tr>
+        </tbody>
+    </table>
+    <hr>
+
+    <div class="reset" ng-if="collection!=='Positive'">
+        <div>
+            <button ng-if="!cleaning" type="button" class="btn btn-danger btn-lg" ng-click="removeArticleDB()" ng-disabled="false">Clean {{collection}} Article Database</button>
+            <button ng-if="cleaning" type="button" class="btn btn-light btn-lg" ng-disabled="true">Cleaning DB ... </button>
+        </div>
+        <p><u>Warning:</u> This functionality will wipe out all the article-related content stored in {{collection}} collection.</p>
+
+    </div>
+</div>

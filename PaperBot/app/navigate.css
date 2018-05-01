@@ -1,0 +1,228 @@
+body {
+    font-size: 20px;
+    margin-top: 50px;
+    margin-bottom: 100px;
+    margin-right: 100px;
+    margin-left: 150px;
+}
+.literMate{
+    text-align: left;
+    color: black;
+    font-size: 16px;
+
+}
+.search{
+    position: relative;
+    display: flex;
+}
+
+.portal_search{
+    background:#b46464;
+    width: 450px; 
+    height: 100px; 
+    display: table; 
+
+}
+
+.portal_search .badge{
+    color: #b46464;
+    background-color: white;
+}
+.articles{
+    top: 5px;
+    position: relative;
+    display: flex;
+}
+.evaluated{
+    top: 1px;
+    position: relative;
+    display: flex;
+}
+
+
+.emails_articles{
+    margin-left: 1px;
+    background: #BDD09F;
+    width: 450px; 
+    height: 100px; 
+    display: table; 
+}
+
+.emails_articles .badge{
+    color: #BDD09F;
+    background-color: white;
+}
+
+.emails{
+    margin-left: 1px;
+    margin-left: 1px;
+    background: #668D3C;
+    width: 112.5px; 
+    height: 100%; 
+    display: table; 
+}
+.emails .badge{
+    color: #668D3C;
+    background-color: white;
+}
+.emails_positives{
+    margin-top: 1px;
+    margin-left: 1px;
+    background: #404F24;
+    width: 112.5px; 
+    height: 165px; 
+    display: table; 
+}
+
+.emails_positives .badge{
+    color: #404F24;
+    background-color: white;
+}
+
+.pre_evaluate_articles .badge{
+    color: #7788AA;
+    background-color: white;
+}
+
+.evaluate_articles {
+    background: #4E648E;
+    width: 450px; 
+    height: 200px; 
+    display: table; 
+}
+
+.evaluate_articles .badge{
+    color:  #4E648E;
+    background-color: white;
+}
+.box-text{
+    display: table-cell; 
+    color: white;
+    font-style: normal;
+    vertical-align: middle; 
+    text-align: center; 
+    line-height: 18pt
+}
+
+
+.positive_articles {
+    background:#061739;
+    width: 150px; 
+    height: 150px; 
+    display: table; 
+
+}
+
+.positive_articles .badge{
+    color: #061739;
+    background-color: white;
+}
+
+.positive_citations {
+    background:#395000;
+    width: 150px; 
+    height: 150px; 
+    display: table; 
+
+}
+
+.positive_citations .badge{
+    color: #395000;
+    background-color: white;
+}
+
+.negative_citations {
+    background:#5B7814;
+    width: 150px; 
+    height: 150px; 
+    display: table; 
+
+}
+
+.negative_citations .badge{
+    color: #5B7814;
+    background-color: white;
+}
+
+.inaccessible_citations {
+    margin-left: 10px;
+    background:#81A035;
+    width: 150px; 
+    height: 150px; 
+    display: table; 
+
+}
+
+.inaccessible_citations .badge{
+    color: #81A035;
+    background-color: white;
+}
+
+.negative_articles {
+    background: #152B55;
+    width: 150px; 
+    height: 150px; 
+    display: table; 
+}
+
+.negative_articles .badge{
+    color: #152B55;
+    background-color: white;
+}
+
+.inaccessible_articles {
+    background: #2D4471;
+    width: 150px; 
+    height: 150px; 
+    display: table; 
+}
+
+.inaccessible_articles .badge{
+    color: #2D4471;
+    background-color: white;
+}
+
+.statistics{
+    margin-top: 20px;
+    background: #6A5ACD;
+    width: 910px; 
+    height: 100px; 
+    display: table; 
+}
+
+.authors {
+    float: left;
+    background: #F4682C;
+    clear: both;
+
+    margin: 0px 0 10px 10px;
+    left: 93px; 
+    top: 93px; 
+    width: 250px; 
+    height: 100px; 
+    display: table; 
+    vertical-align: top;
+}
+
+.authors .badge{
+    color: #F4682C;
+    background-color: white;
+}
+
+ul { list-style: "\2192";
+     font-size: 15px;
+}
+
+.reference{
+    text-align: center;
+    color: black;
+    font-size: 16px;
+    display: flex;
+}
+
+footer {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    clear: both;
+}

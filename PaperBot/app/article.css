@@ -1,0 +1,313 @@
+details {
+    font-family: 'Gill Sans';
+    font-size: 16px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 100;
+    line-height: 16px;
+    color: darkblue;
+    margin: 20px;
+    padding: 20px;
+
+}
+
+body{
+    margin-top: 50px;
+    margin-bottom: 100px;
+    margin-right: 100px;
+    margin-left: 150px;
+    height: 100%;
+    width: 100%;
+    padding: 100px;
+    margin: 0px;
+
+}
+
+
+#addArticle {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:300px;
+    width:100px;
+    float:left;
+    padding:5px; 
+}
+
+
+.btn {
+    margin: 2px;
+}
+
+.btn btn-xlarge {
+    margin: 2px;
+    weight: 100px
+}
+
+.form-group  {
+    width:540px;
+}
+
+.form-group-authors .form-inline input {
+    width:540px;
+}
+
+
+th.tipo1{
+    width: 8%;
+}
+th.tipo2{
+    width: 4%;
+}
+
+th.tipo3{
+    width: 20%;
+}
+
+
+
+.form{
+    float: left;
+    border: 1px solid #73AD21;
+}
+
+.pubmed{
+    float: left;
+    margin: 10px 10px 10px 10px;
+}
+
+.alerts{
+    float: left; 
+    width: 150px; 
+    height: 500px; 
+}
+
+.panel-body{
+    margin: 10px 10px 10px 10px;
+}
+
+.content-numbers{
+    float: right;
+}
+
+.keyWordList{
+    font-size: 12px;
+    color: darkslategray;
+    font-weight: 500;
+}
+
+.checkboxes label {
+    display: block;
+    float: left;
+    padding-right: 10px;
+    white-space: nowrap;
+}
+.checkboxes input {
+    vertical-align: middle;
+}
+.checkboxes label span {
+    vertical-align: middle;
+}
+
+
+.errors {
+    color: red;
+}
+
+.radio-inline-positive {
+    font-size: 18px;
+    color: #519548;
+    font-weight: bold;
+}
+.radio-inline-active {
+    font-size: 14px;
+    color: black;
+}
+.radio-inline-unactive {
+    font-size: 14px;
+    color: lightgray;
+}
+
+.radio-inline-negative {
+    font-size: 18px;
+    color: #CC262F;
+    font-weight: bold;
+}
+.radio-inline-inaccessible {
+    font-size: 18px;
+    color: #CCCC00;
+    font-weight: bold;
+}
+
+.radio-inline-reevaluate {
+    font-size: 18px;
+    color: #00008B;
+    font-weight: bold;
+}
+.text-negative{
+    background-color: rgba(200, 54, 54, 0.3);
+}
+
+.text-positive{
+    background-color: rgba(81, 149, 72, 0.3);
+}
+
+.text-inaccessible{
+    background-color: rgba(240,230,140, 0.3);
+}
+
+.text-reevaluate{
+    background-color: #6495ED;
+}
+
+#saved{
+    color: #519548;
+}
+#error{
+    color: #CC262F;
+}
+
+.container {
+    display: flex;
+}
+
+.column {
+    flex: 1;
+    for demo purposes only 
+    background: #f2f2f2;
+    border: 1px solid #e6e6e6;
+    box-sizing: border-box;
+}
+
+.column-one {
+    order: 1;
+}
+.column-two {
+    order: 2;
+}
+.column-three {
+    order: 3;
+}
+
+.submitted .ng-invalid{
+    border: 1px solid red;
+}
+
+.email{
+    font-size: 12px;
+    color: darkblue;
+    font-weight: 500;
+}
+
+.no-email{
+    font-size: 12px;
+    color: darkorange;
+    font-weight: 500;
+}
+
+label input {
+    margin-right:30px;
+}
+
+#saved{
+    color: #519548;
+}
+#error{
+    color: #CC262F;
+}
+
+.note{
+    word-break:break-all;
+}
+td{
+    word-wrap: break-word;
+}
+
+footer {
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    clear: both;
+}
+.reset{
+    text-align: center;
+
+}
+
+.metadata-not-finished{
+    color: red;
+    text-align:center;
+}
+
+.metadata-finished{
+    color: green;
+    text-align:center;
+}
+
+.n-reconstructions{
+    width: 50px;
+    text-align:right;
+}
+
+.pending-update{
+    background-color: #FF8C00;
+}
+
+#saved{
+    color: #519548;
+}
+#error{
+    color: #CC262F;
+}
+
+
+.button {
+    border: none;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    border: 2px solid #555555;
+}
+
+
+.filter{
+    display: table;
+}
+.row{
+    display: table-row;
+}
+.column{
+    display: table-cell;
+}
+
+
+table {
+    table-layout: auto;
+    border-collapse: collapse;
+    width: 100%;
+}
+table td {
+}
+table .absorbing-column {
+    width: 100%;
+}
+
+.sortbutton{
+    padding: 0;
+    border: none;
+    background: none;   
+}
+
+.order-by-selected{
+    background-color: lightgray;
+}
+
+.order-by-unselected{
+    background-color: white;
+}

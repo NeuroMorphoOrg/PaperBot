@@ -1,0 +1,43 @@
+<!doctype html>
+<html ng-app ='Articles'>
+    <head>
+        <title>Positive Articles</title>
+        <script src="../bower_components/angular/angular.min.js"></script>
+        <script src="../bower_components/angular-route/angular-route.min.js" type="text/javascript" ></script>
+        <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript" ></script>
+        <script src="../bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+        <script src="../bower_components/checklist-model/checklist-model.js"></script>
+        <script src="articlesModule.js"></script>
+        <script src="articlesController.js"></script>
+        <script src="../services/articlesService.js"></script>
+        <script src="../communications/articlesCommunicationService.js"></script>
+        <script src="../article/articleDataController.js"></script>
+        <script src="../article/metadataController.js"></script>
+        <link href="../bower_components/angular-xeditable/dist/css/xeditable.css" rel="stylesheet">
+        <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../article.css">
+
+    </head>
+
+
+    <body ng-controller='Controller'>
+
+        <nav ng-show="show">
+            <ul class="nav nav-pills">
+                <li role="presentation"><a href="../index.html">
+                        <span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+                <li role="presentation"><a href="#articles/Positive/0">Positive articles<span class="badge">{{count.positive}}</span></a></li>                
+                <li role="presentation"><a href="#articles/Negative/0">Negative articles <span class="badge">{{count.negative}}</span></a></li>                
+                <li role="presentation"><a href="#articles/Inaccessible/0">Inaccessible articles <span class="badge">{{count.inaccessible}}</span></a></li>                
+            </ul>
+            <hr>
+
+        </nav>
+
+        <div class="main_positive_articles">
+            <div ng-view></div>
+        </div>
+        <div ng-include="'../footer.html'"></div>
+
+    </body>
+</html>
