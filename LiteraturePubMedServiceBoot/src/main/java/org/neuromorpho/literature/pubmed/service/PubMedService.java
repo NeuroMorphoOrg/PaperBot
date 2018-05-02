@@ -1,7 +1,6 @@
 package org.neuromorpho.literature.pubmed.service;
 
 import java.io.StringReader;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,9 +59,14 @@ public class PubMedService {
         if (uids.isEmpty()) {
             throw new Exception("Unknown pmid not found in " + db + " id: " + uid);
         }
-        article.setPmid(pmid);
         Map articleValues = (HashMap) result.get(uids.get(0));
-        article.setTitle(getCorrectedName((String) articleValues.get("title")));
+        String title = (String) articleValues.get("title");
+        article.setTitle(getCorrectedName(title));
+        if (pmid.startsWith("PMC")) {
+            pmid = this.retrievePMIDFromTitle(title);
+        }
+        article.setPmid(pmid);
+
         article.setJournal(getCorrectedName((String) articleValues.get("fulljournalname")));
         String sortDateStr = (String) articleValues.get("pubdate");
         Date publishedDate = this.tryParseDate(sortDateStr);
