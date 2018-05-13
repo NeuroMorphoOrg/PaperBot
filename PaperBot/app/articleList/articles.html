@@ -44,6 +44,10 @@
             </tr>
         </tbody>
     </table>
+<div class ="pagination">
+        <uib-pagination ng-model="currentPage" ng-click="setPage()" total-items="articlePage.totalElements" max-size="10" items-per-page="articlePage.size" previous-text="&lsaquo;" next-text="&rsaquo;" boundary-links="true" first-text="&laquo;" last-text="&raquo;">
+        </uib-pagination> 
+    </div>
     <hr>
 
     <div class="reset" ng-if="collection!=='Positive'">

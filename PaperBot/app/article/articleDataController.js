@@ -5,23 +5,32 @@ angular.module('Articles').
             $scope.radio = {
                 status: 1
             };
-
             $scope.articleSaved = false;
+
             $rootScope.articlePositive = false;
 
             $rootScope.id = $routeParams.id;
             $scope.article = {};
             $scope.article.authorList = [];
-
             if ($rootScope.id !== undefined) {
                 articlesCommunicationService.findArticle($rootScope.id).then(function (data) {
+                    $scope.update = true;
                     $scope.articleSaved = true;
-                    $scope.article = data;
-                    $rootScope.articleStatus = $scope.article.articleStatus;
+                    $scope.article = data.articlePage.content[0];
+                    $rootScope.articleStatus = data.status;
 
+                    articlesCommunicationService.getPdf($scope.article.id).then(function (data) {
+                        if (data.byteLength > 0) {
+                            $scope.pdf = data;
+                        }
+                    }).catch(function () {
+                        $scope.error = 'PDF retrieve error';
+                    });
                 }).catch(function () {
                     $scope.error = 'Error getting article details';
                 });
+            } else {
+                $scope.update = false;
             }
 
             $scope.opened = {};
@@ -35,8 +44,7 @@ angular.module('Articles').
 
 
             $scope.updateArticle = function () {
-
-                articlesCommunicationService.updateArticle($rootScope.id, $scope.article).then(function () {
+                articlesCommunicationService.updateArticle($scope.article, $rootScope.id, $rootScope.articleStatus, $scope.update).then(function () {
                     $scope.articleSaved = true;
 
                 }).catch(function (response) {
@@ -68,8 +76,7 @@ angular.module('Articles').
                     $scope.error = 'Unable to get pubMed data';
                 });
             };
-            $scope.getCrosRef = function () {
-
+            $scope.getCrossRef = function () {
                 if ($rootScope.id == null) {
                     $rootScope.articleStatus = 'Pending evaluation';
                     $scope.article.searchPortal = [];
@@ -82,9 +89,9 @@ angular.module('Articles').
                     });
                 }
                 $scope.error = '';
-                articlesCommunicationService.getCrosRef($scope.article.doi).then(function (data) {
+                articlesCommunicationService.getCrossRef($scope.article.doi).then(function (data) {
                     replaceData($scope, data);
-                     if ($scope.article.pmid == null) {
+                    if ($scope.article.pmid == null) {
                         //getPmid from title
                         articlesCommunicationService.getPMIDFromTitle(data.title).then(function (pmid) {
                             if ($scope.article.pmid !== null) {
@@ -123,13 +130,48 @@ angular.module('Articles').
                     articlesCommunicationService.removeArticle(idList, $rootScope.articleStatus).then(function () {
                         $window.history.back();
                         $scope.$emit('child'); // going up!
+                        window.close();
+                        window.onunload = window.opener.location.reload();
                     }).catch(function (response) {
                         $scope.error = 'Error removing article';
                     });
-                    window.close();
-                    window.onunload = window.opener.location.reload();
+
                 } else {
                 }
+            };
+
+            $scope.openPdf = function () {
+                console.log("safari1");
+                var file = new Blob([$scope.pdf], {type: 'application/pdf'});
+                console.log("safari2");
+
+                var fileURL = URL.createObjectURL(file);
+                console.log("safari3");
+
+                window.open(fileURL, '_blank');
+            };
+            $scope.downloadPdf = function () {
+                articlesCommunicationService.downloadPdf($scope.article.id, $scope.article.doi).then(function (data) {
+                    $scope.pdfUrl = data;
+                    console.log(1);
+                    articlesCommunicationService.getPdf($scope.article.id).then(function (data) {
+                        console.log(2);
+
+                        if (data.byteLength > 0) {
+                            console.log(3);
+
+                            $scope.pdf = data;
+                        }
+                    }).catch(function () {
+                        console.log(4);
+
+                        $scope.error = 'PDF retrieve error';
+                    });
+                }).catch(function () {
+                    console.log(4);
+
+                    $scope.error = 'Error downloading PDF';
+                });
             };
 
         });

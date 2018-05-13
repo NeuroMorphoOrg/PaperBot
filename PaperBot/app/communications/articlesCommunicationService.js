@@ -1,8 +1,8 @@
-var url_literature = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8188/literature';
-var url_metadata = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8180/literature/metadata';
-var url_pubmed = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8186/literature/pubmed';
-var url_crosref = 'http://ec2-18-219-56-191.us-east-2.compute.amazonaws.com:8184/literature/crossref';
-var url_search = 'http://localhost:8187/literature';
+var url_literature = 'http://129.174.10.65:8443/literature';
+var url_metadata = 'http://129.174.10.65:8443/metadata';
+var url_pubmed = 'http://129.174.10.65:8443/pubmed';
+var url_crossref = 'http://129.174.10.65:8443/crossref';
+var url_search = 'http://129.174.10.65:8443/search';
 
 angular.module('articles.communication', []).
         factory('articlesCommunicationService', function ($http) {
@@ -12,15 +12,6 @@ angular.module('articles.communication', []).
                 });
             };
 
-            var getArticleList = function (collection, query, page) {
-                var text = "";
-                if (query != null) {
-                    text = query + "&";
-                }
-                return $http.get(url_literature + "/query?collection=" + collection + "&" + text + "page=" + page).then(function (response) {
-                    return response.data;
-                });
-            };
             var getArticleListByText = function (status, text, page, sortDirection, sortProperty) {
                 return $http.get(url_literature + "/status/" + status + "?text=" + text
                         + "&page=" + page + "&sortDirection=" + sortDirection + "&sortProperty=" + sortProperty).then(function (response) {
@@ -28,8 +19,8 @@ angular.module('articles.communication', []).
                 });
             };
 
-            var updateArticle = function (id, article) {
-                return $http.put(url_literature + '/' + id, article).then(function (response) {
+            var updateArticle = function (article, id, collection, update) {
+                return $http.put(url_literature + '/' + collection + '/' + id + '?update=' + update, article).then(function (response) {
                     return response.data;
                 });
             };
@@ -54,13 +45,13 @@ angular.module('articles.communication', []).
             };
 
             var updateCollection = function (id, articleStatus) {
-                return $http.put(url_literature + '/collection/' + id + "?articleStatus=" + articleStatus).then(function (response) {
+                return $http.put(url_literature + '/status/' + id + "?articleStatus=" + articleStatus).then(function (response) {
                     return response.data;
                 });
             };
 
             var updateSearch = function (id, search) {
-                return $http.put(url_literature + '/search/' + id, search).then(function (response) {
+                return $http.put(url_literature + '/' + id, search).then(function (response) {
                     return response.data;
                 });
             };
@@ -87,8 +78,18 @@ angular.module('articles.communication', []).
                     return response.data;
                 });
             };
-            var getCrosRef = function (doi) {
-                return $http.get(url_crosref + '?doi=' + doi).then(function (response) {
+            var getCrossRef = function (doi) {
+                return $http.get(url_crossref + '?doi=' + doi).then(function (response) {
+                    return response.data;
+                });
+            };
+            var getPdf = function (id) {
+                return $http.get(url_crossref + '/load/' + id, { responseType : 'arraybuffer' }).then(function (response) {
+                    return response.data;
+                });
+            };
+            var downloadPdf = function (id, doi) {
+                return $http.get(url_crossref + '/download/' + '?doi=' + doi + '&id=' + id + "&download=true").then(function (response) {
                     return response.data;
                 });
             };
@@ -114,12 +115,12 @@ angular.module('articles.communication', []).
                 });
             };
             var launchSearch = function (canceller) {
-                return $http.get(url_search + "/search/start", {timeout: canceller.promise}).then(function (response) {
+                return $http.get(url_search + "/start", {timeout: canceller.promise}).then(function (response) {
                     return response.data;
                 });
             };
             var stopSearch = function () {
-                return $http.get(url_search + "/search/stop").then(function (response) {
+                return $http.get(url_search + "/stop").then(function (response) {
                     return response.data;
                 });
             };
@@ -149,8 +150,9 @@ angular.module('articles.communication', []).
 
             };
             var removeAllArticles = function (collection) {
+                console.log(collection);
                 if (collection != null) {
-                    return $http.delete(url_literature + "/removeAll?collection=" + collection).then(function (response) {
+                    return $http.delete(url_literature + "/removeAll?status=" + collection).then(function (response) {
                     });
                 } else {
                     return $http.delete(url_literature + "/removeAll").then(function (response) {
@@ -165,7 +167,6 @@ angular.module('articles.communication', []).
             };
             return {
                 getResumeNumbers: getResumeNumbers,
-                getArticleList: getArticleList,
                 updateArticle: updateArticle,
                 findMetadata: findMetadata,
                 getMetadataValues: getMetadataValues,
@@ -176,7 +177,9 @@ angular.module('articles.communication', []).
                 findArticleByPmid: findArticleByPmid,
                 getPubMed: getPubMed,
                 getPMIDFromTitle: getPMIDFromTitle,
-                getCrosRef: getCrosRef,
+                getCrossRef: getCrossRef,
+                getPdf: getPdf,
+                downloadPdf: downloadPdf,
                 getArticleListByText: getArticleListByText,
                 getObjectId: getObjectId,
                 getPortalList: getPortalList,

@@ -31,11 +31,12 @@ articles.config(articlesRouteConfig);
 
 articles.controller('Controller', function ($scope, articlesCommunicationService, articlesService) {
     $scope.count = {};
+    articlesService.getYear($scope);
+
     articlesService.getCountArticles($scope, articlesCommunicationService);
     $scope.$on('child', function (event, data) {
         articlesService.getCountArticles($scope, articlesCommunicationService);
     });
-    
 
 });
 

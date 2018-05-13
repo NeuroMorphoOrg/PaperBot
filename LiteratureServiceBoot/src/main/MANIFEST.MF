@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Archiver-Version: Plexus Archiver
-Created-By: Apache Maven
-Built-By: pmaraver
-Build-Jdk: 1.8.0_131
-Main-Class: com.wt.scraper.Application
-

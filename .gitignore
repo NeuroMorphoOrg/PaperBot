@@ -5,3 +5,14 @@
 /LiteratureDownloadPDFService/target/
 /LiteratureCrossRefServiceBoot/target/
 /LiteratureMetadataServiceBoot/target/
+/LiteraturePubMedServiceBoot/target/
+/LiteraturePortalServiceBoot/target/
+/LiteratureSearchServiceBoot/target/
+/PaperBot/nbproject/private/
+/CrossRefService/target/
+/MetadataService/target/
+/PubMed/target/
+/Metadata/target/
+/CrossRef/target/
+/Search/target/
+/Literature/target/

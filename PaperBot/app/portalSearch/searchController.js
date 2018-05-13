@@ -1,4 +1,4 @@
-var search = angular.module('Search', ['ngRoute', 'ui.bootstrap', 'articles.communication', 'xeditable']);
+var search = angular.module('Search', ['ngRoute', 'ui.bootstrap', 'articles.communication', 'xeditable', 'articles.service']);
 
 
 function articlesRouteConfig($routeProvider) {
@@ -13,8 +13,9 @@ function articlesRouteConfig($routeProvider) {
 }
 search.config(articlesRouteConfig);
 
-search.controller('SearchController', function ($scope) {
+search.controller('SearchController', function ($scope, articlesService) {
     $scope.opened = {};
+    articlesService.getYear($scope);
 
     $scope.open = function ($event, elementOpened, $index) {
         $event.preventDefault();

@@ -1,5 +1,10 @@
 angular.module('articles.service', []).
         factory('articlesService', function () {
+             var getYear = function (scope) {
+                scope.year = new Date().getFullYear();
+
+            };
+
             var getCountArticles = function (scope, articlesCommunicationService) {
                 articlesCommunicationService.getResumeNumbers().then(function (data) {
                     scope.count.negative = data.Negative;
@@ -27,22 +32,9 @@ angular.module('articles.service', []).
                 }
             };
             var findArticles = function (scope, collection, articlesCommunicationService) {
-                if (scope.text == null) {
-                    console.log("Nunca entra por awui: getArticleList");
-                    articlesCommunicationService.getArticleList(collection, scope.currentPage - 1).then(function (data) {
-                        scope.articlePage = data;
-                        data.content.forEach(function (a) {
-                            articlesCommunicationService.findMetadata(a.id).then(function (data2) {
-                                a.metadata = data2;
-                            });
-                        });
-                        calculatePages(scope);
-                    }).catch(function () {
-                        scope.error = 'unable to get the article list';
-                    });
-                } else {
+                
                     articlesCommunicationService.getArticleListByText(collection, scope.text, scope.currentPage - 1, scope.sortDirection, scope.sortProperty).then(function (data) {
-                        scope.articlePage = data;
+                        scope.articlePage = data.articlePage;
                         if (collection === 'Positive' || collection === 'Evaluated') {
                             data.content.forEach(function (a) {
                                 articlesCommunicationService.findMetadata(a.id).then(function (data2) {
@@ -56,9 +48,10 @@ angular.module('articles.service', []).
                     });
 
                 }
-            };
+           
 
             return {
+                getYear: getYear,
                 getCountArticles: getCountArticles,
                 findArticles: findArticles,
                 calculatePages: calculatePages

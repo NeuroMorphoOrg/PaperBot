@@ -6,12 +6,11 @@ angular.module('Articles').
             $scope.sortProperty = 'publishedDate';
             $scope.text = '';
             $scope.review = $routeParams.review;
-            $scope.collection = $routeParams.usage;
-            articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
             $scope.findArticlesByText = function (text) {
                 $scope.text = text;
                 articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
             };
+            $scope.findArticlesByText("");
             $scope.setPage = function () {
                 articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
             };
@@ -48,9 +47,9 @@ angular.module('Articles').
             };
 
             $scope.removeArticleDB = function () {
-                if (confirm("You are about to erase the " + $scope.collection + " colletion from the database, press OK to confirm otherwise press Cancel")) {
+                if (confirm("You are about to erase the " + $routeParams.usage + " colletion from the database, press OK to confirm otherwise press Cancel")) {
                     $scope.cleaning = true;
-                    articlesCommunicationService.removeAllArticles($scope.collection).then(function (data) {
+                    articlesCommunicationService.removeAllArticles($routeParams.usage).then(function (data) {
                         $scope.cleaning = false;
                          window.location.reload();
                     }).catch(function () {
@@ -71,7 +70,6 @@ angular.module('Articles').
                     $scope.sortDirection = 'ASC';
                 }
                 $scope.sortProperty = sortProperty;
-                console.log(sortProperty);
                 articlesService.findArticles($scope, $routeParams.usage, articlesCommunicationService);
             };
         });
