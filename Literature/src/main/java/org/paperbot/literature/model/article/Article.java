@@ -192,4 +192,16 @@ public class Article implements java.io.Serializable{
 
     }
 
+    @Override
+    public String toString() {
+        return "Article{" + "id=" + id + ", pmid=" + pmid + ", doi=" + doi 
+                + ", link=" + link + ", journal=" + journal + ", title=" 
+                + title + ", ocDate=" + ocDate + ", publishedDate=" + publishedDate 
+                + ", authorList=" + authorList + ", searchPortal=" + searchPortal 
+                + ", evaluatedDate=" + evaluatedDate + ", status=" + status 
+                + ", dataUsage=" + dataUsage + '}';
+    }
+    
+    
+
 }

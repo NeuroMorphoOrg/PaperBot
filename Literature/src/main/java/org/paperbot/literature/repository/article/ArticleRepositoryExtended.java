@@ -26,7 +26,7 @@ public interface ArticleRepositoryExtended {
 
     public ArticleCollection existsArticle(Article article);
 
-    public void update(String id, ArticleStatus newCollection);
+    public void update(String id, ArticleStatus oldCollection, ArticleStatus newCollection);
 
     public void update(ArticleStatus status, String id, Article article);
     

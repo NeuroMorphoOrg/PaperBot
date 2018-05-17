@@ -52,7 +52,7 @@ public class LiteratureService {
     }
     
     public void updateArticle(ArticleStatus status, String id, Article article, Boolean update) {
-        log.debug("Updating fields for : " + id);
+        log.debug("Updating fields for : " + id + " update: " + update);
         if (update) {
             articleRepository.update(status, id, article);
         } else {
@@ -61,9 +61,9 @@ public class LiteratureService {
         }
     }
     
-    public void updateStatus(String id, ArticleStatus newStatus) {
+    public void updateStatus(String id, ArticleStatus oldStatus, ArticleStatus newStatus) {
         log.debug("Updating status for : " + id + " to: " + newStatus);
-        articleRepository.update(id, newStatus);
+        articleRepository.update(id, oldStatus, newStatus);
     }
     
     public void deleteArticleList(List<String> ids) {

@@ -41,6 +41,7 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
 
     @Override
     public String save(Article article, ArticleStatus status) {
+        log.debug("Saving new article: " + status.getCollection());
         ArticleCollection oldArticle = this.existsArticle(article);
         if (oldArticle != null) {
             throw new DuplicatedException(oldArticle.getStatus());
@@ -51,7 +52,7 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
 
         article.setOcDate(new Date());
         mongoOperations.save(article, status.getCollection());
-
+        log.debug("Article saved: " + article.getId());
         return article.getId();
     }
 
@@ -150,17 +151,17 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
     }
 
     @Override
-    public void update(String id, ArticleStatus newCollection) {
-        ArticleCollection oldArticle = this.findById(id);
-        log.debug("Updating collection article title: " + oldArticle.getArticlePage().getContent().get(0).getTitle());
-        if (newCollection != ArticleStatus.getArticleStatus(oldArticle.getStatus())) {
-            if (ArticleStatus.getArticleStatus(oldArticle.getStatus()).equals(ArticleStatus.TO_EVALUATE)) {
-                oldArticle.getArticlePage().getContent().get(0).setEvaluatedDate(new Date());
+    public void update(String id, ArticleStatus oldCollection, ArticleStatus newCollection) {
+        Article article = mongoOperations.findById(id, Article.class, oldCollection.getCollection());
+        if (article != null){
+            log.debug("Updating collection article: " + article.toString());
+            if (oldCollection.equals(ArticleStatus.TO_EVALUATE)) {
+                article.setEvaluatedDate(new Date());
             }
             log.debug("Saving article in new collection: " + newCollection.getCollection());
-            mongoOperations.save(oldArticle.getArticlePage().getContent().get(0), newCollection.getCollection());
-            log.debug("Removing article from old collection: " + ArticleStatus.getArticleStatus(oldArticle.getStatus()).getCollection());
-            mongoOperations.remove(oldArticle.getArticlePage().getContent().get(0), ArticleStatus.getArticleStatus(oldArticle.getStatus()).getCollection());
+            mongoOperations.save(article, newCollection.getCollection());
+            log.debug("Removing article from old collection: " + oldCollection.getCollection());
+            mongoOperations.remove(article, oldCollection.getCollection());
         }
     }
 

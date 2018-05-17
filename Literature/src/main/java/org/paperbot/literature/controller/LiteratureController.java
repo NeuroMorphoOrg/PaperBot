@@ -76,6 +76,7 @@ public class LiteratureController {
             @RequestBody Article article,
             @RequestParam Boolean update) {
         log.debug("Updating article id: " + id + " with data: " + article.toString());
+        article.setId(id);
         literatureService.updateArticle(ArticleStatus.getArticleStatus(status), id, article, update);
     }
 
@@ -119,8 +120,11 @@ public class LiteratureController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateStatus(
             @PathVariable String id,
-            @RequestParam String articleStatus) {
-        literatureService.updateStatus(id, ArticleCollection.ArticleStatus.getArticleStatus(articleStatus));
+            @RequestParam String oldArticleStatus,
+            @RequestParam String newArticleStatus) {
+        literatureService.updateStatus(id, 
+                ArticleCollection.ArticleStatus.getArticleStatus(oldArticleStatus),
+                ArticleCollection.ArticleStatus.getArticleStatus(newArticleStatus));
     }
 
     @CrossOrigin
