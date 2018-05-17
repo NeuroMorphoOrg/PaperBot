@@ -9,11 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
@@ -50,6 +49,9 @@ public class CrossRefService {
 
     @Autowired
     GridFsOperations gridOperations;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     @Autowired
     protected CrossRefConnection crossRefConnection;
@@ -94,9 +96,10 @@ public class CrossRefService {
     }
 
     public Boolean downloadPDFFromDOI(String doi, String id, Boolean download) throws Exception {
-        GridFSDBFile dbfile = this.findPDF(id);
+
+        Boolean downloaded = this.existsPDF(id);
         Boolean exists = Boolean.FALSE;
-        if (dbfile == null) { // if is not already in DB download
+        if (!downloaded) { // if is not already in DB download
             Map message = crossRefConnection.findMetadataFromDOI(doi);
             ArrayList<Map> links = (ArrayList) message.get("link");
             if (links != null) {
@@ -128,6 +131,15 @@ public class CrossRefService {
         query.addCriteria(criteria);
         GridFSDBFile dbfile = gridOperations.findOne(query);
         return dbfile;
+    }
+
+    public Boolean existsPDF(String id) {
+        log.debug("Reading PDF filename: " + id);
+        Query query = new Query();
+        Criteria criteria = Criteria.where("filename").is(id);
+        query.addCriteria(criteria);
+        Boolean downloaded = mongoTemplate.exists(query, "fs.files");
+        return downloaded;
     }
 
     protected Date tryParseDate(String dateStr) {
