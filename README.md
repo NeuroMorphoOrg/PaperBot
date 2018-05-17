@@ -38,23 +38,19 @@ This is needed if you want to use the automated search (Elsevier/ScienceDirect, 
 `... {`<br>
 `...   "name": "PubMed",`<br>
 `...   "apiUrl": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils",`<br>
-`...   "searchPeriod": 3,`<br>
 `...   "active": true,`<br>
 `...   "db": "pubmed"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "PubMedCentral",`<br>
 `...   "apiUrl": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils",`<br>
-`...   "searchPeriod": 3,`<br>
 `...   "active": true,`<br>
 `...   "db": "pmc"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "ScienceDirect",`<br>
 `...   "apiUrl": "https://api.elsevier.com/content/search/scidir?",`<br>
-`...   "searchPeriod": 3,`<br>
 `...   "active": true,`<br>
-`...   "token": "replace with your token"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "Nature",`<br>
@@ -64,24 +60,20 @@ This is needed if you want to use the automated search (Elsevier/ScienceDirect, 
 `... },`<br>
 `... {`<br>
 `...   "name": "Wiley",`<br>
-`...   "url": "http://onlinelibrary.wiley.com/advanced/search?",`<br>
-`...   "searchPeriod": 3,`<br>
+`...   "url": "https://onlinelibrary.wiley.com/action/doSearch",`<br>
 `...   "active": false,`<br>
 `...   "base": "http://onlinelibrary.wiley.com"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "SpringerLink",`<br>
 `...   "apiUrl": "http://api.springer.com/metadata/json?",`<br>
-`...   "searchPeriod": 3,`<br>
 `...   "active": true,`<br>
-`...   "token": "replace with your token"`<br>
 `... },`<br>
 `... {`<br>
 `...   "name": "GoogleScholar",`<br>
 `...   "url": "https://scholar.google.com/scholar?l=es&",`<br>
 `...   "base": "https://scholar.google.com",`<br>
-`...   "searchPeriod": 3,`<br>
-`...   "active": true`<br>
+`...   "active": false`<br>
 `... }`<br>
 `... ]`<br>
 `... );`<br>
@@ -102,34 +94,6 @@ If everything works well you should see the following response. Of course the `i
 	`]`<br>
 `}`<br>
 
-**b) Replace `...   "token": "replace with your token"` with your api keys:**
-
-For example, if your api Key for SpringerLink is 111 execute:
-<br><br>
-`db.portal.update({"name": "SpringerLink"},{$set: {"token": "111"}});`
-
-If everything works well you should see the following response:
-<br><br>
-`WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })`
-
-Same for ScienceDirect and an api Key 222:
-<br><br>
-`db.portal.update({"name": "ScienceDirect"},{$set: {"token": "222"}});`
-
-
-### 1.4. Add keywords for the search
-* `name` contains the keywords, where " " around the string is used for exact match if inputting more than one word and to avoid approximate string matching. Only AND operand is supported. In order to perform OR operation add more keywords to the Database.
-* `collection` is the group in wich the article will be saved. By default this is set to the `To evaluate` group, but you can configure the project to use different groups for other purposes.
-* `usage` is a label for the articles found using the keyword. You can add different labels to differentiate search types. 
-
-`db.keyword.insert(`<br>
-`{`<br>
-  `"name": "\"reconstructed neuron\" AND neurolucida",`<br>
-  `"collection": "To evaluate",`<br>
-  `"usage": "Describing"`<br>
-`});`<br>
-
-
 Close mongo console:
 <br>
 `exit`
@@ -143,30 +107,10 @@ Microservices run an embedded tomcat using Spring Boot (.jar). All of them are i
 ### 2.1. Download the code
 
 Download the code from git from the download button or you can use the terminal if git is installed in your system typing the following:<br>
-`git clone https://github.com/NeuroMorphoOrg/LiterMate.git`
-
-### 2.2. The properties files
-
-Each of the services contain a properties file with its own configuration in the location:<br>
-`./<ServiceName>/src/main/java/application.properties` <br> 
-
-The services that requires download the PDFs needs the key obtained in **1.2** to download Wiley PDFs, if this key is not addd it will download only the open PDFs from CrossRef. Update the CrossRef properties file, the propeoty `token` value. The property `folder` should have write permisions and can be updated to your needs.
-Each of the services that requires DB access connects to a database independently, you can have several different databases or one. In this case all of the services are connected to a DB named `nmotest`.
-You can update the server ports; just be aware that there are other services that may depend on these connections (the Web Frontend & the LiteratureSearchService) and you should update them accordingly.
-
-`server.port= 8180`<br>
-`logging.level.org.springframework.web=ERROR`<br>
-`logging.level.o.n.o.drivers.http=ERROR`<br>
-`logging.level.org.neuromorpho=DEBUG`<br>
-`logging.file=./LiteratureMetadataServiceBoot.log`<br>
-`spring.data.mongodb.host=localhost`<br>
-`spring.data.mongodb.database=nmotest`<br>
-`spring.data.mongodb.port=27017`<br>
-`token=`<br>
-`folder=/home/services/literature/pdf/`<br>
+`git clone https://github.com/NeuroMorphoOrg/PaperBot.git`
 
 
-### 2.3. Compile
+### 2.2. Compile
 
 From the terminal navigate inside the principal folder LiterMate-master and compile:<br>
 `cd LiterMate`<br>
@@ -176,23 +120,19 @@ This will compile all the services and you should see the `SUCCESS` for all the 
 
 ` Reactor Summary:`<br>
 `[INFO] `<br>
-`[INFO] LiteratureCrossRefServiceBoot ...................... SUCCESS [ 21.782 s]`<br>
-`[INFO] LiteratureDownloadPDFService ....................... SUCCESS [  9.614 s]`<br>
-`[INFO] LiteratureMetadataServiceBoot ...................... SUCCESS [  0.996 s]`<br>
-`[INFO] LiteraturePubMedServiceBoot ........................ SUCCESS [  1.003 s]`<br>
-`[INFO] LiteratureServiceBoot .............................. SUCCESS [  1.607 s]`<br>
-`[INFO] LiteraturePortalServiceBoot ........................ SUCCESS [  1.122 s]`<br>
-`[INFO] LiteratureSearchService ............................ SUCCESS [  1.029 s]`<br>
-`[INFO] LiterMate .......................................... SUCCESS [  0.021 s]`<br>
+`[INFO] CrossRef ...................... SUCCESS [ 21.782 s]`<br>
+`[INFO] Metadata ...................... SUCCESS [  0.996 s]`<br>
+`[INFO] PubMed ........................ SUCCESS [  1.003 s]`<br>
+`[INFO] Literature .................... SUCCESS [  1.607 s]`<br>
+`[INFO] Search ........................ SUCCESS [  1.029 s]`<br>
 
-### 2.4. Launch
+### 2.3. Launch
 If using Linux or Mac you can launch it typing:
 `./launch.sh`<br>
 
-This will launch the rquired services with nohup and java -jar. Any error will be tracd in nohup.out. 
-`tail -f nohup.out `  To check everything is working<br> 
-` [           main] o.n.literature.<serviceAPP>.Application      : Started Application in 49.649 seconds (JVM running for 54.07)` <br>
-_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html**_ 
+This will launch the required services with nohup and java -jar. Any error will be traced in the correspondnt log. 
+
+_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html described in detail in https://springjavatricks.blogspot.com/2017/11/installing-spring-boot-services-in.html**_ 
 
 
 
@@ -213,56 +153,40 @@ Apache default directory is: <br>
 
 Replace from the following commands `/Library/WebServer/Documents/` with your apache folder in the following commands:
 
-`sudo mkdir /Library/WebServer/Documents/NMOLiteratureWeb` <br>
-`sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/NMOLiteratureWeb` <br>
+`sudo mkdir /Library/WebServer/DocumentsPaperBot` <br>
+`sudo cp -r NMOLiteratureWeb/app/ /Library/WebServer/Documents/PperBot` <br>
 
-In your browser type: http://[ipAddress]/NMOLiteratureWeb
+In your browser type: http://[ipAddress]/PaperBot
 
 ### 3.2. If runing on a server and not your localhost remember to update the ip in the browser
 
 Update NMOLiteratureWeb/communications/articlesCommunicationService.js 
 
-`var url_literature = 'http://<serverIP>:8188/literature';`<br>
-`var url_reconstructions_status = 'http://<serverIP>:8182/literature/reconstructions/status';`<br>
-`var url_metadata = 'http://<serverIP>:8180/literature/metadata';`<br>
-`var url_pubmed = 'http://<serverIP>:8186/literature/pubmed';`<br>
+`var url_literature = 'http://<serverIP>:8443/literature';`<br>
+`var url_metadata = 'http://<serverIP>:8443/metadata';`<br>
+`var url_pubmed = 'http://<serverIP>:8443/pubmed';`<br>
+`...`
 
 
 ### 3.3. Update metadata html to your desired metadata properties 
 
-Edit NMOLiteratureWeb/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, so you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
+Edit PaperBot/article/metadata.html. Any kind of object is supported since the metadataService receives type Object in java, so you can add Strings, Booleans, and Lists. If you want to use Lists you have to update the frontend controller accordingly.
 
 Lets update a name for a given tag. For example:
 
  `<tr>`<br>
-    `<td><strong>Cell Type:</strong></td>`<br>
-    `<td><span editable-text="metadata.cellType">{{metadata.cellType}}</span></td>`<br>
+    `<td><strong>Category 1:</strong></td>`<br>
+    `<td><span e-style="width:600px;" editable-text="metadata.category1">{{metadata.category1}}</span></td>`<br>
  `</tr>`<br>
  
- Update Cell Type for your desired name and cellType too. Your new metadata tag will be saved in the DB with that name. You can add as many `<tr>` groups as you want.
+ Update Category 1 for your desired name, also category1 if you want the name of the DataBase to match (not needed). You can add as many `<tr>` groups as you want.
  
  The `metadataFinished` is a nice feature that allows you to remember if you had finished reviewing a paper. If it is set to false, when you navigate to the Positive group of articles a red flag will remind you that there is pending work.
 
-### 3.4. Go to the Wiki to learn how to add an article manually
+### 3.4. Go to the Wiki to learn how to update the keywords, the portals configuration, launch your first search, and add an article manually
 
 
-## 4. Crontab Services
-
-Now that everything is set, it is fun to see how the Database populates from the Web page.
-
-### 4.1. Launch the crontab services
-
-You can launch it dissociated from the terminal in background
-
-`nohup java -jar ./LiteraturSearchService/target/LiteratureSearchService-1.0.jar &`<br>
-
-Or launch it associated to the terminal in foreground to see how it works and its logs
-
-`java -jar ./LiteraturSearchService/target/LiteratureSearchService-1.0.jar`<br>
-
-Or add it to the crontab. Same applies to LiteratureDownloadPDFService.
-
-### 4.4. Go to the browser & refresh
+### 3.5. Go to the browser & refresh
 
 You will see how the web populates. It is ready to use.
 
