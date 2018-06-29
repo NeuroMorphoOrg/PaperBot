@@ -38,6 +38,7 @@ public abstract class PortalSearch implements IPortalSearch {
     protected Date endDate;
     protected Boolean inaccessible;
     protected Article article;
+    private final String inaccessibleCollection = "Inaccessible";
 
     @Autowired
     protected LiteratureConnection literatureConnection;
@@ -187,7 +188,7 @@ public abstract class PortalSearch implements IPortalSearch {
         if (this.article.getPublishedDate() != null && this.article.getPublishedDate().after(this.portal.getStartSearchDate())) {
             log.debug(this.article.toString());
             ArticleResponse response = literatureConnection.saveArticle(
-                    this.article, "Inaccessible");
+                    this.article, inaccessibleCollection);
 
             literatureConnection.saveSearchPortal(response.getId(), this.portal.getName(), this.keyWord);
             Boolean exists = Boolean.FALSE;
@@ -196,7 +197,7 @@ public abstract class PortalSearch implements IPortalSearch {
             }
             if (exists) {
                 literatureConnection.updateCollection(
-                        response.getId(), this.collection);
+                        response.getId(), inaccessibleCollection, this.collection);
             }
             log.debug("Seconds to sleep: " + 2);
             log.debug("......................................");

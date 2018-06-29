@@ -67,13 +67,14 @@ public class PortalSearchScienceDirectService extends PortalSearch {
 
                     if (authors != null) {
                         ArrayList<Map> authorListMap = (ArrayList) authors.get("author");
+                        if (authorListMap != null) {
+                            for (Map authorMap : authorListMap) {
+                                String lastName = (String) authorMap.get("surname");
+                                String firstName = (String) authorMap.get("given-name");
 
-                        for (Map authorMap : authorListMap) {
-                            String lastName = (String) authorMap.get("surname");
-                            String firstName = (String) authorMap.get("given-name");
-
-                            Author author = new Author(firstName + " " + lastName, null);
-                            authorList.add(author);
+                                Author author = new Author(firstName + " " + lastName, null);
+                                authorList.add(author);
+                            }
                         }
                     }
                     article.setAuthorList(authorList);

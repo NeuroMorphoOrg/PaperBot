@@ -36,7 +36,7 @@ public class PortalSearchNatureService extends PortalSearch {
         do {//iterate over pages
             String uri = this.portal.getApiUrl()
                     + "startRecord=" + startRecord
-                    + "&queryType=cql&query=cql.keywords=" + keyWordTreated
+                    + "&queryType=cql&query=cql.keywords==" + keyWordTreated
                     + "+AND+prism.publicationDate=" + yearFormat.format(this.startDate.getTime());
             log.debug("API retrieving from URI: " + uri);
             String data;

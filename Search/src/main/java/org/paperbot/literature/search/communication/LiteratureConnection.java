@@ -29,8 +29,8 @@ public class LiteratureConnection {
         return response.getBody();
     }
     
-    public void updateCollection(String id, String collection) {
-        String url = uri + "/status/" + id + "?articleStatus=" + collection;
+    public void updateCollection(String id, String oldCollection, String newCollection) {
+        String url = uri + "/status/" + id + "?oldArticleStatus=" + oldCollection + "&newArticleStatus=" + newCollection;
         log.debug("Creating rest connection for URI: " + url);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.put(url, null);

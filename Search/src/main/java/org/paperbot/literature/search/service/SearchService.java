@@ -53,12 +53,14 @@ public class SearchService {
                 }
                 portalLog.setCause(endLog);
             }
+            portalLog.setStopDate();
+            logRepository.save(portalLog);
+
         } catch (InterruptedException ex) { //Interrupted exception is not able to write in mongo
             log.warn("The user has interrupted the search");
         } catch (Exception ex) {
             log.error("Unknown error", ex);
             portalLog.setCause("Unknown Error");
-        } finally {
             portalLog.setStopDate();
             logRepository.save(portalLog);
         }
