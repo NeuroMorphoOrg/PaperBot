@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 public class ArticleCollection {
 
     public enum ArticleStatus {
+        All("all", "All"),
         TO_EVALUATE("article", "Pending evaluation"),
         POSITIVE("article.positives", "Positive"),
         NEGATIVE("article.negatives", "Negative"),

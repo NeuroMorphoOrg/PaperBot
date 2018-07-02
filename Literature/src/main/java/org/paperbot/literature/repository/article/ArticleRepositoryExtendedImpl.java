@@ -32,7 +32,6 @@ import org.springframework.data.mongodb.core.query.Update;
 @Repository
 public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended {
 
-
     private final Integer pageSize = 50;
     private final org.slf4j.Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -153,7 +152,7 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
     @Override
     public void update(String id, ArticleStatus oldCollection, ArticleStatus newCollection) {
         Article article = mongoOperations.findById(id, Article.class, oldCollection.getCollection());
-        if (article != null){
+        if (article != null) {
             log.debug("Updating collection article: " + article.toString());
             if (oldCollection.equals(ArticleStatus.TO_EVALUATE)) {
                 article.setEvaluatedDate(new Date());
@@ -164,7 +163,6 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
             mongoOperations.remove(article, oldCollection.getCollection());
         }
     }
-
 
 //    @Override
 //    public void update(String id, Map<String, Object> article) {
@@ -180,7 +178,6 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
 //        }
 //
 //    }
-
     @Override
     public void update(String id, String portalName, String keyWord) {
         ArticleCollection oldArticle = this.findById(id);
@@ -198,6 +195,7 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
         mongoOperations.save(article, status.getCollection());
 
     }
+
     /*
     * Search in all the collections for a given article
      */
@@ -284,11 +282,18 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
     }
 
     @Override
-    public ArticleCollection findByText(String text,
+    public ArticleCollection findByText(
             ArticleStatus status,
-            Integer pageStart,
-            String sortDirection,
-            String sortProperty) {
+            Map<String, String> queryParams) {
+        String sortDirection = queryParams.get("sortDirection");
+        queryParams.remove("sortDirection");
+        String sortProperty = queryParams.get("sortProperty");
+        queryParams.remove("sortProperty");
+        String text = queryParams.get("text");
+        queryParams.remove("text");
+        Integer pageStart = Integer.parseInt(queryParams.get("page"));
+        queryParams.remove("page");
+
         if (sortDirection == null || sortProperty == null) {
             sortDirection = "DESC";
             sortProperty = "publishedDate";
@@ -309,11 +314,28 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
             Criteria criteriaOr = getOrCriteriaList(pair);
             query.addCriteria(criteriaOr);
         }
+        for (Map.Entry pair : queryParams.entrySet()) {
+            log.debug("Adding Filter to query:" + pair);
+            if (pair.getValue().toString().contains("$exist")) {
+                String exists = pair.getValue().toString().split(":")[1];
+                query.addCriteria(Criteria.where(pair.getKey().toString()).exists(Boolean.parseBoolean(exists)));
+            } else {
+                query.addCriteria(Criteria.where(pair.getKey().toString()).is(pair.getValue().toString()));
+            }
+        }
+
         query.with(sort);
         query.skip(pageStart * pageSize);
         query.limit(pageSize);
-        List<Article> articleList = mongoOperations.find(query, Article.class, status.getCollection());
+        List<Article> articleList = new ArrayList();
+        if (status.equals(ArticleStatus.All)) {
+            for (ArticleStatus allStatus : ArticleStatus.values()) {
+                articleList.addAll(mongoOperations.find(query, Article.class, allStatus.getCollection()));
 
+            }
+        } else {
+            articleList = mongoOperations.find(query, Article.class, status.getCollection());
+        }
         Long n = mongoOperations.count(query, Article.class, status.getCollection());
         Page<Article> articlePage = new PageImpl<>(articleList, pageRequest, n);
 
@@ -487,6 +509,5 @@ public class ArticleRepositoryExtendedImpl implements ArticleRepositoryExtended 
         }
         return result;
     }
-
 
 }

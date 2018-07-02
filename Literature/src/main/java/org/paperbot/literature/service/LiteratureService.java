@@ -29,12 +29,10 @@ public class LiteratureService {
         return articleRepository.getSummary(date);
     }
     
-    public ArticleCollection getArticles(String text, ArticleStatus articleStatus,
-            Integer page, String sortDirection, String sortProperty) {
-        log.debug("Find article list from status: " + articleStatus.getCollection()
-                + " by text: " + text + " sortDirection: " + sortDirection
-                + " sortProperty: " + sortProperty);
-        return articleRepository.findByText(text, articleStatus, page, sortDirection, sortProperty);
+    public ArticleCollection getArticles(ArticleStatus articleStatus,
+            Map<String, String> queryParams) {
+        log.debug("Find article list from status: " + articleStatus.getCollection());
+        return articleRepository.findByText(articleStatus, queryParams);
     }
     
     public String saveArticle(Article article, ArticleStatus status) {

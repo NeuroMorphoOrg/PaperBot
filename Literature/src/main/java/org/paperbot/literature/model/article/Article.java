@@ -159,16 +159,6 @@ public class Article implements java.io.Serializable{
         this.status = status;
     }
 
-//
-//    public Boolean hasContactEmail(List<Author> authorList) {
-//        for (Author author : this.authorList) {
-//            if (author.hasContactEmail()) {
-//                return Boolean.TRUE;
-//            }
-//        }
-//        return Boolean.FALSE;
-//    }
-//
     public void updateSearchPortal(String portalName, String keyWord) {
         //Create a structure to deal with duplicated
         Map<String, Set<String>> map = new HashMap<>();

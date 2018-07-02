@@ -84,14 +84,10 @@ public class LiteratureController {
     @RequestMapping(value = "status/{status}", method = RequestMethod.GET)
     public ArticleCollection getArticles(
             @PathVariable String status,
-            @RequestParam(required = false) String text,
-            @RequestParam(required = true) Integer page,
-            @RequestParam(required = false) String sortDirection,
-            @RequestParam(required = false) String sortProperty) {
-        log.debug("Find articles by text status : " + status + " and page: " + page);
+            @RequestParam(required = false) Map<String, String> queryParams) {
+        log.debug("Find articles by text status : " + status + " and page: " + queryParams.get("page"));
         ArticleStatus articleStatus = ArticleStatus.getArticleStatus(status);
-        ArticleCollection articleCollection = literatureService.getArticles(
-                text, articleStatus, page, sortDirection, sortProperty);
+        ArticleCollection articleCollection = literatureService.getArticles(articleStatus, queryParams);
         log.debug("Found #articles : " + articleCollection.getArticlePage().getTotalElements());
 
         return articleCollection;

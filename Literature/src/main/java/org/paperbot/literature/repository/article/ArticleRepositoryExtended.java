@@ -34,7 +34,7 @@ public interface ArticleRepositoryExtended {
 
     public Page<Article> findByFieldQuery(String collection, Map<String, String> fieldQuery, Integer pageStart);
 
-    public ArticleCollection findByText(String text, ArticleStatus status, Integer pageStart, String sortDirection, String sortProperty);
+    public ArticleCollection findByText(ArticleStatus status, Map<String, String> queryParams);
 
 
 }
