@@ -1,8 +1,8 @@
-# LiterMate
+# PaperBot
 
-LiterMate is a configurable, modular, open-source web-based solution to automatically find and efficiently annotate peer-reviewed publications based on periodic full-text searches across publisher portals.
-Without user interactions, LiterMate retrieves and stores article information (full reference, corresponding email contact, and full-text keyword hits) based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, HighWire, PubMed/PubMedCentral, and GoogleScholar.
-Although different portals require different search configurations, the common interface of LiterMate unifies the process from the user perspective. Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance to the project goals and seamless annotation of suitable metadata dimensions.
+PaperBot is a we crawler configurable, modular, open-source web-based solution to automatically find and efficiently annotate peer-reviewed publications based on periodic full-text searches across publisher portals.
+Without user interactions, PaperBot retrieves and stores article information (full reference, corresponding email contact, and full-text keyword hits) based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, HighWire, PubMed/PubMedCentral, and GoogleScholar.
+Although different portals require different search configurations, the common interface of PaperBot unifies the process from the user perspective. Once saved, all information becomes web accessible, allowing efficient triage of articles based on their actual relevance to the project goals and seamless annotation of suitable metadata dimensions.
 
 The user should read and understand the terms of use of the portals that are using a scraper prior to activte this portion of the tool, we are not responsible of any misuse of it:
 
@@ -112,8 +112,8 @@ Download the code from git from the download button or you can use the terminal 
 
 ### 2.2. Compile
 
-From the terminal navigate inside the principal folder LiterMate-master and compile:<br>
-`cd LiterMate`<br>
+From the terminal navigate inside the principal folder PaperBot-master and compile:<br>
+`cd PaperBot`<br>
 `mvn clean install`<br>
 
 This will compile all the services and you should see the `SUCCESS` for all the services at the end:
@@ -132,7 +132,7 @@ If using Linux or Mac you can launch it typing:
 
 This will launch the required services with nohup and java -jar. Any error will be traced in the correspondnt log. 
 
-_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions: https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html described in detail in https://springjavatricks.blogspot.com/2017/11/installing-spring-boot-services-in.html**_ 
+_**NOTE: Although the services can be used on your local machine, they are designed to run in a server. If you run them locally and restart your computer this step needs to be executed again. Same happens in a server. Servers are not rebooted that often, but I highly encourage you to create Unix/Linux services following Spring instructions resumed in https://springjavatricks.blogspot.com/2017/11/installing-spring-boot-services-in.html**_ 
 
 
 
