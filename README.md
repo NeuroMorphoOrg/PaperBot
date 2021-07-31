@@ -1,5 +1,5 @@
-# PaperBot_v2
-Compiled PaperBot v2 
+# PaperBot
+Compiled PaperBot
 
 PaperBot is a web crawler configurable, modular, open-source web-based solution to automatically find and efficiently annotate peer-reviewed publications based on periodic full-text searches across publisher portals.
 Without user interactions, PaperBot retrieves and stores article information (full reference, corresponding email contact, and full-text keyword hits) based on pre-set search logic from disparate sources including Wiley, ScienceDirect, Springer/Nature/Frontiers, HighWire, PubMed/PubMedCentral, and GoogleScholar.
