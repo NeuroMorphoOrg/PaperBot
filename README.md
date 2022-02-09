@@ -171,7 +171,7 @@ Lets update a name for a given tag. For example:
  
  Update Category 1 for your desired name, also category1 if you want the name of the DataBase to match (not needed). You can add as many `<tr>` groups as you want.
  
- The `metadataFinished` is a nice feature that allows you to remember if you had finished reviewing a paper. If it is set to false, when you navigate to the Positive group of articles a red flag will remind you that there is pending work.
+ The `metadataFinished` is a nice feature that allows you to remember if you had finished reviewing a paper. If it is set to false, when you navigate to the Positive group of articles a red flag will remind you that there is pending work
 
 
 
